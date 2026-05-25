@@ -31,6 +31,8 @@ CHANNEL_IDS = {
     "bein-sports-5-turkey": "1010",
     "atv-turkey": "1000",
     "arena-sport-1-premium": "134",
+    "arena-sport-2-premium": "135",
+    "arena-sport-3-premium": "139",
 }
 
 
