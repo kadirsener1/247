@@ -4,6 +4,6 @@ bein-sports-3-turkey|beIN Sports 3 Turkey|Spor
 bein-sports-4-turkey|beIN Sports 4 Turkey|Spor
 bein-sports-5-turkey|beIN Sports 5 Turkey|Spor
 atv-turkey|Atv 247|Ulusal
-arena-sport-1-premium|Arena Sport 1 Premium|World Spor
-arena-sport-2-premium|Arena Sport 2 Premium|World Spor
-arena-sport-3-premium|Arena Sport 3 Premium|World Spor
+arena-sport-1-premium|Arena Sport 1 Premium|World Sports
+arena-sport-2-premium|Arena Sport 2 Premium|World Sports
+arena-sport-3-premium|Arena Sport 3 Premium|World Sports
