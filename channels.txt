@@ -5,3 +5,5 @@ bein-sports-4-turkey|beIN Sports 4 Turkey
 bein-sports-5-turkey|beIN Sports 5 Turkey
 atv-turkey|atv Turkey
 arena-sport-1-premium|arena sport 1 premium
+arena-sport-2-premium|arena sport 2 premium
+arena-sport-3-premium|arena sport 3 premium
