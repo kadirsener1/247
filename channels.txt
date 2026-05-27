@@ -10,3 +10,9 @@ arena-sport-1-serbia|Arena Sport 1 Serbia|World Sports
 arena-sport-2-serbia|Arena Sport 2 Serbia|World Sports
 arena-sport-3-serbia|Arena Sport 3 Serbia|World Sports
 arena-sport-4-serbia|Arena Sport 4 Serbia|World Sports
+arena-sport-5-serbia|Arena Sport 5 Serbia|World Sports
+arena-sport-6-serbia|Arena Sport 6 Serbia|World Sports
+arena-sport-7-serbia|Arena Sport 7 Serbia|World Sports
+arena-sport-8-serbia|Arena Sport 8 Serbia|World Sports
+arena-sport-9-serbia|Arena Sport 9 Serbia|World Sports
+arena-sport-10-serbia|Arena Sport 10 Serbia|World Sports
