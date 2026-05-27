@@ -33,6 +33,10 @@ CHANNEL_IDS = {
     "arena-sport-1-premium": "134",
     "arena-sport-2-premium": "135",
     "arena-sport-3-premium": "139",
+    "arena-sport-1-Serbia": "4299",
+   "arena-sport-2-Serbia": "430",
+    "arena-sport-3-Serbia": "431",
+    "arena-sport-4-Serbia": "581",
 }
 
 
