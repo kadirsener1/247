@@ -37,6 +37,12 @@ CHANNEL_IDS = {
    "arena-sport-2-serbia": "430",
     "arena-sport-3-serbia": "431",
     "arena-sport-4-serbia": "581",
+    "arena-sport-5-serbia": "940",
+    "arena-sport-6-serbia": "941",
+    "arena-sport-7-serbia": "942",
+    "arena-sport-8-serbia": "943",
+    "arena-sport-9-serbia": "944",
+    "arena-sport-10-serbia": "945",
 }
 
 
