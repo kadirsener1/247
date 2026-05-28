@@ -1,21 +1,15 @@
 name: Update M3U Playlist
 
 on:
-  # Her 3 saatte bir çalışsın (fazla sıklık gerekmez)
   schedule:
-    - cron: '0 */3 * * *'
-  
-  # Manuel tetikleme
+    - cron: '0 */3 * * *'  # Her 3 saatte bir
   workflow_dispatch:
-  
-  # Sadece gerekli dosyalar değiştiğinde
   push:
     branches:
       - main
     paths:
       - 'scraper_async.py'
       - 'channels.txt'
-      - 'requirements.txt'
 
 concurrency:
   group: update-m3u
@@ -26,50 +20,40 @@ permissions:
 
 jobs:
   update-playlist:
-    runs-on: ubuntu-latest  # ubuntu-22.04 yerine latest
-    timeout-minutes: 8  # 10'dan 8'e düşürüldü
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
       
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'  # pip cache'i aktif
+          cache: 'pip'
       
       - name: 📦 Install dependencies
         run: |
           pip install --upgrade pip
-          pip install aiohttp aiodns
-          # requirements.txt varsa onu kullan
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install aiohttp
       
       - name: 🔍 Run async scraper
         run: python scraper_async.py
         env:
           PYTHONUNBUFFERED: "1"
-          MAX_WORKERS: "30"  # Paralel işlem sayısı
+          MAX_WORKERS: "25"
       
-      - name: 📤 Commit and push changes
+      - name: 📤 Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f tv247.m3u
           
-          # Değişiklik kontrolü
           if git diff --cached --quiet; then
-            echo "📝 Değişiklik yok, commit gerekmiyor"
+            echo "✅ Değişiklik yok"
           else
             TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
             git commit -m "🔄 Update playlist | ${TIMESTAMP}"
             git push
-            echo "✅ Değişiklikler push edildi"
           fi
-      
-      - name: 💾 Save execution log
-        if: always()
-        run: |
-          echo "Last run: $(date)" > last_run.txt
-          git add -f last_run.txt 2>/dev/null || true
