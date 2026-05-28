@@ -1,56 +1,56 @@
 #EXTM3U
-# Updated: 2026-05-28 07:53:49 UTC
+# Updated: 2026-05-28 11:35:07 UTC
 
 #EXTINF:-1 tvg-id="bein-sports-1-turkey" tvg-name="beIN Sports 1 Turkey" group-title="Spor",beIN Sports 1 Turkey
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MiIsInRzIjoxNzc5OTU0ODExOTU4fQ==
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MiIsInRzIjoxNzc5OTY4MDg5NjQ1fQ==
 
 #EXTINF:-1 tvg-id="bein-sports-2-turkey" tvg-name="beIN Sports 2 Turkey" group-title="Spor",beIN Sports 2 Turkey
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MyIsInRzIjoxNzc5OTU0ODEyOTU5fQ==
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MyIsInRzIjoxNzc5OTY4MDkwNjQ2fQ==
 
 #EXTINF:-1 tvg-id="bein-sports-3-turkey" tvg-name="beIN Sports 3 Turkey" group-title="Spor",beIN Sports 3 Turkey
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NCIsInRzIjoxNzc5OTU0ODEzOTU5fQ==
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NCIsInRzIjoxNzc5OTY4MDkxNjQ2fQ==
 
 #EXTINF:-1 tvg-id="bein-sports-4-turkey" tvg-name="beIN Sports 4 Turkey" group-title="Spor",beIN Sports 4 Turkey
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NyIsInRzIjoxNzc5OTU0ODE0OTU5fQ==
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NyIsInRzIjoxNzc5OTY4MDkyNjQ2fQ==
 
 #EXTINF:-1 tvg-id="bein-sports-5-turkey" tvg-name="beIN Sports 5 Turkey" group-title="Spor",beIN Sports 5 Turkey
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMDEwIiwidHMiOjE3Nzk5NTQ4MTU5NjB9
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMDEwIiwidHMiOjE3Nzk5NjgwOTM2NDd9
 
 #EXTINF:-1 tvg-id="arena-sport-1-premium" tvg-name="Arena Sport 1 Premium" group-title="World Sports",Arena Sport 1 Premium
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMzQiLCJ0cyI6MTc3OTk1NDgxNjk2MH0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMzQiLCJ0cyI6MTc3OTk2ODA5NDY0N30=
 
 #EXTINF:-1 tvg-id="arena-sport-2-premium" tvg-name="Arena Sport 2 Premium" group-title="World Sports",Arena Sport 2 Premium
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMzUiLCJ0cyI6MTc3OTk1NDgxNzk2MH0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMzUiLCJ0cyI6MTc3OTk2ODA5NTY0N30=
 
 #EXTINF:-1 tvg-id="arena-sport-3-premium" tvg-name="Arena Sport 3 Premium" group-title="World Sports",Arena Sport 3 Premium
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMzkiLCJ0cyI6MTc3OTk1NDgxODk2MX0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMzkiLCJ0cyI6MTc3OTk2ODA5NjY0OH0=
 
 #EXTINF:-1 tvg-id="arena-sport-1-serbia" tvg-name="Arena Sport 1 Serbia" group-title="World Sports",Arena Sport 1 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI0MjkiLCJ0cyI6MTc3OTk1NDgxOTk2MX0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI0MjkiLCJ0cyI6MTc3OTk2ODA5NzY0OH0=
 
 #EXTINF:-1 tvg-id="arena-sport-2-serbia" tvg-name="Arena Sport 2 Serbia" group-title="World Sports",Arena Sport 2 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI0MzAiLCJ0cyI6MTc3OTk1NDgyMDk2MX0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI0MzAiLCJ0cyI6MTc3OTk2ODA5ODY0OH0=
 
 #EXTINF:-1 tvg-id="arena-sport-3-serbia" tvg-name="Arena Sport 3 Serbia" group-title="World Sports",Arena Sport 3 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI0MzEiLCJ0cyI6MTc3OTk1NDgyMTk2MX0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI0MzEiLCJ0cyI6MTc3OTk2ODA5OTY0OH0=
 
 #EXTINF:-1 tvg-id="arena-sport-4-serbia" tvg-name="Arena Sport 4 Serbia" group-title="World Sports",Arena Sport 4 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI1ODEiLCJ0cyI6MTc3OTk1NDgyMjk2Mn0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI1ODEiLCJ0cyI6MTc3OTk2ODEwMDY0OX0=
 
 #EXTINF:-1 tvg-id="arena-sport-5-serbia" tvg-name="Arena Sport 5 Serbia" group-title="World Sports",Arena Sport 5 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDAiLCJ0cyI6MTc3OTk1NDgyMzk2Mn0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDAiLCJ0cyI6MTc3OTk2ODEwMTY0OX0=
 
 #EXTINF:-1 tvg-id="arena-sport-6-serbia" tvg-name="Arena Sport 6 Serbia" group-title="World Sports",Arena Sport 6 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDEiLCJ0cyI6MTc3OTk1NDgyNDk2Mn0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDEiLCJ0cyI6MTc3OTk2ODEwMjY0OX0=
 
 #EXTINF:-1 tvg-id="arena-sport-7-serbia" tvg-name="Arena Sport 7 Serbia" group-title="World Sports",Arena Sport 7 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDIiLCJ0cyI6MTc3OTk1NDgyNTk2Mn0=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDIiLCJ0cyI6MTc3OTk2ODEwMzY1MH0=
 
 #EXTINF:-1 tvg-id="arena-sport-8-serbia" tvg-name="Arena Sport 8 Serbia" group-title="World Sports",Arena Sport 8 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDMiLCJ0cyI6MTc3OTk1NDgyNjk2M30=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDMiLCJ0cyI6MTc3OTk2ODEwNDY1MH0=
 
 #EXTINF:-1 tvg-id="arena-sport-9-serbia" tvg-name="Arena Sport 9 Serbia" group-title="World Sports",Arena Sport 9 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDQiLCJ0cyI6MTc3OTk1NDgyNzk2M30=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDQiLCJ0cyI6MTc3OTk2ODEwNTY1MH0=
 
 #EXTINF:-1 tvg-id="arena-sport-10-serbia" tvg-name="Arena Sport 10 Serbia" group-title="World Sports",Arena Sport 10 Serbia
-https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDUiLCJ0cyI6MTc3OTk1NDgyODk2M30=
+https://chat.cfbu247.sbs/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI5NDUiLCJ0cyI6MTc3OTk2ODEwNjY1MX0=
