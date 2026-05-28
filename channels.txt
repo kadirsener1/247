@@ -1,736 +1,828 @@
-abc-usa,51,US
-ahc-american-heroes-channel,206,US
-antenna-tv-usa,283,US
-a-e-usa,302,US
-amc-usa,303,US
-animal-planet,304,US
-astro-supersport-1,123,MY
-astro-supersport-2,124,MY
-astro-supersport-3,125,MY
-astro-supersport-4,126,MY
-arena-sport-1-premium,134,RS
-arena-sport-2-premium,135,RS
-arena-sport-3-premium,139,RS
-arena-sport-1-serbia,429,RS
-arena-sport-2-serbia,430,RS
-arena-sport-3-serbia,431,RS
-arena-sport-4-serbia,581,RS
-arena-sport-1-croatia,432,HR
-arena-sport-2-croatia,433,HR
-arena-sport-3-croatia,434,HR
-arena-sport-4-croatia,580,HR
-alkass-one,781,QA
-alkass-two,782,QA
-alkass-three,783,QA
-alkass-four,784,QA
-arena-sport-1-bih,579,BA
-abu-dhabi-sports-1-uae,600,AE
-abu-dhabi-sports-2-uae,601,AE
-abu-dhabi-sports-1-premium,609,AE
-abu-dhabi-sports-2-premium,610,AE
-astro-cricket,370,MY
-antena-3-spain,531,ES
-arena-sports-tenis-serbia,612,RS
-acc-network-usa,664,US
-adult-swim,295,US
-a-sport-pk,269,PK
-axn-movies-portugal,717,PT
-arte-de,725,DE
-axs-tv-usa,742,US
-abc-ny-usa,766,US
-azteca-7-mx,844,MX
-altitude-sports,923,US
-azteca-uno-mx,934,MX
-arena-sport-5-serbia,940,RS
-arena-sport-6-serbia,941,RS
-arena-sport-7-serbia,942,RS
-arena-sport-8-serbia,943,RS
-arena-sport-9-serbia,944,RS
-arena-sport-10-serbia,945,RS
-arte-france,958,FR
-automoto-la-chaine,961,FR
-atv-turkey,1000,TR
-a-spor-turkey,1011,TR
-bein-sports-mena-english-1,61,QA
-bein-sports-mena-english-2,90,QA
-bein-sports-1-arabic,91,QA
-bein-sports-2-arabic,92,QA
-bein-sports-3-arabic,93,QA
-bein-sports-4-arabic,94,QA
-bein-sports-5-arabic,95,QA
-bein-sports-6-arabic,96,QA
-bein-sports-7-arabic,97,QA
-bein-sports-8-arabic,98,QA
-bein-sports-9-arabic,99,QA
-bein-sports-xtra-1,100,US
-bein-sports-max-4-france,494,FR
-bein-sports-max-5-france,495,FR
-bein-sports-max-6-france,496,FR
-bein-sports-max-7-france,497,FR
-bein-sports-max-8-france,498,FR
-bein-sports-max-9-france,499,FR
-bein-sports-max-10-france,500,FR
-bein-sports-1-france,116,FR
-bein-sports-2-france,117,FR
-bein-sports-3-france,118,FR
-bein-sports-1-turkey,62,TR
-bein-sports-2-turkey,63,TR
-bein-sports-3-turkey,64,TR
-bein-sports-4-turkey,67,TR
-bein-sports-hd-qatar,578,QA
-bein-sports-usa,425,US
-bein-sports-en-espanol,372,US
-bein-sports-1-australia,491,AU
-bein-sports-2-australia,492,AU
-bein-sports-3-australia,493,AU
-barca-tv-spain,522,ES
-benfica-tv-pt,380,PT
-boomerang,648,US
-bnt-1-bulgaria,476,BG
-bnt-2-bulgaria,477,BG
-bnt-3-bulgaria,478,BG
-br-fernsehen-de,737,DE
-btv-bulgaria,479,BG
-btv-action-bulgaria,481,BG
-btv-lady-bulgaria,484,BG
-bbc-america,305,US
-bet-usa,306,US
-bravo-usa,307,US
-bbc-news-channel-hd,349,GB
-bbc-one-uk,356,GB
-bbc-two-uk,357,GB
-bbc-three-uk,358,GB
-bbc-four-uk,359,GB
-big-ten-network-btn-usa,397,US
-bein-sports-1-malaysia,712,MY
-bein-sports-2-malaysia,713,MY
-bein-sports-3-malaysia,714,MY
-bfm-tv-france,957,FR
-bein-sports-5-turkey,1010,TR
-bandsports-brasil,275,BR
-canal-plus-motogp-france,271,FR
-canal-plus-formula-1,273,FR
-cw-pix-11-usa,280,US
-cbs-usa,52,US
-court-tv-usa,281,US
-cw-usa,300,US
-cnbc-usa,309,US
-comedy-central,310,US
-cartoon-network,339,US
-cnn-usa,345,US
-cinemax-usa,374,US
-cuatro-spain,535,ES
-channel-4-uk,354,GB
-channel-5-uk,355,GB
-cbs-sports-network,308,US
-canal-plus-france,121,FR
-canal-plus-sport-france,122,FR
-canal-plus-foot-france,463,FR
-canal-plus-sport360,464,FR
-canal-11-portugal,540,PT
-canal-plus-sport-poland,48,PL
-canal-plus-sport-2-poland,73,PL
-canal-plus-sport-3-poland,259,PL
-canal-plus-sport-5-poland,75,PL
-canal-plus-premium-poland,566,PL
-canal-plus-family-poland,567,PL
-canal-plus-seriale-poland,570,PL
-canal-plus-sport-1-afrique,486,FR
-canal-plus-sport-2-afrique,487,FR
-canal-plus-sport-3-afrique,488,FR
-canal-plus-sport-4-afrique,489,FR
-canal-plus-sport-5-afrique,490,FR
-canal-9-denmark,805,DK
-combate-brasil,89,BR
-cosmote-sport-1-hd,622,GR
-cosmote-sport-2-hd,623,GR
-cosmote-sport-3-hd,624,GR
-cosmote-sport-4-hd,625,GR
-cosmote-sport-5-hd,626,GR
-cosmote-sport-6-hd,627,GR
-cosmote-sport-7-hd,628,GR
-cosmote-sport-8-hd,629,GR
-cosmote-sport-9-hd,630,GR
-channel-9-israel,546,IL
-channel-10-israel,547,IL
-channel-11-israel,548,IL
-channel-12-israel,549,IL
-channel-13-israel,551,IL
-channel-14-israel,552,IL
-c-more-first-sweden,812,SE
-c-more-hits-sweden,813,SE
-c-more-series-sweden,814,SE
-cozi-tv-usa,748,US
-cmt-usa,647,US
-ctv-canada,602,CA
-ctv-2-canada,838,CA
-crime-plus-investigation-usa,669,US
-comet-usa,696,US
-cooking-channel-usa,697,US
-cleo-tv,715,US
-c-span-1,750,US
-cbsny-usa,767,US
-chicago-sports-network,776,US
-citytv,831,CA
-cbc-ca,832,CA
-claro-sports-mx,933,MX
-canal5-mx,936,MX
-c8-france,956,FR
-cnews-france,964,FR
-canal-plus-sport-cz,1020,CZ
-ct-sport-cz,1033,CZ
-cbs-sports-golazo,910,US
-cmtv-portugal,790,PT
-cytavision-sports-1-cyprus,911,CY
-cytavision-sports-2-cyprus,912,CY
-cytavision-sports-3-cyprus,913,CY
-cytavision-sports-4-cyprus,914,CY
-cytavision-sports-5-cyprus,915,CY
-cytavision-sports-6-cyprus,916,CY
-cytavision-sports-7-cyprus,917,CY
-dazn-1-uk,230,GB
-discovery-velocity-ca,285,CA
-dazn-1-bar-de,426,DE
-dazn-2-bar-de,427,DE
-dazn-1-spain,445,ES
-dazn-2-spain,446,ES
-dazn-3-spain,447,ES
-dazn-4-spain,448,ES
-dazn-f1-es,537,ES
-dazn-laliga,538,ES
-dazn-portugal-fifa-mundial-de-clubes,918,PT
-dr1-denmark,801,DK
-dr2-denmark,802,DK
-digi-sport-1-romania,400,RO
-digi-sport-2-romania,401,RO
-digi-sport-3-romania,402,RO
-digi-sport-4-romania,403,RO
-diema-sport-bulgaria,465,BG
-diema-sport-2-bulgaria,466,BG
-diema-sport-3-bulgaria,467,BG
-diema-bulgaria,482,BG
-diema-family-bulgaria,485,BG
-dubai-sports-1-uae,604,AE
-dubai-sports-2-uae,605,AE
-dubai-sports-3-uae,606,AE
-dubai-racing-2-uae,608,AE
-dstv-mzansi-magic,786,ZA
-dstv-m-net,827,ZA
-dstv-kyknet-kie,828,ZA
-dazn-zona-italy,877,IT
-discovery-life-channel,311,US
-disney-channel,312,US
-discovery-channel,313,US
-discovery-family,657,US
-disney-xd,314,US
-destination-america,651,US
-disney-jr,652,US
-dave,348,GB
-espn-usa,44,US
-espn2-usa,45,US
-espnu-usa,316,US
-espn-1-nl,379,NL
-espn-2-nl,386,NL
-eleven-sports-1-poland,71,PL
-eleven-sports-2-poland,72,PL
-eleven-sports-3-poland,428,PL
-eleven-sports-1-portugal,455,PT
-eleven-sports-2-portugal,456,PT
-eleven-sports-3-portugal,457,PT
-eleven-sports-4-portugal,458,PT
-eleven-sports-5-portugal,459,PT
-eurosport-1-greece,41,GR
-eurosport-2-greece,42,GR
-eurosport-1-poland,57,PL
-eurosport-2-poland,58,PL
-eurosport-1-sw,231,SE
-eurosport-2-sw,232,SE
-eurosport-1-nl,233,NL
-eurosport-2-nl,234,NL
-eurosport-1-spain,524,ES
-eurosport-2-spain,525,ES
-eurosport-1-italy,878,IT
-eurosport-2-italy,879,IT
-espn-premium-argentina,387,AR
-espn-brasil,81,BR
-espn2-brasil,82,BR
-espn3-brasil,83,BR
-espn4-brasil,85,BR
-espn-argentina,149,AR
-espn2-argentina,150,AR
-espn-deportes,375,US
-espnews,288,US
-e-entertainment-television,315,US
-e4-channel,363,GB
-espn-3-nl,888,NL
-ert-1-greece,774,GR
-eurosport-1-france,772,FR
-eurosport-2-france,773,FR
-espn3-argentina,798,AR
-espn-1-mx,925,MX
-espn-2-mx,926,MX
-espn-3-mx,927,MX
-espn-4-mx,928,MX
-fuse-tv-usa,279,US
-fox-sports-1-usa,39,US
-fox-sports-2-usa,758,US
-fox-soccer-plus,756,US
-fox-cricket,369,AU
-fox-deportes-usa,643,US
-fox-sports-502-au,820,AU
-fox-sports-503-au,821,AU
-fox-sports-504-au,822,AU
-fox-sports-505-au,823,AU
-fox-sports-506-au,824,AU
-fox-sports-507-au,825,AU
-fox-sports-1-mx,929,MX
-fox-sports-2-mx,930,MX
-fox-sports-3-mx,931,MX
-fox-sports-argentina,787,AR
-fox-sports-2-argentina,788,AR
-fox-sports-3-argentina,789,AR
-fox-sports-premium-mx,830,MX
-filmbox-premium-poland,568,PL
-fight-network,757,CA
-fox-business,297,US
-fox-hd-bulgaria,483,BG
-fox-usa,54,US
-fx-usa,317,US
-fxx-usa,298,US
-freeform,301,US
-fox-news,347,US
-fx-movie-channel,381,US
-fyi,665,US
-film4-uk,688,GB
-fashion-tv,744,FR
-fetv-family-entertainment-television,751,US
-foxny-usa,768,US
-fox-weather-channel,775,US
-fanduel-sports-network-arizona,890,US
-fanduel-sports-network-detroit,891,US
-fanduel-sports-network-florida,892,US
-fanduel-sports-network-great-lakes,893,US
-fanduel-sports-network-indiana,894,US
-fanduel-sports-network-kansas-city,895,US
-fanduel-sports-network-midwest,896,US
-fanduel-sports-network-new-orleans,897,US
-fanduel-sports-network-north,898,US
-fanduel-sports-network-ohio,899,US
-fanduel-sports-network-oklahoma,900,US
-fanduel-sports-network-socal,902,US
-fanduel-sports-network-south,903,US
-fanduel-sports-network-southeast,904,US
-fanduel-sports-network-sun,905,US
-fanduel-sports-network-west,906,US
-fanduel-sports-network-wisconsin,907,US
-france-2,950,FR
-france-3,951,FR
-france-4,952,FR
-france-5,953,FR
-gol-play-spain,530,ES
-golf-channel-usa,318,US
-game-show-network,319,US
-goltv-usa,597,US
-gold-uk,687,GB
-great-american-family-channel-gac,699,US
-galavision-usa,743,US
-grit-channel,752,US
-globo-sp,760,BR
-globo-rio,761,BR
-global-ca,836,CA
-the-hallmark-channel,320,US
-hallmark-movies-and-mysteries,296,US
-heroes-and-icons-hi-usa,282,US
-hbo-usa,321,US
-hbo2-usa,689,US
-hbo-comedy-usa,690,US
-hbo-family-usa,691,US
-hbo-latino-usa,692,US
-hbo-signature-usa,693,US
-hbo-zone-usa,694,US
-hbo-poland,569,PL
-history-usa,322,US
-headline-news,323,US
-hgtv,382,US
-happy-tv-serbia,846,RS
-hot3-israel,553,IL
-itv-1-uk,350,GB
-itv-2-uk,351,GB
-itv-3-uk,352,GB
-itv-4-uk,353,GB
-itvbe,876,GB
-italia-1-italy,854,IT
-investigation-discovery-id-usa,324,US
-ion-usa,325,US
-ifc-tv-usa,656,US
-kanal-4-denmark,803,DK
-kanal-5-denmark,804,DK
-kabel-eins-de,731,DE
-laligatv-uk,276,GB
-law-crime-network,278,US
-laliga-smartbank-tv,539,ES
-lequipe-france,645,FR
-la-sexta-spain,534,ES
-liverpool-tv-lfc-tv,826,GB
-logo-tv-usa,849,US
-las-estrellas,924,MX
-lifetime-network,326,US
-lifetime-movies-network,389,US
-la7,855,IT
-la7d,856,IT
-match-football-1,136,RU
-match-football-2,137,RU
-match-football-3,138,RU
-match-premier,573,RU
-match-tv,127,RU
-match-boec,395,RU
-movistar-laliga,84,ES
-movistar-liga-de-campeones,435,ES
-movistar-deportes-4,436,ES
-movistar-deportes-2,438,ES
-movistar-deportes-3,526,ES
-movistar-deportes-4-alt1,527,ES
-movistar-golf,528,ES
-motowizja,563,PL
-msg,765,US
-msnbc,327,US
-magnolia-network,299,US
-m4-sports,265,HU
-movistar-supercopa-de-espana,437,ES
-mtv,367,GB
-mtv-usa,371,US
-mutv-uk,377,GB
-m6-france,470,FR
-mavtv-usa,646,US
-max-sport-croatia-1,779,HR
-max-sport-croatia-2,780,HR
-marquee-sports-network,770,US
-max-sport-bulgaria-1,472,BG
-max-sport-bulgaria-2,473,BG
-max-sport-bulgaria-3,474,BG
-max-sport-bulgaria-4,475,BG
-mlb-network-usa,399,US
-masn-usa,829,US
-my9tv-usa,654,US
-motor-trend,661,US
-metv-usa,662,US
-mdr-de,733,DE
-mundotoro-tv-spain,749,ES
-monumental-sports-network,778,US
-mtv-denmark,806,DK
-mgm-plus-epix-usa,791,US
-nbc10-philadelphia,277,US
-nhl-network-usa,663,US
-nfl-redzone,667,US
-nova-sport-bulgaria,468,BG
-nova-sport-serbia,582,RS
-nova-sports-greece-1,631,GR
-nova-sports-greece-2,632,GR
-nova-sports-greece-3,633,GR
-nova-sports-greece-4,634,GR
-nova-sports-greece-5,635,GR
-nova-sports-greece-6,636,GR
-nova-sports-premier-league-greece,599,GR
-nova-sports-start-greece,637,GR
-nova-sports-prime-greece,638,GR
-nova-sports-news-greece,639,GR
-nick-music,666,US
-nesn-usa,762,US
-nbc-usa,53,US
-nba-tv-usa,404,US
-nbc-sports-philadelphia,777,US
-nfl-network,405,US
-nbc-sports-bay-area,753,US
-nbc-sports-boston,754,US
-nbc-sports-california,755,US
-nbcny-usa,769,US
-nova-tv-bulgaria,480,BG
-nova-s-serbia,847,RS
-newsnation-usa,292,US
-national-geographic,328,US
-nick-jr,329,US
-nick,330,US
-nicktoons,649,US
-ndr,736,DE
-newsmax-usa,613,US
-nat-geo-wild-usa,745,US
-noovo,835,CA
-nbc-universo,845,US
-now-tv-turkey,1003,TR
-nova-sport,1021,CZ
-nova-sport-cz-2,1022,CZ
-nova-sport-cz-3,1023,CZ
-nova-sport-cz-4,1024,CZ
-nova-sport-cz-5,1025,CZ
-nova-sport-cz-6,1026,CZ
-ontime-sports,611,EG
-one-hd-israel-1,541,IL
-one-hd-israel-2,542,IL
-orange-sport-romania-1,439,RO
-orange-sport-romania-2,440,RO
-orange-sport-romania-3,441,RO
-orange-sport-romania-4,442,RO
-oprah-winfrey-network-own,331,US
-oxygen-true-crime,332,US
-outdoor-channel-usa,848,US
-oneplay-sport-cz-1,1027,CZ
-oneplay-sport-cz-2,1028,CZ
-oneplay-sport-cz-3,1029,CZ
-polsat-poland,562,PL
-polsat-sport-poland,47,PL
-polsat-sport-2,50,PL
-polsat-sport-3,129,PL
-polsat-news,443,PL
-polsat-film,564,PL
-porto-canal,718,PT
-prosieben,730,DE
-premier-sports-ireland-1,771,IE
-ptv-sports,450,PK
-pdc-tv,43,GB
-premier-brasil,88,BR
-prima-sport-1,583,RO
-prima-sport-2,584,RO
-prima-sport-3,585,RO
-prima-sport-4,586,RO
-paramount-network,334,US
-pop-tv,653,US
-premier-sports-ireland-2,799,IE
-prima-tv,843,RO
-premier-sport-cz-1,1030,CZ
-premier-sport-cz-2,1031,CZ
-premier-sport,1032,CZ
-pac-12-network,287,US
-pbs,210,US
-reelz-channel,293,US
-rte-1,364,IE
-rte-2,365,IE
-rmc-sport-1,119,FR
-rmc-sport-2,120,FR
-rtp-1,719,PT
-rtp-2,720,PT
-rtp-3,721,PT
-rai-1,850,IT
-rai-2,851,IT
-rai-3,852,IT
-rai-4,853,IT
-rai-sport,882,IT
-rai-premium,858,IT
-real-madrid-tv,523,ES
-rtl,740,DE
-rds-2,839,CA
-rds-2-alt1,840,CA
-rds-info,841,CA
-ring-bulgaria,471,BG
-rtl7-netland,390,NL
-racing-tv-uk,555,GB
-rally-tv,607,US
-root-sports-northwest,920,US
-sky-sports-football,35,GB
-sky-sports-plus,36,GB
-sky-sports-action,37,GB
-sky-sports-main-event,38,GB
-sky-sports-tennis-2,46,GB
-sky-sports-premier-league,130,GB
-sky-sports-f1-1,60,GB
-sky-sports-cricket,65,GB
-sky-sports-golf-2,70,GB
-sky-sports-de-1,240,DE
-sky-sports-de-2,241,DE
-sky-sports-golf-italy,574,IT
-sky-sport-motogp-italy,575,IT
-sky-sport-tennis-italy,576,IT
-sky-sport-f1-italy,577,IT
-sky-sports-news-uk,366,GB
-sky-sports-mix-uk,449,GB
-sky-sport-top-event-de,556,DE
-sky-sport-mix-de,557,DE
-sky-sport-bundesliga-1,558,DE
-sky-sport-austria,559,AT
-sportsnet-new-york-sny,759,US
-sky-sport-max-italy,460,IT
-sky-sport-uno-italy,461,IT
-sky-sport-arena-italy,462,IT
-sky-sports-racing-uk,554,GB
-sky-uno-italy,881,IT
-sony-ten-1,885,IN
-sony-ten-2,886,IN
-sony-ten-3,887,IN
-sky-sport-bundesliga-2,946,DE
-sky-sport-bundesliga-3,947,DE
-sky-sport-bundesliga-4,948,DE
-sky-sport-bundesliga-3-alt1,949,DE
-spectrum-sportsnet-usa,982,US
-sky-sport-nz-1,588,NZ
-sky-sport-nz-2,589,NZ
-sky-sport-nz-3,590,NZ
-sky-sport-nz-4,591,NZ
-sky-sport-nz-5,592,NZ
-sky-sport-nz-6,593,NZ
-sky-sport-nz-7,594,NZ
-sky-sport-nz-8,595,NZ
-sky-sport-nz-9,596,NZ
-sky-sport-select-nz,587,NZ
-sport-tv-portugal-1,49,PT
-sport-tv-portugal-2,74,PT
-sport-tv-portugal-4,289,PT
-sport-tv-portugal-3,454,PT
-sport-tv-portugal-5,290,PT
-sport-tv-portugal-6,291,PT
-sic-portugal,722,PT
-sec-network-usa,385,US
-sportv-brasil-1,78,BR
-sportv-brasil-2,79,BR
-sportv-brasil-3,80,BR
-sport-klub-serbia-1,101,RS
-sport-klub-serbia-2,102,RS
-sport-klub-serbia-3,103,RS
-sport-klub-serbia-4,104,RS
-sport-klub-hd-serbia,453,RS
-sportsnet-ontario,406,CA
-sportsnet-one,411,CA
-sportsnet-west,407,CA
-sportsnet-east,408,CA
-sportsnet-360,409,CA
-sportsnet-world,410,CA
-supersport-grandstand,412,ZA
-supersport-psl,413,ZA
-supersport-premier-league,414,ZA
-supersport-laliga,415,ZA
-supersport-variety-1,416,ZA
-supersport-variety-2,417,ZA
-supersport-variety-3,418,ZA
-supersport-variety-4,419,ZA
-supersport-action,420,ZA
-supersport-rugby,421,ZA
-supersport-golf,422,ZA
-supersport-tennis,423,ZA
-supersport-motorsport,424,ZA
-supersport-football,56,ZA
-supersport-cricket,368,ZA
-supersport-maximo,572,AO
-sporting-tv-portugal,716,PT
-sportdigital-fussball,571,DE
-spectrum-sportsnet-la,764,US
-sportdigital-germany,640,DE
-sport1-germany,641,DE
-s4c-uk,670,GB
-sport-klub-golf-croatia,710,HR
-sat1-de,729,DE
-sky-cinema-premiere-uk,671,GB
-sky-cinema-select-uk,672,GB
-sky-cinema-hits-uk,673,GB
-sky-cinema-greats-uk,674,GB
-sky-cinema-animation-uk,675,GB
-sky-cinema-family-uk,676,GB
-sky-cinema-action-uk,677,GB
-sky-cinema-comedy-uk,678,GB
-sky-cinema-thriller-uk,679,GB
-sky-cinema-drama-uk,680,GB
-sky-cinema-sci-fi-horror-uk,681,GB
-showtime-shoxbet-usa,695,US
-see-denmark,811,DK
-sky-cinema-collection-italy,859,IT
-sky-cinema-uno-italy,860,IT
-sky-cinema-action-italy,861,IT
-sky-cinema-comedy-italy,862,IT
-sky-cinema-uno-24-italy,863,IT
-sky-cinema-romance-italy,864,IT
-sky-cinema-family-italy,865,IT
-sky-cinema-due-24-italy,866,IT
-sky-cinema-drama-italy,867,IT
-sky-cinema-suspense,868,IT
-sky-sport-24,869,IT
-sky-sport-calcio,870,IT
-sky-calcio-1,871,IT
-sky-calcio-2,872,IT
-sky-calcio-3,873,IT
-sky-calcio-4,874,IT
-sky-sport-basket,875,IT
-sky-serie,880,IT
-starzplay-criclife-1,284,US
-sky-showcase,682,GB
-sky-arts,683,GB
-sky-comedy,684,GB
-sky-crime,685,GB
-sky-history,686,GB
-sky-max,708,GB
-ssc-sport-1,614,SA
-ssc-sport-2,615,SA
-ssc-sport-3,616,SA
-ssc-sport-4,617,SA
-ssc-sport-5,618,SA
-ssc-sport-extra-1,619,SA
-ssc-sport-extra-2,620,SA
-ssc-sport-extra-3,621,SA
-sport-1-israel,140,IL
-sport-2-israel,141,IL
-sport-3-israel,142,IL
-sport-4-israel,143,IL
-sport-5-israel,144,IL
-sport-5-plus-israel,145,IL
-sport-5-live-israel,146,IL
-sport-5-star-israel,147,IL
-sport-5-gold-israel,148,IL
-science-channel,294,US
-showtime-usa,333,US
-starz,335,US
-sky-witness-hd,361,GB
-sixx-de,732,DE
-sky-atlantic,362,GB
-syfy-usa,373,US
-sundance-tv,658,US
-swr,735,DE
-super-rtl,738,DE
-sr-fernsehen,739,DE
-sky-sports-golf-1,785,DE
-smithsonian-channel,603,US
-sky-sports-f1-1-alt1,274,DE
-sky-sports-tennis-1,884,DE
-sbs6,883,NL
-star-sports,267,IN
-star-sports-hindi,268,IN
-showtime-2,792,US
-showtime-showcase,793,US
-showtime-extreme,794,US
-showtime-family-zone,795,US
-showtime-next,796,US
-showtime-women,797,US
-space-city-home-network,921,US
-sportsnet-pittsburgh,922,US
-tnt-sports-1,31,GB
-tnt-sports-2,32,GB
-tnt-sports-3,33,GB
-tnt-sports-4,34,GB
-tsn,111,CA
-tsn2,112,CA
-tsn3,113,CA
-tsn4,114,CA
-tsn5,115,CA
-tvn,565,PL
-tvn24,444,PL
-tvp1,560,PL
-tvp2,561,PL
-telecinco,532,ES
-tve-la-1,533,ES
-tve-la-2,536,ES
-tvi,723,PT
-tvi-reality,724,PT
-teledeporte,529,ES
-tyc-sports,746,AR
-tvp-sport,128,PL
-tnt-brasil,87,BR
-tnt-sports-argentina,388,AR
-tnt-sports-chile,642,CL
-tennis-channel,40,US
-ten-sports-pk,741,PK
-tudn-usa,66,US
-telemundo,131,US
-tbs-usa,336,US
-tlc,337,US
-tnt-usa,338,US
-tf1-france,469,FR
-tva-sports-1,833,CA
-tva-sports-2,834,CA
-tvc-deportes-mx,932,MX
-tudn-mx,935,MX
-travel-channel
+abc-usa|ABC USA|US
+ahc-american-heroes-channel|AHC (American Heroes Channel)|US
+antenna-tv-usa|Antenna TV USA|US
+a-e-usa|A&E USA|US
+amc-usa|AMC USA|US
+animal-planet|Animal Planet|US
+astro-supersport-1|Astro SuperSport 1|MY
+astro-supersport-2|Astro SuperSport 2|MY
+astro-supersport-3|Astro SuperSport 3|MY
+astro-supersport-4|Astro SuperSport 4|MY
+arena-sport-1-premium|Arena Sport 1 Premium|RS
+arena-sport-2-premium|Arena Sport 2 Premium|RS
+arena-sport-3-premium|Arena Sport 3 Premium|RS
+arena-sport-1-serbia|Arena Sport 1 Serbia|RS
+arena-sport-2-serbia|Arena Sport 2 Serbia|RS
+arena-sport-3-serbia|Arena Sport 3 Serbia|RS
+arena-sport-4-serbia|Arena Sport 4 Serbia|RS
+arena-sport-1-croatia|Arena Sport 1 Croatia|HR
+arena-sport-2-croatia|Arena Sport 2 Croatia|HR
+arena-sport-3-croatia|Arena Sport 3 Croatia|HR
+arena-sport-4-croatia|Arena Sport 4 Croatia|HR
+alkass-one|Alkass One|QA
+alkass-two|Alkass Two|QA
+alkass-three|Alkass Three|QA
+alkass-four|Alkass Four|QA
+arena-sport-1-bih|Arena Sport 1 BiH|BA
+abu-dhabi-sports-1-uae|Abu Dhabi Sports 1 UAE|AE
+abu-dhabi-sports-2-uae|Abu Dhabi Sports 2 UAE|AE
+abu-dhabi-sports-1-premium|Abu Dhabi Sports 1 Premium|AE
+abu-dhabi-sports-2-premium|Abu Dhabi Sports 2 Premium|AE
+astro-cricket|Astro Cricket|MY
+antena-3-spain|Antena 3 Spain|ES
+arena-sports-tenis-serbia|Arena Sports Tenis Serbia|RS
+acc-network-usa|ACC Network USA|US
+adult-swim|Adult Swim|US
+a-sport-pk|A Sport PK|PK
+axn-movies-portugal|AXN Movies Portugal|PT
+arte-de|Arte DE|DE
+axs-tv-usa|AXS TV USA|US
+abc-ny-usa|ABC NY USA|US
+azteca-7-mx|Azteca 7 MX|MX
+altitude-sports|Altitude Sports|US
+azteca-uno-mx|Azteca Uno MX|MX
+arena-sport-5-serbia|Arena Sport 5 Serbia|RS
+arena-sport-6-serbia|Arena Sport 6 Serbia|RS
+arena-sport-7-serbia|Arena Sport 7 Serbia|RS
+arena-sport-8-serbia|Arena Sport 8 Serbia|RS
+arena-sport-9-serbia|Arena Sport 9 Serbia|RS
+arena-sport-10-serbia|Arena Sport 10 Serbia|RS
+arte-france|Arte France|FR
+automoto-la-chaine|Automoto La chaîne|FR
+atv-turkey|ATV Turkey|TR
+a-spor-turkey|A Spor Turkey|TR
+bein-sports-mena-english-1|beIN Sports MENA English 1|QA
+bein-sports-mena-english-2|beIN Sports MENA English 2|QA
+bein-sports-1-arabic|beIN Sports 1 Arabic|QA
+bein-sports-2-arabic|beIN Sports 2 Arabic|QA
+bein-sports-3-arabic|beIN Sports 3 Arabic|QA
+bein-sports-4-arabic|beIN Sports 4 Arabic|QA
+bein-sports-5-arabic|beIN Sports 5 Arabic|QA
+bein-sports-6-arabic|beIN Sports 6 Arabic|QA
+bein-sports-7-arabic|beIN Sports 7 Arabic|QA
+bein-sports-8-arabic|beIN Sports 8 Arabic|QA
+bein-sports-9-arabic|beIN Sports 9 Arabic|QA
+bein-sports-xtra-1|beIN SPORTS XTRA 1|US
+bein-sports-max-4-france|beIN Sports MAX 4 France|FR
+bein-sports-max-5-france|beIN Sports MAX 5 France|FR
+bein-sports-max-6-france|beIN Sports MAX 6 France|FR
+bein-sports-max-7-france|beIN Sports MAX 7 France|FR
+bein-sports-max-8-france|beIN Sports MAX 8 France|FR
+bein-sports-max-9-france|beIN Sports MAX 9 France|FR
+bein-sports-max-10-france|beIN Sports MAX 10 France|FR
+bein-sports-1-france|beIN SPORTS 1 France|FR
+bein-sports-2-france|beIN SPORTS 2 France|FR
+bein-sports-3-france|beIN SPORTS 3 France|FR
+bein-sports-1-turkey|beIN SPORTS 1 Turkey|TR
+bein-sports-2-turkey|beIN SPORTS 2 Turkey|TR
+bein-sports-3-turkey|beIN SPORTS 3 Turkey|TR
+bein-sports-4-turkey|beIN SPORTS 4 Turkey|TR
+bein-sports-hd-qatar|BeIN Sports HD Qatar|QA
+bein-sports-usa|BeIN SPORTS USA|US
+bein-sports-en-espanol|beIN SPORTS en Español|US
+bein-sports-1-australia|beIN SPORTS Australia 1|AU
+bein-sports-2-australia|beIN SPORTS Australia 2|AU
+bein-sports-3-australia|beIN SPORTS Australia 3|AU
+barca-tv-spain|Barca TV Spain|ES
+benfica-tv-pt|Benfica TV PT|PT
+boomerang|Boomerang|US
+bnt-1-bulgaria|BNT 1 Bulgaria|BG
+bnt-2-bulgaria|BNT 2 Bulgaria|BG
+bnt-3-bulgaria|BNT 3 Bulgaria|BG
+br-fernsehen-de|BR Fernsehen DE|DE
+btv-bulgaria|bTV Bulgaria|BG
+btv-action-bulgaria|bTV Action Bulgaria|BG
+btv-lady-bulgaria|bTV Lady Bulgaria|BG
+bbc-america|BBC America (BBCA)|US
+bet-usa|BET USA|US
+bravo-usa|Bravo USA|US
+bbc-news-channel-hd|BBC News Channel HD|GB
+bbc-one-uk|BBC One UK|GB
+bbc-two-uk|BBC Two UK|GB
+bbc-three-uk|BBC Three UK|GB
+bbc-four-uk|BBC Four UK|GB
+big-ten-network-btn-usa|BIG TEN Network (BTN USA)|US
+bein-sports-1-malaysia|beIN Sports 1 Malaysia|MY
+bein-sports-2-malaysia|beIN Sports 2 Malaysia|MY
+bein-sports-3-malaysia|beIN Sports 3 Malaysia|MY
+bfm-tv-france|BFM TV France|FR
+bein-sports-5-turkey|bein Sports 5 Turkey|TR
+bandsports-brasil|Bandsports Brasil|BR
+canal-plus-motogp-france|Canal+ MotoGP France|FR
+canal-plus-formula-1|Canal+ Formula 1|FR
+cw-pix-11-usa|CW PIX 11 USA|US
+cbs-usa|CBS USA|US
+court-tv-usa|Court TV USA|US
+cw-usa|CW USA|US
+cnbc-usa|CNBC USA|US
+comedy-central|Comedy Central|US
+cartoon-network|Cartoon Network|US
+cnn-usa|CNN USA|US
+cinemax-usa|Cinemax USA|US
+cuatro-spain|Cuatro Spain|ES
+channel-4-uk|Channel 4 UK|GB
+channel-5-uk|Channel 5 UK|GB
+cbs-sports-network|CBS Sports Network (CBSSN)|US
+canal-plus-france|Canal+ France|FR
+canal-plus-sport-france|Canal+ Sport France|FR
+canal-plus-foot-france|Canal+ Foot France|FR
+canal-plus-sport360|Canal+ Sport360|FR
+canal-11-portugal|Canal 11 Portugal|PT
+canal-plus-sport-poland|Canal+ Sport Poland|PL
+canal-plus-sport-2-poland|Canal+ Sport 2 Poland|PL
+canal-plus-sport-3-poland|Canal+ Sport 3 Poland|PL
+canal-plus-sport-5-poland|Canal+ Sport 5 Poland|PL
+canal-plus-premium-poland|Canal+ Premium Poland|PL
+canal-plus-family-poland|Canal+ Family Poland|PL
+canal-plus-seriale-poland|Canal+ Seriale Poland|PL
+canal-plus-sport-1-afrique|Canal+ Sport 1 Afrique|FR
+canal-plus-sport-2-afrique|Canal+ Sport 2 Afrique|FR
+canal-plus-sport-3-afrique|Canal+ Sport 3 Afrique|FR
+canal-plus-sport-4-afrique|Canal+ Sport 4 Afrique|FR
+canal-plus-sport-5-afrique|Canal+ Sport 5 Afrique|FR
+canal-9-denmark|CANAL 9 Denmark|DK
+combate-brasil|Combate Brasil|BR
+cosmote-sport-1-hd|Cosmote Sport 1 HD|GR
+cosmote-sport-2-hd|Cosmote Sport 2 HD|GR
+cosmote-sport-3-hd|Cosmote Sport 3 HD|GR
+cosmote-sport-4-hd|Cosmote Sport 4 HD|GR
+cosmote-sport-5-hd|Cosmote Sport 5 HD|GR
+cosmote-sport-6-hd|Cosmote Sport 6 HD|GR
+cosmote-sport-7-hd|Cosmote Sport 7 HD|GR
+cosmote-sport-8-hd|Cosmote Sport 8 HD|GR
+cosmote-sport-9-hd|Cosmote Sport 9 HD|GR
+channel-9-israel|Channel 9 Israel|IL
+channel-10-israel|Channel 10 Israe|IL
+channel-11-israel|Channel 11 Israel|IL
+channel-12-israel|Channel 12 Israel|IL
+channel-13-israel|Channel 13 Israel|IL
+channel-14-israel|Channel 14 Israel|IL
+c-more-first-sweden|C More First Sweden|SE
+c-more-hits-sweden|C More Hits Sweden|SE
+c-more-series-sweden|C More Series Sweden|SE
+cozi-tv-usa|COZI TV USA|US
+cmt-usa|CMT USA|US
+ctv-canada|CTV Canada|CA
+ctv-2-canada|CTV 2 Canada|CA
+crime-plus-investigation-usa|Crime+ Investigation USA|US
+comet-usa|Comet USA|US
+cooking-channel-usa|Cooking Channel USA|US
+cleo-tv|Cleo TV|US
+c-span-1|C SPAN 1|US
+cbsny-usa|CBSNY USA|US
+chicago-sports-network|Chicago Sports Network|US
+citytv|Citytv|CA
+cbc-ca|CBC CA|CA
+claro-sports-mx|Claro Sports MX|MX
+canal5-mx|Canal5 MX|MX
+c8-france|C8 France|FR
+cnews-france|CNews France|FR
+canal-plus-sport-cz|Canal+ Sport CZ|CZ
+ct-sport-cz|CT Sport CZ|CZ
+cbs-sports-golazo|CBS Sports Golazo|US
+cmtv-portugal|CMTV Portugal|PT
+cytavision-sports-1-cyprus|Cytavision Sports 1 Cyprus|CY
+cytavision-sports-2-cyprus|Cytavision Sports 2 Cyprus|CY
+cytavision-sports-3-cyprus|Cytavision Sports 3 Cyprus|CY
+cytavision-sports-4-cyprus|Cytavision Sports 4 Cyprus|CY
+cytavision-sports-5-cyprus|Cytavision Sports 5 Cyprus|CY
+cytavision-sports-6-cyprus|Cytavision Sports 6 Cyprus|CY
+cytavision-sports-7-cyprus|Cytavision Sports 7 Cyprus|CY
+dazn-1-uk|DAZN 1 UK|GB
+discovery-velocity-ca|Discovery Velocity CA|CA
+dazn-1-bar-de|DAZN 1 Bar DE|DE
+dazn-2-bar-de|DAZN 2 Bar DE|DE
+dazn-1-spain|DAZN 1 Spain|ES
+dazn-2-spain|DAZN 2 Spain|ES
+dazn-3-spain|DAZN 3 Spain|ES
+dazn-4-spain|DAZN 4 Spain|ES
+dazn-f1-es|DAZN F1 ES|ES
+dazn-laliga|DAZN LaLiga|ES
+dazn-portugal-fifa-mundial-de-clubes|DAZN Portugal FIFA Mundial de Clubes|PT
+dr1-denmark|DR1 Denmark|DK
+dr2-denmark|DR2 Denmark|DK
+digi-sport-1-romania|Digi Sport 1 Romania|RO
+digi-sport-2-romania|Digi Sport 2 Romania|RO
+digi-sport-3-romania|Digi Sport 3 Romania|RO
+digi-sport-4-romania|Digi Sport 4 Romania|RO
+diema-sport-bulgaria|Diema Sport Bulgaria|BG
+diema-sport-2-bulgaria|Diema Sport 2 Bulgaria|BG
+diema-sport-3-bulgaria|Diema Sport 3 Bulgaria|BG
+diema-bulgaria|Diema Bulgaria|BG
+diema-family-bulgaria|Diema Family Bulgaria|BG
+dubai-sports-1-uae|Dubai Sports 1 UAE|AE
+dubai-sports-2-uae|Dubai Sports 2 UAE|AE
+dubai-sports-3-uae|Dubai Sports 3 UAE|AE
+dubai-racing-2-uae|Dubai Racing 2 UAE|AE
+dstv-mzansi-magic|DSTV Mzansi Magic|ZA
+dstv-m-net|DSTV M-Net|ZA
+dstv-kyknet-kie|DSTV kykNET & kie|ZA
+dazn-zona-italy|DAZN ZONA Italy|IT
+discovery-life-channel|Discovery Life Channel|US
+disney-channel|Disney Channel|US
+discovery-channel|Discovery Channel|US
+discovery-family|Discovery Family|US
+disney-xd|Disney XD|US
+destination-america|Destination America|US
+disney-jr|Disney JR|US
+dave|Dave|GB
+espn-usa|ESPN USA|US
+espn2-usa|ESPN2 USA|US
+espnu-usa|ESPNU USA|US
+espn-1-nl|ESPN 1 NL|NL
+espn-2-nl|ESPN 2 NL|NL
+eleven-sports-1-poland|Eleven Sports 1 Poland|PL
+eleven-sports-2-poland|Eleven Sports 2 Poland|PL
+eleven-sports-3-poland|Eleven Sports 3 Poland|PL
+eleven-sports-1-portugal|Eleven Sports 1 Portugal|PT
+eleven-sports-2-portugal|Eleven Sports 2 Portugal|PT
+eleven-sports-3-portugal|Eleven Sports 3 Portugal|PT
+eleven-sports-4-portugal|Eleven Sports 4 Portugal|PT
+eleven-sports-5-portugal|Eleven Sports 5 Portugal|PT
+eurosport-1-greece|EuroSport 1 Greece|GR
+eurosport-2-greece|EuroSport 2 Greece|GR
+eurosport-1-poland|EuroSport 1 Poland|PL
+eurosport-2-poland|EuroSport 2 Poland|PL
+eurosport-1-sw|Eurosport 1 SW|SE
+eurosport-2-sw|Eurosport 2 SW|SE
+eurosport-1-nl|Eurosport 1 NL|NL
+eurosport-2-nl|Eurosport 2 NL|NL
+eurosport-1-spain|EuroSport 1 Spain|ES
+eurosport-2-spain|EuroSport 2 Spain|ES
+eurosport-1-italy|EuroSport 1 Italy|IT
+eurosport-2-italy|EuroSport 2 Italy|IT
+espn-premium-argentina|ESPN Premium Argentina|AR
+espn-brasil|ESPN Brasil|BR
+espn2-brasil|ESPN2 Brasil|BR
+espn3-brasil|ESPN3 Brasil|BR
+espn4-brasil|ESPN4 Brasil|BR
+espn-argentina|ESPN Argentina|AR
+espn2-argentina|ESPN2 Argentina|AR
+espn-deportes|ESPN Deportes|US
+espnews|ESPNews|US
+e-entertainment-television|E! Entertainment Television|US
+e4-channel|E4 Channel|GB
+espn-3-nl|ESPN 3 NL|NL
+ert-1-greece|ERT 1 Greece|GR
+eurosport-1-france|Eurosport 1 France|FR
+eurosport-2-france|Eurosport 2 France|FR
+espn3-argentina|ESPN3 Argentina|AR
+espn-1-mx|ESPN 1 MX|MX
+espn-2-mx|ESPN 2 MX|MX
+espn-3-mx|ESPN 3 MX|MX
+espn-4-mx|ESPN 4 MX|MX
+fuse-tv-usa|FUSE TV USA|US
+fox-sports-1-usa|Fox Sports 1 USA|US
+fox-sports-2-usa|Fox Sports 2 USA|US
+fox-soccer-plus|FOX Soccer Plus|US
+fox-cricket|Fox Cricket|AU
+fox-deportes-usa|FOX Deportes USA|US
+fox-sports-502-au|FOX Sports 502 AU|AU
+fox-sports-503-au|FOX Sports 503 AU|AU
+fox-sports-504-au|FOX Sports 504 AU|AU
+fox-sports-505-au|FOX Sports 505 AU|AU
+fox-sports-506-au|FOX Sports 506 AU|AU
+fox-sports-507-au|FOX Sports 507 AU|AU
+fox-sports-1-mx|Fox Sports 1 MX|MX
+fox-sports-2-mx|Fox Sports 2 MX|MX
+fox-sports-3-mx|Fox Sports 3 MX|MX
+fox-sports-argentina|Fox Sports Argentina|AR
+fox-sports-2-argentina|Fox Sports 2 Argentina|AR
+fox-sports-3-argentina|Fox Sports 3 Argentina|AR
+fox-sports-premium-mx|Fox Sports Premium MX|MX
+filmbox-premium-poland|FilmBox Premium Poland|PL
+fight-network|Fight Network|CA
+fox-business|Fox Business|US
+fox-hd-bulgaria|FOX HD Bulgaria|BG
+fox-usa|FOX USA|US
+fx-usa|FX USA|US
+fxx-usa|FXX USA|US
+freeform|Freeform|US
+fox-news|Fox News|US
+fx-movie-channel|FX Movie Channel|US
+fyi|FYI|US
+film4-uk|Film4 UK|GB
+fashion-tv|Fashion TV|FR
+fetv-family-entertainment-television|FETV - Family Entertainment Television|US
+foxny-usa|FOXNY USA|US
+fox-weather-channel|Fox Weather Channel|US
+fanduel-sports-network-arizona|FanDuel Sports Network Arizona|US
+fanduel-sports-network-detroit|FanDuel Sports Network Detroit|US
+fanduel-sports-network-florida|FanDuel Sports Network Florida|US
+fanduel-sports-network-great-lakes|FanDuel Sports Network Great Lakes|US
+fanduel-sports-network-indiana|FanDuel Sports Network Indiana|US
+fanduel-sports-network-kansas-city|FanDuel Sports Network Kansas City|US
+fanduel-sports-network-midwest|FanDuel Sports Network Midwest|US
+fanduel-sports-network-new-orleans|FanDuel Sports Network New Orleans|US
+fanduel-sports-network-north|FanDuel Sports Network North|US
+fanduel-sports-network-ohio|FanDuel Sports Network Ohio|US
+fanduel-sports-network-oklahoma|FanDuel Sports Network Oklahoma|US
+fanduel-sports-network-socal|FanDuel Sports Network SoCal|US
+fanduel-sports-network-south|FanDuel Sports Network South|US
+fanduel-sports-network-southeast|FanDuel Sports Network Southeast|US
+fanduel-sports-network-sun|FanDuel Sports Network Sun|US
+fanduel-sports-network-west|FanDuel Sports Network West|US
+fanduel-sports-network-wisconsin|FanDuel Sports Network Wisconsin|US
+france-2|France 2|FR
+france-3|France 3|FR
+france-4|France 4|FR
+france-5|France 5|FR
+gol-play-spain|GOL PLAY Spain|ES
+golf-channel-usa|GOLF Channel USA|US
+game-show-network|Game Show Network|US
+goltv-usa|GOLTV USA|US
+gold-uk|Gold UK|GB
+great-american-family-channel-gac|Great American Family Channel (GAC)|US
+galavision-usa|Galavisión USA|US
+grit-channel|Grit Channel|US
+globo-sp|Globo SP|BR
+globo-rio|Globo RIO|BR
+global-ca|Global CA|CA
+the-hallmark-channel|The Hallmark Channel|US
+hallmark-movies-and-mysteries|Hallmark Movies & Mysterie|US
+heroes-and-icons-hi-usa|Heroes & Icons (H&I) USA|US
+hbo-usa|HBO USA|US
+hbo2-usa|HBO2 USA|US
+hbo-comedy-usa|HBO Comedy USA|US
+hbo-family-usa|HBO Family USA|US
+hbo-latino-usa|HBO Latino USA|US
+hbo-signature-usa|HBO Signature USA|US
+hbo-zone-usa|HBO Zone USA|US
+hbo-poland|HBO Poland|PL
+history-usa|History USA|US
+headline-news|Headline News|US
+hgtv|HGTV|US
+happy-tv-serbia|Happy TV Serbia|RS
+hot3-israel|HOT3 Israel|IL
+itv-1-uk|ITV 1 UK|GB
+itv-2-uk|ITV 2 UK|GB
+itv-3-uk|ITV 3 UK|GB
+itv-4-uk|ITV 4 UK|GB
+itvbe|ITVBE|GB
+italia-1-italy|Italia 1 Italy|IT
+investigation-discovery-id-usa|Investigation Discovery (ID USA)|US
+ion-usa|ION USA|US
+ifc-tv-usa|IFC TV USA|US
+kanal-4-denmark|Kanal 4 Denmark|DK
+kanal-5-denmark|Kanal 5 Denmark|DK
+kabel-eins-de|Kabel Eins (Kabel 1) DE|DE
+laligatv-uk|LaLigaTV UK|GB
+law-crime-network|Law & Crime Network|US
+laliga-smartbank-tv|LaLiga SmartBank TV|ES
+lequipe-france|L'Equipe France|FR
+la-sexta-spain|La Sexta Spain|ES
+liverpool-tv-lfc-tv|Liverpool TV (LFC TV)|GB
+logo-tv-usa|Logo TV USA|US
+las-estrellas|Las Estrellas|MX
+lifetime-network|Lifetime Network|US
+lifetime-movies-network|Lifetime Movies Network|US
+la7|La7 Italy|IT
+la7d|LA7d HD+ Italy|IT
+match-football-1|Match Football 1 Russia|RU
+match-football-2|Match Football 2 Russia|RU
+match-football-3|Match Football 3 Russia|RU
+match-premier|Match Premier Russia|RU
+match-tv|Match TV Russia|RU
+match-boec|МАТЧ! БОЕЦ Russia|RU
+movistar-laliga|Movistar Laliga|ES
+movistar-liga-de-campeones|Movistar Liga de Campeones|ES
+movistar-deportes-4|Movistar Deportes Spain|ES
+movistar-deportes-2|Movistar Deportes 2 Spain|ES
+movistar-deportes-3|Movistar Deportes 3 Spain|ES
+movistar-deportes-4-alt1|Movistar Deportes 4 Spain|ES
+movistar-golf|Movistar Golf Spain|ES
+motowizja|Motowizja Poland|PL
+msg|MSG USA|US
+msnbc|MSNBC|US
+magnolia-network|Magnolia Network|US
+m4-sports|M4 Sports Hungary|HU
+movistar-supercopa-de-espana|Movistar Supercopa de España|ES
+mtv|MTV UK|GB
+mtv-usa|MTV USA|US
+mutv-uk|MUTV UK|GB
+m6-france|M6 France|FR
+mavtv-usa|MAVTV USA|US
+max-sport-croatia-1|Max Sport 1 Croatia|HR
+max-sport-croatia-2|Max Sport 2 Croatia|HR
+marquee-sports-network|Marquee Sports Network|US
+max-sport-bulgaria-1|Max Sport 1 Bulgaria|BG
+max-sport-bulgaria-2|Max Sport 2 Bulgaria|BG
+max-sport-bulgaria-3|Max Sport 3 Bulgaria|BG
+max-sport-bulgaria-4|Max Sport 4 Bulgaria|BG
+mlb-network-usa|MLB Network USA|US
+masn-usa|MASN USA|US
+my9tv-usa|MY9TV USA|US
+motor-trend|Motor Trend|US
+metv-usa|METV USA|US
+mdr-de|MDR DE|DE
+mundotoro-tv-spain|Mundotoro TV Spain|ES
+monumental-sports-network|Monumental Sports Network|US
+mtv-denmark|MTV Denmark|DK
+mgm-plus-epix-usa|MGM+ USA / Epix|US
+nbc10-philadelphia|NBC10 Philadelphia|US
+nhl-network-usa|NHL Network USA|US
+nfl-redzone|NFL RedZone|US
+nova-sport-bulgaria|Nova Sport Bulgaria|BG
+nova-sport-serbia|Nova Sport Serbia|RS
+nova-sports-greece-1|Nova Sports 1 Greece|GR
+nova-sports-greece-2|Nova Sports 2 Greece|GR
+nova-sports-greece-3|Nova Sports 3 Greece|GR
+nova-sports-greece-4|Nova Sports 4 Greece|GR
+nova-sports-greece-5|Nova Sports 5 Greece|GR
+nova-sports-greece-6|Nova Sports 6 Greece|GR
+nova-sports-premier-league-greece|Nova Sports Premier League Greece|GR
+nova-sports-start-greece|Nova Sports Start Greece|GR
+nova-sports-prime-greece|Nova Sports Prime Greece|GR
+nova-sports-news-greece|Nova Sports News Greece|GR
+nick-music|Nick Music|US
+nesn-usa|NESN USA|US
+nbc-usa|NBC USA|US
+nba-tv-usa|NBA TV USA|US
+nbc-sports-philadelphia|NBC Sports Philadelphia|US
+nfl-network|NFL Network|US
+nbc-sports-bay-area|NBC Sports Bay Area|US
+nbc-sports-boston|NBC Sports Boston|US
+nbc-sports-california|NBC Sports California|US
+nbcny-usa|NBCNY USA|US
+nova-tv-bulgaria|Nova TV Bulgaria|BG
+nova-s-serbia|Nova S Serbia|RS
+newsnation-usa|NewsNation USA|US
+national-geographic|National Geographic (NGC)|US
+nick-jr|NICK JR|US
+nick|NICK|US
+nicktoons|Nicktoons|US
+ndr|NDR DE|DE
+newsmax-usa|Newsmax USA|US
+nat-geo-wild-usa|Nat Geo Wild USA|US
+noovo|Noovo CA|CA
+nbc-universo|NBC Universo|US
+now-tv-turkey|NOW TV Turkey|TR
+nova-sport|Nova Sport 1 CZ|CZ
+nova-sport-cz-2|Nova Sport 2 CZ|CZ
+nova-sport-cz-3|Nova Sport 3 CZ|CZ
+nova-sport-cz-4|Nova Sport 4 CZ|CZ
+nova-sport-cz-5|Nova Sport 5 CZ|CZ
+nova-sport-cz-6|Nova Sport 6 CZ|CZ
+ontime-sports|OnTime Sports|EG
+one-hd-israel-1|ONE 1 HD Israel|IL
+one-hd-israel-2|ONE 2 HD Israel|IL
+orange-sport-romania-1|Orange Sport 1 Romania|RO
+orange-sport-romania-2|Orange Sport 2 Romania|RO
+orange-sport-romania-3|Orange Sport 3 Romania|RO
+orange-sport-romania-4|Orange Sport 4 Romania|RO
+oprah-winfrey-network-own|Oprah Winfrey Network (OWN)|US
+oxygen-true-crime|Oxygen True Crime|US
+outdoor-channel-usa|Outdoor Channel USA|US
+oneplay-sport-cz-1|Oneplay Sport 1 CZ|CZ
+oneplay-sport-cz-2|Oneplay Sport 2 CZ|CZ
+oneplay-sport-cz-3|Oneplay Sport 3 CZ|CZ
+polsat-poland|Polsat Poland|PL
+polsat-sport-poland|Polsat Sport Poland|PL
+polsat-sport-2|Polsat Sport 2 Poland|PL
+polsat-sport-3|Polsat Sport 3 Poland|PL
+polsat-news|Polsat News Poland|PL
+polsat-film|Polsat Film Poland|PL
+porto-canal|Porto Canal Portugal|PT
+prosieben|ProSieben (PRO7) DE|DE
+premier-sports-ireland-1|Premier Sports Ireland 1|IE
+ptv-sports|PTV Sports|PK
+pdc-tv|PDC TV|GB
+premier-brasil|Premier Brasil|BR
+prima-sport-1|Prima Sport 1|RO
+prima-sport-2|Prima Sport 2|RO
+prima-sport-3|Prima Sport 3|RO
+prima-sport-4|Prima Sport 4|RO
+paramount-network|Paramount Network|US
+pop-tv|POP TV USA|US
+premier-sports-ireland-2|Premier Sports Ireland 2|IE
+prima-tv|Prima TV RO|RO
+premier-sport-cz-1|Premier Sport 1 CZ|CZ
+premier-sport-cz-2|Premier Sport 2 CZ|CZ
+premier-sport|Premier Sport 3 CZ|CZ
+pac-12-network|Pac-12 Network USA|US
+pbs|PBS USA|US
+reelz-channel|Reelz Channel|US
+rte-1|RTE 1|IE
+rte-2|RTE 2|IE
+rmc-sport-1|RMC Sport 1 France|FR
+rmc-sport-2|RMC Sport 2 France|FR
+rtp-1|RTP 1 Portugal|PT
+rtp-2|RTP 2 Portugal|PT
+rtp-3|RTP 3 Portugal|PT
+rai-1|Rai 1 Italy|IT
+rai-2|Rai 2 Italy|IT
+rai-3|Rai 3 Italy|IT
+rai-4|Rai 4 Italy|IT
+rai-sport|Rai Sport Italy|IT
+rai-premium|Rai Premium Italy|IT
+real-madrid-tv|Real Madrid TV Spain|ES
+rtl|RTL DE|DE
+rds-2|RDS CA|CA
+rds-2-alt1|RDS 2 CA|CA
+rds-info|RDS Info CA|CA
+ring-bulgaria|Ring Bulgaria|BG
+rtl7-netland|RTL7 Netherland|NL
+racing-tv-uk|Racing Tv UK|GB
+rally-tv|Rally Tv|US
+root-sports-northwest|Root Sports Northwest|US
+sky-sports-football|Sky Sports Football UK|GB
+sky-sports-plus|Sky Sports+ Plus|GB
+sky-sports-action|Sky Sports Action UK|GB
+sky-sports-main-event|Sky Sports Main Event|GB
+sky-sports-tennis-2|Sky Sports Tennis UK|GB
+sky-sports-premier-league|Sky sports Premier League|GB
+sky-sports-f1-1|Sky Sports F1 UK|GB
+sky-sports-cricket|Sky Sports Cricket|GB
+sky-sports-golf-2|Sky Sports Golf UK|GB
+sky-sports-de-1|Sky Sports 1 DE|DE
+sky-sports-de-2|Sky Sports 2 DE|DE
+sky-sports-golf-italy|Sky Sports Golf Italy|IT
+sky-sport-motogp-italy|Sky Sport MotoGP Italy|IT
+sky-sport-tennis-italy|Sky Sport Tennis Italy|IT
+sky-sport-f1-italy|Sky Sport F1 Italy|IT
+sky-sports-news-uk|Sky Sports News UK|GB
+sky-sports-mix-uk|Sky Sports MIX UK|GB
+sky-sport-top-event-de|Sky Sport Top Event DE|DE
+sky-sport-mix-de|Sky Sport Mix DE|DE
+sky-sport-bundesliga-1|Sky Sport Bundesliga 1 HD|DE
+sky-sport-austria|Sky Sport Austria 1 HD|AT
+sportsnet-new-york-sny|SportsNet New York (SNY)|US
+sky-sport-max-italy|Sky Sport MAX Italy|IT
+sky-sport-uno-italy|Sky Sport UNO Italy|IT
+sky-sport-arena-italy|Sky Sport Arena Italy|IT
+sky-sports-racing-uk|Sky Sports Racing UK|GB
+sky-uno-italy|Sky UNO Italy|IT
+sony-ten-1|SONY TEN 1|IN
+sony-ten-2|SONY TEN 2|IN
+sony-ten-3|SONY TEN 3|IN
+sky-sport-bundesliga-2|Sky Sport Bundesliga 2|DE
+sky-sport-bundesliga-3|Sky Sport Bundesliga 3|DE
+sky-sport-bundesliga-4|Sky Sport Bundesliga 4|DE
+sky-sport-bundesliga-3-alt1|Sky Sport Bundesliga 3|DE
+spectrum-sportsnet-usa|Spectrum SportsNet USA|US
+sky-sport-nz-1|Sky Sport 1 NZ|NZ
+sky-sport-nz-2|Sky Sport 2 NZ|NZ
+sky-sport-nz-3|Sky Sport 3 NZ|NZ
+sky-sport-nz-4|Sky Sport 4 NZ|NZ
+sky-sport-nz-5|Sky Sport 5 NZ|NZ
+sky-sport-nz-6|Sky Sport 6 NZ|NZ
+sky-sport-nz-7|Sky Sport 7 NZ|NZ
+sky-sport-nz-8|Sky Sport 8 NZ|NZ
+sky-sport-nz-9|Sky Sport 9 NZ|NZ
+sky-sport-select-nz|Sky Sport Select NZ|NZ
+sport-tv-portugal-1|Sport TV1 Portugal|PT
+sport-tv-portugal-2|Sport TV2 Portugal|PT
+sport-tv-portugal-4|Sport TV4 Portugal|PT
+sport-tv-portugal-3|Sport TV3 Portugal|PT
+sport-tv-portugal-5|Sport TV5 Portugal|PT
+sport-tv-portugal-6|Sport TV6 Portugal|PT
+sic-portugal|SIC Portugal|PT
+sec-network-usa|SEC Network USA|US
+sportv-brasil-1|SporTV Brasil|BR
+sportv-brasil-2|SporTV2 Brasil|BR
+sportv-brasil-3|SporTV3 Brasil|BR
+sport-klub-serbia-1|Sport Klub 1 Serbia|RS
+sport-klub-serbia-2|Sport Klub 2 Serbia|RS
+sport-klub-serbia-3|Sport Klub 3 Serbia|RS
+sport-klub-serbia-4|Sport Klub 4 Serbia|RS
+sport-klub-hd-serbia|Sport Klub HD Serbia|RS
+sportsnet-ontario|Sportsnet Ontario|CA
+sportsnet-one|Sportsnet One|CA
+sportsnet-west|Sportsnet West|CA
+sportsnet-east|Sportsnet East|CA
+sportsnet-360|Sportsnet 360|CA
+sportsnet-world|Sportsnet World|CA
+supersport-grandstand|SuperSport Grandstand|ZA
+supersport-psl|SuperSport PSL|ZA
+supersport-premier-league|SuperSport Premier league|ZA
+supersport-laliga|SuperSport LaLiga|ZA
+supersport-variety-1|SuperSport Variety 1|ZA
+supersport-variety-2|SuperSport Variety 2|ZA
+supersport-variety-3|SuperSport Variety 3|ZA
+supersport-variety-4|SuperSport Variety 4|ZA
+supersport-action|SuperSport Action|ZA
+supersport-rugby|SuperSport Rugby|ZA
+supersport-golf|SuperSport Golf|ZA
+supersport-tennis|SuperSport Tennis|ZA
+supersport-motorsport|SuperSport Motorsport|ZA
+supersport-football|Supersport Football|ZA
+supersport-cricket|SuperSport Cricket|ZA
+supersport-maximo|SuperSport MaXimo 1|AO
+sporting-tv-portugal|Sporting TV Portugal|PT
+sportdigital-fussball|SportDigital Fussball|DE
+spectrum-sportsnet-la|Spectrum Sportsnet LA|US
+sportdigital-germany|Sportdigital1+ Germany|DE
+sport1-germany|Sport1 Germany|DE
+s4c-uk|S4C UK|GB
+sport-klub-golf-croatia|Sport KLUB Golf Croatia|HR
+sat1-de|SAT.1 DE|DE
+sky-cinema-premiere-uk|Sky Cinema Premiere UK|GB
+sky-cinema-select-uk|Sky Cinema Select UK|GB
+sky-cinema-hits-uk|Sky Cinema Hits UK|GB
+sky-cinema-greats-uk|Sky Cinema Greats UK|GB
+sky-cinema-animation-uk|Sky Cinema Animation UK|GB
+sky-cinema-family-uk|Sky Cinema Family UK|GB
+sky-cinema-action-uk|Sky Cinema Action UK|GB
+sky-cinema-comedy-uk|Sky Cinema Comedy UK|GB
+sky-cinema-thriller-uk|Sky Cinema Thriller UK|GB
+sky-cinema-drama-uk|Sky Cinema Drama UK|GB
+sky-cinema-sci-fi-horror-uk|Sky Cinema Sci-Fi Horror UK|GB
+showtime-shoxbet-usa|Showtime SHOxBET USA|US
+see-denmark|SEE Denmark|DK
+sky-cinema-collection-italy|Sky Cinema Collection Italy|IT
+sky-cinema-uno-italy|Sky Cinema Uno Italy|IT
+sky-cinema-action-italy|Sky Cinema Action Italy|IT
+sky-cinema-comedy-italy|Sky Cinema Comedy Italy|IT
+sky-cinema-uno-24-italy|Sky Cinema Uno +24 Italy|IT
+sky-cinema-romance-italy|Sky Cinema Romance Italy|IT
+sky-cinema-family-italy|Sky Cinema Family Italy|IT
+sky-cinema-due-24-italy|Sky Cinema Due +24 Italy|IT
+sky-cinema-drama-italy|Sky Cinema Drama Italy|IT
+sky-cinema-suspense|8Sky Cinema Suspense Italy|IT
+sky-sport-24|Sky Sport 24 Italy|IT
+sky-sport-calcio|Sky Sport Calcio Italy|IT
+sky-calcio-1|Sky Calcio 1 (251) Italy|IT
+sky-calcio-2|Sky Calcio 2 (252) Italy|IT
+sky-calcio-3|Sky Calcio 3 (253) Italy|IT
+sky-calcio-4|Sky Calcio 4 (254) Italy|IT
+sky-sport-basket|Sky Sport Basket Italy|IT
+sky-serie|Sky Serie Italy|IT
+starzplay-criclife-1|StarzPlay CricLife 1 HD|US
+sky-showcase|Sky Showcase UK|GB
+sky-arts|Sky Arts UK|GB
+sky-comedy|Sky Comedy UK|GB
+sky-crime|Sky Crime|GB
+sky-history|Sky History|GB
+sky-max|Sky MAX UK|GB
+ssc-sport-1|SSC Sport 1|SA
+ssc-sport-2|SSC Sport 2|SA
+ssc-sport-3|SSC Sport 3|SA
+ssc-sport-4|SSC Sport 4|SA
+ssc-sport-5|SSC Sport 5|SA
+ssc-sport-extra-1|SSC Sport Extra 1|SA
+ssc-sport-extra-2|SSC Sport Extra 2|SA
+ssc-sport-extra-3|SSC Sport Extra 3|SA
+sport-1-israel|Sport 1 Israel|IL
+sport-2-israel|Sport 2 Israel|IL
+sport-3-israel|Sport 3 Israel|IL
+sport-4-israel|Sport 4 Israel|IL
+sport-5-israel|Sport 5 Israel|IL
+sport-5-plus-israel|Sport 5 PLUS Israel|IL
+sport-5-live-israel|Sport 5 Live Israel|IL
+sport-5-star-israel|Sport 5 Star Israel|IL
+sport-5-gold-israel|Sport 5 Gold Israel|IL
+science-channel|Science Channel|US
+showtime-usa|Showtime USA|US
+starz|Starz|US
+sky-witness-hd|Sky Witness HD|GB
+sixx-de|Sixx DE|DE
+sky-atlantic|Sky Atlantic|GB
+syfy-usa|SYFY USA|US
+sundance-tv|Sundance TV|US
+swr|SWR DE|DE
+super-rtl|SUPER RTL DE|DE
+sr-fernsehen|SR Fernsehen DE|DE
+sky-sports-golf-1|Sky Sports Golf DE|DE
+smithsonian-channel|Smithsonian Channel|US
+sky-sports-f1-1-alt1|Sky Sports F1 DE|DE
+sky-sports-tennis-1|Sky Sports Tennis DE|DE
+sbs6|SBS6 NL|NL
+star-sports|Star Sports 1 IN|IN
+star-sports-hindi|Star Sports Hindi IN|IN
+showtime-2|Showtime 2 USA (SHO2) USA|US
+showtime-showcase|Showtime Showcase USA|US
+showtime-extreme|Showtime Extreme USA|US
+showtime-family-zone|Showtime Family Zone (SHO Family Zone) USA|US
+showtime-next|Showtime Next (SHO Next) USA|US
+showtime-women|Showtime Women USA|US
+space-city-home-network|Space City Home Network|US
+sportsnet-pittsburgh|SportsNet Pittsburgh|US
+tnt-sports-1|TNT Sports 1 UK|GB
+tnt-sports-2|TNT Sports 2 UK|GB
+tnt-sports-3|TNT Sports 3 UK|GB
+tnt-sports-4|TNT Sports 4 UK|GB
+tsn|TSN1|CA
+tsn2|TSN2|CA
+tsn3|TSN3|CA
+tsn4|TSN4|CA
+tsn5|TSN5|CA
+tvn|TVN HD Poland|PL
+tvn24|TVN24 Poland|PL
+tvp1|TVP1 Poland|PL
+tvp2|TVP2 Poland|PL
+telecinco|Telecinco Spain|ES
+tve-la-1|TVE La 1 Spain|ES
+tve-la-2|TVE La 2 Spain|ES
+tvi|TVI Portugal|PT
+tvi-reality|TVI Reality Portugal|PT
+teledeporte|Teledeporte Spain (TDP)|ES
+tyc-sports|TYC Sports Argentina|AR
+tvp-sport|TVP Sport Poland|PL
+tnt-brasil|TNT Brasil|BR
+tnt-sports-argentina|TNT Sports Argentina|AR
+tnt-sports-chile|TNT Sports HD Chile|CL
+tennis-channel|Tennis Channel|US
+ten-sports-pk|Ten Sports PK|PK
+tudn-usa|TUDN USA|US
+telemundo|Telemundo|US
+tbs-usa|TBS USA|US
+tlc|TLC|US
+tnt-usa|TNT USA|US
+tf1-france|TF1 France|FR
+tva-sports-1|TVA Sports|CA
+tva-sports-2|TVA Sports 2|CA
+tvc-deportes-mx|TVC Deportes MX|MX
+tudn-mx|TUDN MX|MX
+travel-channel|Travel Channel|US
+trutv-usa|TruTV USA|US
+tvland|TVLAND|US
+tcm-usa|TCM USA|US
+tmc-channel-usa|TMC Channel USA|US
+the-food-network|The Food Network|US
+the-weather-channel|The Weather Channel|US
+tvp-info|TVP INFO|PL
+teennick|TeenNick|US
+tv-one-usa|TV ONE USA|US
+tv2-bornholm|TV2 Bornholm Denmark|DK
+tv2-sport-x|TV2 Sport X Denmark|DK
+tv3-sport|TV3 Sport Denmark|DK
+tv2-sport|TV2 Sport Denmark|DK
+tv2-denmark|TV2 Denmark|DK
+tv2-zulu|TV2 Zulu|DK
+tv3-plus|TV3+ Denmark|DK
+tvo-ca|TVO CA|CA
+tv4-hockey|TV4 Hockey|SE
+tv3-max|TV3 Max Denmark|DK
+t-sports-bd|T Sports BD|BD
+tv4-tennis|TV4 Tennis|SE
+tv4-motor|TV4 Motor|SE
+tv4-sport-live-4|TV4 Sport Live 1|SE
+tv4-sport-live-4-alt1|TV4 Sport Live 2|SE
+tv4-sport-live-4-alt2|TV4 Sport Live 3|SE
+tv4-sport-live-4-alt3|TV4 Sport Live 4|SE
+tv4-sportkanalen|TV4 Sportkanalen|SE
+tv4-football-sweden|TV4 Football Sweden|SE
+tennis-plus-10|Tennis+ 10|FR
+tennis-plus-12|Tennis+ 12|FR
+trt-spor-tr|TRT Spor TR|TR
+usa-network|USA Network|US
+universal-kids-usa|Universal Kids USA|US
+univision|Univision|US
+unimas|Unimas|US
+viaplay-sports-1|Viaplay Sports 1 UK|GB
+viaplay-sports-2|Viaplay Sports 2 UK|GB
+vamos-spain|#Vamos Spain|ES
+v-film-premiere|V Film Premiere|SE
+v-film-family|V Film Family|SE
+vodafone-sport|Vodafone Sport|PT
+v-sport-motor-sweden|V Sport Motor Sweden|SE
+vh1-usa|VH1 USA|US
+veronica-nl-netherland|Veronica NL Netherland|NL
+vtv-plus-uruguay|VTV+ Uruguay|UY
+vice-tv|VICE TV|US
+willow-cricket|Willow Cricket|US
+willow-xtra|Willow XTRA|US
+wwe-network|WWE Network|US
+win-sports-plus-colombia|Win Sports+ Columbia|CO
+wetv-usa|WETV USA|US
+wdr-de|WDR DE|DE
+ytv-ca|YTV CA|CA
+yes-network-usa|YES Network USA|US
+yes-movies-action-israel|Yes Movies Action Israel|IL
+yes-movies-kids-israel|Yes Movies Kids Israel|IL
+yes-movies-comedy-israel|Yes Movies Comedy Israel|IL
+yes-tv-ca|Yes TV CA|CA
+ziggo-sport-nl-6|Ziggo Sport NL|NL
+ziggo-sport-nl-2|Ziggo Sport 2 NL|NL
+ziggo-sport-nl-3|Ziggo Sport 3 NL|NL
+ziggo-sport-nl-4|Ziggo Sport 4 NL|NL
+ziggo-sport-nl-5|Ziggo Sport 5 NL|NL
+ziggo-sport-nl-6-alt1|Ziggo Sport 6 NL|NL
+zdf|ZDF DE|DE
+zdf-info|ZDF Info DE|DE
+6ter|6ter France|FR
+20-mediaset|20 Mediaset Italy|IT
+6eren|6'eren Denmark|DK
+5-usa|5 USA|GB
+3sat|3sat DE|DE
+18-plus-18|18+ (Player-01)|WW
+18-plus-18-alt1|18+ (Player-02)|WW
+18-plus-18-alt2|18+ (Player-03)|WW
+18-plus-18-alt3|18+ (Player-04)|WW
+18-plus-18-alt4|18+ (Player-05)|WW
+18-plus-18-alt5|18+ (Player-06)|WW
+18-plus-18-alt6|18+ (Player-07)|WW
+18-plus-18-alt7|18+ (Player-08)|WW
+18-plus-18-alt8|18+ (Player-09)|WW
+18-plus-18-alt9|18+ (Player-10)|WW
+18-plus-18-alt10|18+ (Player-11)|WW
+18-plus-18-alt11|18+ (Player-12)|WW
+18-plus-18-alt12|18+ (Player-13)|WW
+18-plus-18-alt13|18+ (Player-14)|WW
+18-plus-18-alt14|18+ (Player-15)|WW
+18-plus-18-alt15|18+ (Player-16)|WW
+18-plus-18-alt16|18+ (Player-17)|WW
+18-plus-18-alt17|18+ (Player-18)|WW
+18-plus-18-alt18|18+ (Player-19)|WW
+18-plus-18-alt19|18+ (Player-20)|WW
+```
