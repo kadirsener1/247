@@ -1,8 +1,3 @@
-Tamam, bu JavaScript dosyasından kanal bilgilerini çıkardım ve bir TXT listesi olarak hazırladım. İstediğiniz gibi, her satırda `slug`, `channel_id` ve `country` bilgileri virgülle ayrılmış şekilde yer alıyor.
-
-İşte oluşturulan liste:
-
-```text
 abc-usa,51,US
 ahc-american-heroes-channel,206,US
 antenna-tv-usa,283,US
