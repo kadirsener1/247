@@ -548,7 +548,7 @@ sky-sport-bundesliga-1|Sky Sport Bundesliga 1 HD-DE|World Sports
 sky-sport-austria|Sky Sport Austria 1 HD-AT|World Sports
 sportsnet-new-york-sny|SportsNet New York (SNY)-US|World Sports
 sky-sport-max-italy|Sky Sport MAX Italy-IT|World Sports
-sky-sport-uno-italy|Sky Sport UNO Italy-IT|IT|World Sports
+sky-sport-uno-italy|Sky Sport UNO Italy-IT|World Sports
 sky-sport-arena-italy|Sky Sport Arena Italy-IT|World Sports
 sky-sports-racing-uk|Sky Sports Racing UK-GB|World Sports
 sky-uno-italy|Sky UNO Italy-IT|World Sports
@@ -730,7 +730,7 @@ tlc|TLC-US|World Sports
 tnt-usa|TNT USA-US|World Sports
 tf1-france|TF1 France-FR|World Sports
 tva-sports-1|TVA Sports-CA|World Sports
-tva-sports-2|TVA Sports 2-CA|CA|World Sports
+tva-sports-2|TVA Sports 2-CA|World Sports
 tvc-deportes-mx|TVC Deportes MX-MX|World Sports
 tudn-mx|TUDN MX-MX|World Sports
 travel-channel|Travel Channel-US|World Sports
