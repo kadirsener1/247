@@ -217,7 +217,7 @@ CHANNEL_IDS = {
   "premier-sport-cz-1": "1030",
   "premier-sport-cz-2": "1031",
 
-  // --- DANİMARKA (denmark / 6eren) ---
+  // --- DANİMARKA (denmark ) ---
   "canal-9-denmark": "805",
   "dr1-denmark": "801",
   "dr2-denmark": "802",
@@ -232,7 +232,7 @@ CHANNEL_IDS = {
   "tv2-zulu": "818",
   "tv3-plus": "819",
   "tv3-sport": "809",
-  "6eren": "800",
+
 
   // --- FRANSA (france / 6ter) ---
   "arte-france": "958",
