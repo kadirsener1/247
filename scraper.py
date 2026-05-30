@@ -24,6 +24,7 @@ HEADERS = {
 
 # Bilinen kanal ID'leri (yeni kanallar otomatik eklenir)
 CHANNEL_IDS = {
+ // --- GENEL / BELİRTİLMEMİŞ ---
   "adult-swim": "295",
   "alkass-four": "784",
   "alkass-one": "781",
@@ -71,6 +72,8 @@ CHANNEL_IDS = {
   "travel-channel": "340",
   "wwe-network": "376",
   "3sat": "726",
+
+  // --- ALMANYA (de / germany) ---
   "arte-de": "725",
   "br-fernsehen-de": "737",
   "dazn-1-bar-de": "426",
@@ -98,6 +101,8 @@ CHANNEL_IDS = {
   "wdr-de": "734",
   "zdf": "727",
   "zdf-info": "728",
+
+  // --- ARJANTİN (argentina) ---
   "espn-argentina": "149",
   "espn-premium-argentina": "387",
   "espn2-argentina": "150",
@@ -106,6 +111,8 @@ CHANNEL_IDS = {
   "fox-sports-3-argentina": "789",
   "fox-sports-argentina": "787",
   "tnt-sports-argentina": "388",
+
+  // --- AVUSTRALYA (au / australia) ---
   "bein-sports-1-australia": "491",
   "bein-sports-2-australia": "492",
   "bein-sports-3-australia": "493",
@@ -115,9 +122,17 @@ CHANNEL_IDS = {
   "fox-sports-505-au": "823",
   "fox-sports-506-au": "824",
   "fox-sports-507-au": "825",
+
+  // --- AVUSTURYA (austria) ---
   "sky-sport-austria": "559",
+
+  // --- BANGLADEŞ (bd) ---
   "t-sports-bd": "270",
+
+  // --- BELÇİKA / BOSNA HERSEK (bih) ---
   "arena-sport-1-bih": "579",
+
+  // --- BREZİLYA (brasil / sp / rio) ---
   "bandsports-brasil": "275",
   "combate-brasil": "89",
   "espn-brasil": "81",
@@ -131,6 +146,8 @@ CHANNEL_IDS = {
   "sportv-brasil-2": "79",
   "sportv-brasil-3": "80",
   "tnt-brasil": "87",
+
+  // --- BULGARİSTAN (bulgaria) ---
   "bnt-1-bulgaria": "476",
   "bnt-2-bulgaria": "477",
   "bnt-3-bulgaria": "478",
@@ -150,6 +167,8 @@ CHANNEL_IDS = {
   "nova-sport-bulgaria": "468",
   "nova-tv-bulgaria": "480",
   "ring-bulgaria": "471",
+
+  // --- BİRLEŞİK KRALLIK (uk) ---
   "bbc-four-uk": "359",
   "bbc-one-uk": "356",
   "bbc-three-uk": "358",
@@ -181,6 +200,8 @@ CHANNEL_IDS = {
   "sky-sports-mix-uk": "449",
   "sky-sports-news-uk": "366",
   "sky-sports-racing-uk": "554",
+
+  // --- CEZAYİR / ÇEK CUMHURİYETİ (cz) ---
   "canal-plus-sport-cz": "1020",
   "ct-sport-cz": "1033",
   "nova-sport": "1021",
@@ -195,6 +216,8 @@ CHANNEL_IDS = {
   "premier-sport": "1032",
   "premier-sport-cz-1": "1030",
   "premier-sport-cz-2": "1031",
+
+  // --- DANİMARKA (denmark / 6eren) ---
   "canal-9-denmark": "805",
   "dr1-denmark": "801",
   "dr2-denmark": "802",
@@ -210,6 +233,8 @@ CHANNEL_IDS = {
   "tv3-plus": "819",
   "tv3-sport": "809",
   "6eren": "800",
+
+  // --- FRANSA (france / 6ter) ---
   "arte-france": "958",
   "bein-sports-1-france": "116",
   "bein-sports-2-france": "117",
@@ -238,14 +263,20 @@ CHANNEL_IDS = {
   "m6-france": "470",
   "tf1-france": "469",
   "6ter": "963",
+
+  // --- FRANSIZ AFRIKASI (afrique) ---
   "canal-plus-sport-1-afrique": "486",
   "canal-plus-sport-2-afrique": "487",
   "canal-plus-sport-3-afrique": "488",
   "canal-plus-sport-4-afrique": "489",
   "canal-plus-sport-5-afrique": "490",
+
+  // --- GÜNEY AFRİKA (mzansi / m-net / kyknet) ---
   "dstv-kyknet-kie": "828",
   "dstv-m-net": "827",
   "dstv-mzansi-magic": "786",
+
+  // --- HIRVATİSTAN (croatia) ---
   "arena-sport-1-croatia": "432",
   "arena-sport-2-croatia": "433",
   "arena-sport-3-croatia": "434",
@@ -253,7 +284,11 @@ CHANNEL_IDS = {
   "max-sport-croatia-1": "779",
   "max-sport-croatia-2": "780",
   "sport-klub-golf-croatia": "710",
+
+  // --- HİNDİSTAN (hindi) ---
   "star-sports-hindi": "268",
+
+  // --- HOLLANDA (nl / netherland / sbs6) ---
   "espn-1-nl": "379",
   "espn-2-nl": "386",
   "espn-3-nl": "888",
@@ -268,10 +303,14 @@ CHANNEL_IDS = {
   "ziggo-sport-nl-5": "383",
   "ziggo-sport-nl-6": "393",
   "ziggo-sport-nl-6-alt1": "901",
+
+  // --- İRLANDA (ireland / rte) ---
   "premier-sports-ireland-1": "771",
   "premier-sports-ireland-2": "799",
   "rte-1": "364",
   "rte-2": "365",
+
+  // --- İSPANYA (spain / es / laliga) ---
   "antena-3-spain": "531",
   "barca-tv-spain": "522",
   "cuatro-spain": "535",
@@ -301,6 +340,8 @@ CHANNEL_IDS = {
   "tve-la-1": "533",
   "tve-la-2": "536",
   "vamos-spain": "521",
+
+  // --- İSRAİL (israel) ---
   "channel-10-israel": "547",
   "channel-11-israel": "548",
   "channel-12-israel": "549",
@@ -313,6 +354,8 @@ CHANNEL_IDS = {
   "yes-movies-action-israel": "543",
   "yes-movies-comedy-israel": "545",
   "yes-movies-kids-israel": "544",
+
+  // --- İSVEÇ (sweden / sw) ---
   "c-more-first-sweden": "812",
   "c-more-hits-sweden": "813",
   "c-more-series-sweden": "814",
@@ -320,6 +363,8 @@ CHANNEL_IDS = {
   "eurosport-2-sw": "232",
   "tv4-football-sweden": "747",
   "v-sport-motor-sweden": "272",
+
+  // --- İTALYA (italy / la7 / rai / mediaset) ---
   "dazn-zona-italy": "877",
   "eurosport-1-italy": "878",
   "eurosport-2-italy": "879",
@@ -350,6 +395,8 @@ CHANNEL_IDS = {
   "sky-sport-uno-italy": "461",
   "sky-uno-italy": "881",
   "20-mediaset": "857",
+
+  // --- KANADA (ca / canada) ---
   "cbc-ca": "832",
   "ctv-2-canada": "838",
   "ctv-canada": "602",
@@ -364,7 +411,11 @@ CHANNEL_IDS = {
   "tvo-ca": "842",
   "yes-tv-ca": "837",
   "ytv-ca": "286",
+
+  // --- KOLOMBİYA (colombia) ---
   "win-sports-plus-colombia": "392",
+
+  // --- KIBRIS (cyprus) ---
   "cytavision-sports-1-cyprus": "911",
   "cytavision-sports-2-cyprus": "912",
   "cytavision-sports-3-cyprus": "913",
@@ -372,6 +423,8 @@ CHANNEL_IDS = {
   "cytavision-sports-5-cyprus": "915",
   "cytavision-sports-6-cyprus": "916",
   "cytavision-sports-7-cyprus": "917",
+
+  // --- MEKSİKA (mx) ---
   "azteca-7-mx": "844",
   "azteca-uno-mx": "934",
   "canal5-mx": "936",
@@ -386,10 +439,16 @@ CHANNEL_IDS = {
   "fox-sports-premium-mx": "830",
   "tudn-mx": "935",
   "tvc-deportes-mx": "932",
+
+  // --- ORTA DOĞU / KUZEY AFRİKA (mena) ---
   "bein-sports-mena-english-1": "61",
   "bein-sports-mena-english-2": "90",
+
+  // --- PAKİSTAN (pk) ---
   "a-sport-pk": "269",
   "ten-sports-pk": "741",
+
+  // --- POLONYA (poland) ---
   "canal-plus-family-poland": "567",
   "canal-plus-premium-poland": "566",
   "canal-plus-seriale-poland": "570",
@@ -413,6 +472,8 @@ CHANNEL_IDS = {
   "tvp-info": "452",
   "tvp1": "560",
   "tvp2": "561",
+
+  // --- PORTEKİZ (portugal / pt) ---
   "axn-movies-portugal": "717",
   "benfica-tv-pt": "380",
   "canal-11-portugal": "540",
@@ -435,6 +496,8 @@ CHANNEL_IDS = {
   "sport-tv-portugal-5": "290",
   "sport-tv-portugal-6": "291",
   "sporting-tv-portugal": "716",
+
+  // --- ROMANYA (romania) ---
   "digi-sport-1-romania": "400",
   "digi-sport-2-romania": "401",
   "digi-sport-3-romania": "402",
@@ -443,6 +506,8 @@ CHANNEL_IDS = {
   "orange-sport-romania-2": "440",
   "orange-sport-romania-3": "441",
   "orange-sport-romania-4": "442",
+
+  // --- SIRBİSTAN (serbia) ---
   "arena-sport-1-serbia": "429",
   "arena-sport-10-serbia": "945",
   "arena-sport-2-serbia": "430",
@@ -461,7 +526,11 @@ CHANNEL_IDS = {
   "sport-klub-serbia-2": "102",
   "sport-klub-serbia-3": "103",
   "sport-klub-serbia-4": "104",
+
+  // --- SİLİ (chile) ---
   "tnt-sports-chile": "642",
+
+  // --- TÜRKİYE (turkey / tr) ---
   "a-spor-turkey": "1011",
   "atv-turkey": "1000",
   "bein-sports-1-turkey": "62",
@@ -471,7 +540,11 @@ CHANNEL_IDS = {
   "bein-sports-5-turkey": "1010",
   "now-tv-turkey": "1003",
   "trt-spor-tr": "889",
+
+  // --- URUGUAY (uruguay) ---
   "vtv-plus-uruguay": "391",
+
+  // --- USA (usa) ---
   "a-e-usa": "302",
   "abc-ny-usa": "766",
   "abc-usa": "51",
@@ -551,6 +624,8 @@ CHANNEL_IDS = {
   "wetv-usa": "655",
   "yes-network-usa": "763",
   "5-usa": "360",
+
+  // --- YENİ ZELANDA (nz) ---
   "sky-sport-nz-1": "588",
   "sky-sport-nz-2": "589",
   "sky-sport-nz-3": "590",
@@ -561,6 +636,8 @@ CHANNEL_IDS = {
   "sky-sport-nz-8": "595",
   "sky-sport-nz-9": "596",
   "sky-sport-select-nz": "587",
+
+  // --- YUNANİSTAN (greece) ---
   "ert-1-greece": "774",
   "eurosport-1-greece": "41",
   "eurosport-2-greece": "42",
