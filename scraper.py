@@ -11,7 +11,7 @@ from datetime import datetime
 # ─────────────────────────────────────────────
 # YAPILANDIRMA
 # ─────────────────────────────────────────────
-BASE_URL = "https://tv247.biz/watch/"
+BASE_URL = "https://tvnow.club/watch/"
 OUTPUT_FILE = "tv247.m3u"
 CHANNELS_FILE = "channels.txt"
 
