@@ -1,33 +1,61 @@
-name: M3U Güncelleme
+name: Update M3U Playlist
 
 on:
+  # Her 1 saatte bir çalışsın
   schedule:
-    - cron: '0 */6 * * *'   # Her 6 saatte bir çalışır
-  workflow_dispatch:        # Manuel tetikleme
+    - cron: '0 * * * *'
+
+  # Manuel tetikleme
+  workflow_dispatch:
+
+  # Kod değişikliğinde
+  push:
+    branches:
+      - main
+    paths:
+      - 'scraper.py'
+      - 'channels.txt'
+
+concurrency:
+  group: update-m3u
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   update-playlist:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write       # Repoya yazma izni
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
 
     steps:
-      - name: Depoyu klonla
+      - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: Python kurulumu
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Bağımlılıkları yükle
-        run: pip install requests beautifulsoup4
+      - name: 📦 Install dependencies
+        run: |
+          pip install requests
 
-      - name: Betiği çalıştır
-        run: python find_m3u8.py
+      - name: 🔍 Run scraper
+        run: python scraper.py
+        env:
+          PYTHONUNBUFFERED: "1"
 
-      - name: Değişiklikleri commit et ve pushla
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "M3U dosyası güncellendi [otomatik]"
-          file_pattern: "playlist.m3u"
+      - name: 📤 Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f tv247.m3u
+          if git diff --cached --quiet; then
+            echo "Değişiklik yok"
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "🔄 Update playlist | ${TIMESTAMP}"
+            git push
+          fi
