@@ -861,33 +861,58 @@ def log(msg):
 
 
 # ─────────────────────────────────────────────
-# TOKEN OLUŞTUR
+# YENİ FORMAT: m3u8 LİNKİNİ SAYFADAN BUL
 # ─────────────────────────────────────────────
-def generate_playlist_url(channel_id):
-    """Channel ID'den playlist URL'si oluştur"""
-    ts = int(time.time() * 1000)
-    
-    token_data = {
-        "channelId": str(channel_id),
-        "ts": ts
-    }
-    
-    token_json = json.dumps(token_data, separators=(',', ':'))
-    token_b64 = base64.b64encode(token_json.encode()).decode()
-    
-    return f"https://chat.cfbu247.sbs/api/proxy/playlist?token={token_b64}"
+
+# m3u8 linkini yakalamak için kullanılacak pattern'ler
+M3U8_PATTERNS = [
+    # Ana format: vomos.phantemlis.top/premium{ID}/index.m3u8?md5v1=...&md5v2=...&expires=...
+    r'(https?://[^\s"\'<>]+/premium\d+/index\.m3u8\?[^\s"\'<>]+)',
+    # Genel m3u8 pattern
+    r'(https?://[^\s"\'<>]+\.m3u8\?[^\s"\'<>]+)',
+    # m3u8 soru işareti olmadan
+    r'(https?://[^\s"\'<>]+\.m3u8)',
+]
 
 
-# ─────────────────────────────────────────────
-# KANAL ID BUL (Sayfadan)
-# ─────────────────────────────────────────────
-def find_channel_id_from_page(channel_slug):
+def extract_m3u8_from_text(text):
+    """Verilen text içinden m3u8 URL'lerini çıkar, en uygununu döndür"""
+    found_urls = []
+    
+    for pattern in M3U8_PATTERNS:
+        matches = re.findall(pattern, text, re.IGNORECASE)
+        for url in matches:
+            # Temizle - sondaki tırnak, parantez vs kaldır
+            url = url.rstrip('\\').rstrip("'").rstrip('"').rstrip(';').rstrip(',')
+            if url not in found_urls:
+                found_urls.append(url)
+    
+    if not found_urls:
+        return None
+    
+    # Öncelik: premium içeren ve md5v1/md5v2 parametreli olanlar
+    for url in found_urls:
+        if 'premium' in url and 'md5v1' in url:
+            return url
+    
+    # Sonra: md5 parametreli herhangi biri
+    for url in found_urls:
+        if 'md5' in url:
+            return url
+    
+    # Son çare: ilk bulunan m3u8
+    return found_urls[0]
+
+
+def find_m3u8_from_page(channel_slug, session=None):
     """
-    Sayfa HTML'inden channel ID'yi çıkar
+    Kanal sayfasını ve tüm iframe'lerini tarayarak m3u8 linkini bul
     """
     url = f"{BASE_URL}{channel_slug}/"
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    
+    if session is None:
+        session = requests.Session()
+        session.headers.update(HEADERS)
     
     log(f"  Sayfa taranıyor: {url}")
     
@@ -895,24 +920,24 @@ def find_channel_id_from_page(channel_slug):
         resp = session.get(url, timeout=30)
         html = resp.text
         
-        # 1. Doğrudan sayfada ID ara
-        id_patterns = [
-            r'data-id=["\'](\d+)["\']',
-            r'channel[_-]?id["\']?\s*[:=]\s*["\']?(\d+)',
-            r'stream[_-]?id["\']?\s*[:=]\s*["\']?(\d+)',
-            r'/embed/(\d+)',
-            r'\?id=(\d+)',
-            r'&id=(\d+)',
-        ]
+        # 1. Ana sayfada m3u8 ara
+        m3u8_url = extract_m3u8_from_text(html)
+        if m3u8_url:
+            log(f"  ✓ Ana sayfada m3u8 bulundu!")
+            return m3u8_url
         
-        for pattern in id_patterns:
-            matches = re.findall(pattern, html, re.IGNORECASE)
-            if matches:
-                channel_id = matches[0]
-                log(f"  ✓ Sayfada ID bulundu: {channel_id}")
-                return channel_id
+        # 2. Script tag'larında JavaScript içinde ara (escaped URL'ler dahil)
+        script_pattern = r'<script[^>]*>(.*?)</script>'
+        scripts = re.findall(script_pattern, html, re.DOTALL | re.IGNORECASE)
+        for script in scripts:
+            # JavaScript escape'lerini çöz
+            decoded_script = script.replace('\\/', '/')
+            m3u8_url = extract_m3u8_from_text(decoded_script)
+            if m3u8_url:
+                log(f"  ✓ Script içinde m3u8 bulundu!")
+                return m3u8_url
         
-        # 2. iframe src'lerini kontrol et
+        # 3. iframe'leri tara (derinlemesine)
         iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
         iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
         
@@ -920,14 +945,6 @@ def find_channel_id_from_page(channel_slug):
             iframe_url = urljoin(url, iframe_src)
             log(f"  iframe kontrol: {iframe_url[:80]}...")
             
-            # iframe URL'sinde ID var mı?
-            id_match = re.search(r'[?&]id=(\d+)', iframe_url)
-            if id_match:
-                channel_id = id_match.group(1)
-                log(f"  ✓ iframe URL'de ID bulundu: {channel_id}")
-                return channel_id
-            
-            # iframe içeriğini çek
             try:
                 resp2 = session.get(
                     iframe_url,
@@ -936,27 +953,27 @@ def find_channel_id_from_page(channel_slug):
                 )
                 iframe_html = resp2.text
                 
-                # iframe içinde ID ara
-                for pattern in id_patterns:
-                    matches = re.findall(pattern, iframe_html, re.IGNORECASE)
-                    if matches:
-                        channel_id = matches[0]
-                        log(f"  ✓ iframe içinde ID bulundu: {channel_id}")
-                        return channel_id
+                # iframe içinde m3u8 ara
+                m3u8_url = extract_m3u8_from_text(iframe_html)
+                if m3u8_url:
+                    log(f"  ✓ iframe içinde m3u8 bulundu!")
+                    return m3u8_url
                 
-                # iframe içinde başka iframe var mı?
+                # iframe içindeki scriptlerde ara
+                scripts2 = re.findall(script_pattern, iframe_html, re.DOTALL | re.IGNORECASE)
+                for script in scripts2:
+                    decoded_script = script.replace('\\/', '/')
+                    m3u8_url = extract_m3u8_from_text(decoded_script)
+                    if m3u8_url:
+                        log(f"  ✓ iframe script içinde m3u8 bulundu!")
+                        return m3u8_url
+                
+                # İç iframe'ler (2. seviye derinlik)
                 inner_iframes = re.findall(iframe_pattern, iframe_html, re.IGNORECASE)
                 for inner_src in inner_iframes:
                     inner_url = urljoin(iframe_url, inner_src)
                     log(f"    iç iframe: {inner_url[:80]}...")
                     
-                    id_match = re.search(r'[?&]id=(\d+)', inner_url)
-                    if id_match:
-                        channel_id = id_match.group(1)
-                        log(f"  ✓ iç iframe'de ID bulundu: {channel_id}")
-                        return channel_id
-                    
-                    # İç iframe içeriğini çek
                     try:
                         resp3 = session.get(
                             inner_url,
@@ -965,114 +982,78 @@ def find_channel_id_from_page(channel_slug):
                         )
                         inner_html = resp3.text
                         
-                        for pattern in id_patterns:
-                            matches = re.findall(pattern, inner_html, re.IGNORECASE)
-                            if matches:
-                                channel_id = matches[0]
-                                log(f"  ✓ iç iframe içinde ID bulundu: {channel_id}")
-                                return channel_id
+                        m3u8_url = extract_m3u8_from_text(inner_html)
+                        if m3u8_url:
+                            log(f"  ✓ iç iframe içinde m3u8 bulundu!")
+                            return m3u8_url
                         
-                        # Token URL var mı?
-                        token_match = re.search(
-                            r'channelId["\']?\s*[:=]\s*["\']?(\d+)',
-                            inner_html,
-                            re.IGNORECASE
-                        )
-                        if token_match:
-                            return token_match.group(1)
+                        # İç iframe scriptlerinde ara
+                        scripts3 = re.findall(script_pattern, inner_html, re.DOTALL | re.IGNORECASE)
+                        for script in scripts3:
+                            decoded_script = script.replace('\\/', '/')
+                            m3u8_url = extract_m3u8_from_text(decoded_script)
+                            if m3u8_url:
+                                log(f"  ✓ iç iframe script içinde m3u8 bulundu!")
+                                return m3u8_url
+                        
+                        # 3. seviye iframe
+                        deep_iframes = re.findall(iframe_pattern, inner_html, re.IGNORECASE)
+                        for deep_src in deep_iframes:
+                            deep_url = urljoin(inner_url, deep_src)
+                            log(f"      derin iframe: {deep_url[:80]}...")
                             
+                            try:
+                                resp4 = session.get(
+                                    deep_url,
+                                    timeout=30,
+                                    headers={**HEADERS, "Referer": inner_url}
+                                )
+                                deep_html = resp4.text
+                                
+                                m3u8_url = extract_m3u8_from_text(deep_html)
+                                if m3u8_url:
+                                    log(f"  ✓ derin iframe içinde m3u8 bulundu!")
+                                    return m3u8_url
+                                
+                                scripts4 = re.findall(script_pattern, deep_html, re.DOTALL | re.IGNORECASE)
+                                for script in scripts4:
+                                    decoded_script = script.replace('\\/', '/')
+                                    m3u8_url = extract_m3u8_from_text(decoded_script)
+                                    if m3u8_url:
+                                        log(f"  ✓ derin iframe script içinde m3u8 bulundu!")
+                                        return m3u8_url
+                                        
+                            except Exception as e:
+                                log(f"      derin iframe hatası: {e}")
+                                
                     except Exception as e:
                         log(f"    iç iframe hatası: {e}")
                         
             except Exception as e:
                 log(f"  iframe hatası: {e}")
         
-        # 3. Script tag'larında ara
-        script_pattern = r'<script[^>]*>(.*?)</script>'
-        scripts = re.findall(script_pattern, html, re.DOTALL | re.IGNORECASE)
+        # 4. Sayfadaki tüm JS dosyalarını kontrol et
+        js_pattern = r'<script[^>]+src=["\']([^"\']+\.js[^"\']*)["\']'
+        js_files = re.findall(js_pattern, html, re.IGNORECASE)
         
-        for script in scripts:
-            for pattern in id_patterns:
-                matches = re.findall(pattern, script, re.IGNORECASE)
-                if matches:
-                    channel_id = matches[0]
-                    log(f"  ✓ Script'te ID bulundu: {channel_id}")
-                    return channel_id
-                    
-    except Exception as e:
-        log(f"  Sayfa hatası: {e}")
-    
-    return None
-
-
-# ─────────────────────────────────────────────
-# DOĞRUDAN TOKEN URL BUL
-# ─────────────────────────────────────────────
-def find_direct_token_url(channel_slug):
-    """
-    Sayfada hazır token URL'si ara
-    """
-    url = f"{BASE_URL}{channel_slug}/"
-    session = requests.Session()
-    session.headers.update(HEADERS)
-    
-    try:
-        resp = session.get(url, timeout=30)
-        html = resp.text
-        
-        # Hazır playlist URL'si var mı?
-        token_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist\?token=[A-Za-z0-9+/=_-]+)'
-        
-        # Ana sayfada ara
-        matches = re.findall(token_pattern, html)
-        if matches:
-            log(f"  ✓ Doğrudan token URL bulundu!")
-            return matches[0]
-        
-        # iframe'lerde ara
-        iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
-        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
-        
-        for iframe_src in iframes:
-            iframe_url = urljoin(url, iframe_src)
-            
+        for js_src in js_files:
+            js_url = urljoin(url, js_src)
             try:
-                resp2 = session.get(
-                    iframe_url,
-                    timeout=30,
+                resp_js = session.get(
+                    js_url,
+                    timeout=15,
                     headers={**HEADERS, "Referer": url}
                 )
-                
-                matches = re.findall(token_pattern, resp2.text)
-                if matches:
-                    log(f"  ✓ iframe'de token URL bulundu!")
-                    return matches[0]
-                
-                # Daha derin iframe
-                inner_iframes = re.findall(iframe_pattern, resp2.text, re.IGNORECASE)
-                for inner_src in inner_iframes:
-                    inner_url = urljoin(iframe_url, inner_src)
-                    
-                    try:
-                        resp3 = session.get(
-                            inner_url,
-                            timeout=30,
-                            headers={**HEADERS, "Referer": iframe_url}
-                        )
-                        
-                        matches = re.findall(token_pattern, resp3.text)
-                        if matches:
-                            log(f"  ✓ iç iframe'de token URL bulundu!")
-                            return matches[0]
-                            
-                    except:
-                        pass
-                        
+                decoded_js = resp_js.text.replace('\\/', '/')
+                m3u8_url = extract_m3u8_from_text(decoded_js)
+                if m3u8_url:
+                    log(f"  ✓ JS dosyasında m3u8 bulundu!")
+                    return m3u8_url
             except:
                 pass
                 
     except Exception as e:
-        log(f"  Hata: {e}")
+        log(f"  Sayfa hatası: {e}")
     
     return None
 
@@ -1082,65 +1063,17 @@ def find_direct_token_url(channel_slug):
 # ─────────────────────────────────────────────
 def find_stream_url(channel_slug):
     """
-    Kanal için stream URL'si bul
+    Kanal için stream URL'si bul - yeni m3u8 formatı
     """
     log(f"Kanal: {channel_slug}")
     
-    # 1. Bilinen ID varsa doğrudan kullan
-    if channel_slug in CHANNEL_IDS and CHANNEL_IDS[channel_slug]:
-        channel_id = CHANNEL_IDS[channel_slug]
-        log(f"  Bilinen ID: {channel_id}")
-        return generate_playlist_url(channel_id)
+    # Sayfayı tarayarak m3u8 linkini bul
+    m3u8_url = find_m3u8_from_page(channel_slug)
     
-    # 2. Doğrudan token URL ara
-    log(f"  [1/3] Doğrudan token URL aranıyor...")
-    direct_url = find_direct_token_url(channel_slug)
-    if direct_url:
-        return direct_url
+    if m3u8_url:
+        return m3u8_url
     
-    # 3. Sayfadan ID bul
-    log(f"  [2/3] Sayfadan ID çıkarılıyor...")
-    channel_id = find_channel_id_from_page(channel_slug)
-    if channel_id:
-        # Bulunan ID'yi kaydet
-        CHANNEL_IDS[channel_slug] = channel_id
-        return generate_playlist_url(channel_id)
-    
-    # 4. Slug'dan tahmin et (son çare)
-    log(f"  [3/3] ID tahmin ediliyor...")
-    
-    # Bazı bilinen pattern'ler
-    slug_guesses = {
-        "atv": ["1", "101", "201"],
-        "star-tv": ["2", "102", "202"],
-        "show-tv": ["3", "103", "203"],
-        "kanal-d": ["4", "104", "204"],
-        "fox-tv": ["5", "105", "205"],
-        "tv8": ["6", "106", "206"],
-        "trt-1": ["10", "110", "210"],
-    }
-    
-    for key, ids in slug_guesses.items():
-        if key in channel_slug:
-            for test_id in ids:
-                log(f"    ID {test_id} deneniyor...")
-                test_url = generate_playlist_url(test_id)
-                
-                # Test et
-                try:
-                    resp = requests.get(
-                        test_url,
-                        timeout=10,
-                        headers=HEADERS
-                    )
-                    if resp.status_code == 200 and len(resp.content) > 100:
-                        log(f"  ✓ Çalışan ID bulundu: {test_id}")
-                        CHANNEL_IDS[channel_slug] = test_id
-                        return test_url
-                except:
-                    pass
-    
-    log(f"  ✗ ID bulunamadı!")
+    log(f"  ✗ m3u8 link bulunamadı!")
     return None
 
 
@@ -1204,7 +1137,7 @@ def generate_m3u(results):
 # ─────────────────────────────────────────────
 def main():
     log("=" * 50)
-    log("TV247 M3U Generator (Grup korumalı)")
+    log("TV247 M3U Generator (m3u8 link arama)")
     log("=" * 50)
     
     channels = load_channels()
@@ -1240,12 +1173,6 @@ def main():
     # Özet
     found = sum(1 for r in results if r.get('url'))
     log(f"\nSONUÇ: {found}/{len(results)} kanal bulundu")
-    
-    # Bulunan ID'leri göster
-    log("\nBulunan Kanal ID'leri:")
-    for slug, cid in CHANNEL_IDS.items():
-        if cid:
-            log(f"  {slug}: {cid}")
     
     return 0 if found > 0 else 1
 
