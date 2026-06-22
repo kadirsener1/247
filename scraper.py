@@ -1,7 +1,7 @@
 import re
-import os
 import sys
 import time
+import html as html_lib
 import requests
 from datetime import datetime
 from urllib.parse import urljoin
@@ -28,224 +28,116 @@ def log(msg):
 
 
 # ─────────────────────────────────────────────
-# DEBUG: SAYFA YAPISINI GÖR
+# HTML TEMİZLE
 # ─────────────────────────────────────────────
-def debug_page():
-    """Sayfanın ham HTML'ini göster - pattern bulmak için"""
-    log(f"Sayfa çekiliyor: {CHANNELS_PAGE}")
+def clean_html_text(fragment):
+    if not fragment:
+        return ""
 
-    session = requests.Session()
-
-    # Farklı header kombinasyonları dene
-    header_sets = [
-        # 1. Tam tarayıcı headers
-        {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                          "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Referer": "https://dlhd.pk/",
-            "Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
-            "Cache-Control": "max-age=0",
-        },
-        # 2. Basit headers
-        {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                          "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "Accept": "*/*",
-            "Referer": "https://dlhd.pk/",
-        },
-        # 3. Mobile user agent
-        {
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
-                          "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Referer": "https://dlhd.pk/",
-        },
-        # 4. Curl benzeri
-        {
-            "User-Agent": "curl/7.68.0",
-            "Accept": "*/*",
-        },
-    ]
-
-    for i, headers in enumerate(header_sets):
-        log(f"\n--- Header Seti {i+1} deneniyor ---")
-        try:
-            resp = session.get(
-                CHANNELS_PAGE,
-                headers=headers,
-                timeout=30,
-                allow_redirects=True
-            )
-
-            log(f"Status: {resp.status_code}")
-            log(f"Content-Type: {resp.headers.get('Content-Type', 'N/A')}")
-            log(f"Content-Length: {len(resp.content)} bytes")
-            log(f"Final URL: {resp.url}")
-
-            html = resp.text
-
-            # İlk 500 karakter
-            log(f"\nİlk 500 karakter:")
-            print(html[:500])
-            print("...")
-
-            # watch.php içeriyor mu?
-            if 'watch.php' in html:
-                log(f"\n✓ 'watch.php' bulundu!")
-
-                # Tüm watch.php linklerini göster
-                all_links = re.findall(r'watch\.php[^"\'<>\s]{0,50}', html)
-                log(f"watch.php linkleri ({len(all_links)} adet):")
-                for link in all_links[:10]:
-                    print(f"  {link}")
-
-                # id= içerenleri göster
-                id_links = re.findall(r'watch\.php\?id=\d+', html)
-                log(f"\nwatch.php?id= linkleri ({len(id_links)} adet):")
-                for link in id_links[:10]:
-                    print(f"  {link}")
-
-            elif 'id=' in html:
-                log(f"\n'id=' bulundu ama 'watch.php' yok")
-                id_matches = re.findall(r'id=\d+', html)
-                for m in id_matches[:10]:
-                    print(f"  {m}")
-
-            else:
-                log(f"\n✗ Ne 'watch.php' ne de 'id=' bulundu")
-
-            # Tüm href'leri göster
-            hrefs = re.findall(r'href=["\']([^"\']+)["\']', html, re.IGNORECASE)
-            log(f"\nTüm href'ler ({len(hrefs)} adet, ilk 20):")
-            for href in hrefs[:20]:
-                print(f"  {href}")
-
-            # Sayfa başarıyla çekildiyse dur
-            if resp.status_code == 200 and len(html) > 100:
-                log(f"\n--- Başarılı header seti: {i+1} ---")
-
-                # Orta kısım (kanal listesi genelde burada)
-                mid = len(html) // 2
-                log(f"\nOrta kısım (500 karakter):")
-                print(html[mid-250:mid+250])
-
-                break
-
-        except Exception as e:
-            log(f"Hata: {e}")
-
-        time.sleep(1)
+    fragment = re.sub(r'<!--.*?-->', ' ', fragment, flags=re.S)
+    fragment = re.sub(r'<script\b.*?</script>', ' ', fragment, flags=re.I | re.S)
+    fragment = re.sub(r'<style\b.*?</style>', ' ', fragment, flags=re.I | re.S)
+    fragment = re.sub(r'<br\s*/?>', ' ', fragment, flags=re.I)
+    fragment = re.sub(r'<[^>]+>', ' ', fragment)
+    fragment = html_lib.unescape(fragment)
+    fragment = re.sub(r'\s+', ' ', fragment).strip()
+    return fragment
 
 
 # ─────────────────────────────────────────────
-# KANAL ÇEKME (debug sonrası güncellenir)
+# KANALLARI DİREKT 24-7-CHANNELS.PHP'DEN ÇEK
 # ─────────────────────────────────────────────
 def fetch_all_channels():
-    """
-    24-7-channels.php sayfasından tüm kanal ID ve isimlerini çek.
-    """
     log(f"Kanal listesi çekiliyor: {CHANNELS_PAGE}")
 
     session = requests.Session()
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Referer": "https://dlhd.pk/",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "same-origin",
-    }
+    session.headers.update(HEADERS)
 
     try:
-        # Önce ana sayfayı ziyaret et (cookie almak için)
-        log("Ana sayfa ziyaret ediliyor (cookie için)...")
-        session.get("https://dlhd.pk/", headers=headers, timeout=30)
-        time.sleep(1)
+        # Cookie / warm-up
+        session.get("https://dlhd.pk/", timeout=20)
 
-        # Şimdi kanal sayfasını çek
-        resp = session.get(CHANNELS_PAGE, headers=headers, timeout=30)
-        log(f"Status: {resp.status_code}, Size: {len(resp.content)} bytes")
-
+        resp = session.get(CHANNELS_PAGE, timeout=30)
+        resp.raise_for_status()
         html = resp.text
 
-        # Ham HTML'i kaydet (debug için)
+        # Debug için istersen bakarsın
         with open("debug_channels.html", "w", encoding="utf-8") as f:
             f.write(html)
-        log("HTML 'debug_channels.html' dosyasına kaydedildi")
 
-        # Tüm olası pattern'leri dene
         channels = []
         seen_ids = set()
 
-        # Pattern listesi - geniş tutuldu
-        patterns = [
-            # Standart format
-            r'href=["\']watch\.php\?id=(\d+)["\'][^>]*>\s*([^<]+?)\s*</a>',
-            r"href=[\"']watch\.php\?id=(\d+)[\"'][^>]*>([^<]+)<",
-            # Tam URL
-            r'href=["\']https?://dlhd\.pk/watch\.php\?id=(\d+)["\'][^>]*>\s*([^<]+?)\s*</a>',
-            # data-id formatı
-            r'data-id=["\'](\d+)["\'][^>]*>\s*([^<]+?)\s*</',
-            # Genel id formatı
-            r'\?id=(\d+)[^>]*>\s*([A-Za-z0-9][^<]{2,50}?)\s*</',
-            # JavaScript içinde
-            r'id["\']?\s*:\s*["\']?(\d+)["\']?,\s*["\']?(?:name|title|channel)["\']?\s*:\s*["\']([^"\']+)',
-        ]
+        # Anchor içeriği nested olabilir, o yüzden tüm <a ...>...</a> bloğunu yakala
+        anchor_pattern = re.compile(
+            r'<a\b[^>]*href=["\']([^"\']*?/watch\.php\?id=(\d+)[^"\']*)["\'][^>]*>(.*?)</a>',
+            re.I | re.S
+        )
 
-        for pattern in patterns:
-            matches = re.findall(pattern, html, re.IGNORECASE | re.DOTALL)
-            if matches:
-                log(f"✓ Pattern çalıştı: {len(matches)} eşleşme")
-                for channel_id, name in matches:
-                    channel_id = channel_id.strip()
-                    name = re.sub(r'\s+', ' ', name).strip()
-                    if channel_id not in seen_ids and name and len(name) > 1:
-                        seen_ids.add(channel_id)
-                        channels.append({
-                            'id': channel_id,
-                            'name': name,
-                            'group': 'DLHD'
-                        })
-                break
-            else:
-                log(f"  Pattern eşleşmedi: {pattern[:60]}...")
+        matches = list(anchor_pattern.finditer(html))
+        log(f"watch.php anchor sayısı: {len(matches)}")
 
-        # Hiç bulunamadıysa tüm linkleri göster
+        for m in matches:
+            full_anchor = m.group(0)
+            href = m.group(1)
+            channel_id = m.group(2)
+            inner_html = m.group(3)
+
+            if channel_id in seen_ids:
+                continue
+
+            # Önce anchor iç metninden isim çıkar
+            name = clean_html_text(inner_html)
+
+            # İsim boşsa attribute'lardan dene
+            if not name:
+                for attr in ["title", "aria-label", "data-title", "data-name", "alt"]:
+                    attr_match = re.search(
+                        rf'{attr}=["\']([^"\']+)["\']',
+                        full_anchor,
+                        re.I
+                    )
+                    if attr_match:
+                        name = clean_html_text(attr_match.group(1))
+                        if name:
+                            break
+
+            # Hâlâ boşsa fallback
+            if not name:
+                name = f"Channel {channel_id}"
+
+            seen_ids.add(channel_id)
+            channels.append({
+                "id": channel_id,
+                "name": name,
+                "group": "DLHD",
+                "href": href
+            })
+
+        # Eğer üstteki yöntem isim bulamazsa, en azından ID'leri kurtar
         if not channels:
-            log("\n✗ Hiç kanal bulunamadı!")
-            log("Tüm href'ler:")
-            all_hrefs = re.findall(r'href=["\']([^"\']+)["\']', html, re.IGNORECASE)
-            for href in all_hrefs[:30]:
-                print(f"  {href}")
+            log("Anchor parse boş geldi, href fallback deneniyor...")
+            href_ids = re.findall(r'/watch\.php\?id=(\d+)', html, re.I)
+            for cid in href_ids:
+                if cid not in seen_ids:
+                    seen_ids.add(cid)
+                    channels.append({
+                        "id": cid,
+                        "name": f"Channel {cid}",
+                        "group": "DLHD",
+                        "href": f"/watch.php?id={cid}"
+                    })
 
-            log("\nHam HTML (ilk 2000 karakter):")
-            print(html[:2000])
-
-        log(f"Toplam: {len(channels)} kanal bulundu")
+        log(f"✓ {len(channels)} kanal bulundu")
         return channels
 
     except Exception as e:
-        log(f"✗ Hata: {e}")
-        import traceback
-        traceback.print_exc()
+        log(f"✗ Kanal listesi hatası: {e}")
         return []
 
 
 # ─────────────────────────────────────────────
-# M3U8 ÇEKME
+# M3U8 ARA
 # ─────────────────────────────────────────────
 def search_m3u8_in_html(html):
     patterns = [
@@ -253,50 +145,83 @@ def search_m3u8_in_html(html):
         r'(https?://[^\s"\'<>\\]+\.m3u8[^\s"\'<>\\]*)',
         r'(?:source|file|src|url)\s*[:=]\s*["\']?(https?://[^\s"\'<>\\]+\.m3u8[^\s"\'<>\\]*)',
     ]
+
     for pattern in patterns:
-        matches = re.findall(pattern, html, re.IGNORECASE)
+        matches = re.findall(pattern, html, re.I)
         for match in matches:
             url = match.strip().rstrip('"\'\\')
             url = re.sub(r'\\+', '', url)
-            if '.m3u8' in url:
+            if ".m3u8" in url:
                 return url
+
+    # Escaped JS string fallback
+    js_match = re.search(r'https?:\\\\/\\\\/[^\s"\']+?\.m3u8[^\s"\']*', html, re.I)
+    if js_match:
+        return js_match.group(0).replace("\\/", "/")
+
     return None
 
 
+# ─────────────────────────────────────────────
+# WATCH.PHP İÇİNDEN STREAM ÇEK
+# ─────────────────────────────────────────────
 def extract_m3u8(channel_id, session):
     watch_url = f"{WATCH_URL}{channel_id}"
+
     try:
         resp = session.get(watch_url, timeout=20)
         if resp.status_code != 200:
             return None
 
-        m3u8 = search_m3u8_in_html(resp.text)
+        html = resp.text
+
+        # Ana sayfada var mı?
+        m3u8 = search_m3u8_in_html(html)
         if m3u8:
             return m3u8
 
-        iframes = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', resp.text, re.IGNORECASE)
+        # iframe 1
+        iframes = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', html, re.I)
         for src in iframes:
-            url = urljoin(watch_url, src)
+            iframe_url = urljoin(watch_url, src)
             try:
-                r2 = session.get(url, timeout=15, headers={**HEADERS, "Referer": watch_url})
+                r2 = session.get(
+                    iframe_url,
+                    timeout=15,
+                    headers={**HEADERS, "Referer": watch_url}
+                )
+                if r2.status_code != 200:
+                    continue
+
                 m3u8 = search_m3u8_in_html(r2.text)
                 if m3u8:
                     return m3u8
 
-                iframes2 = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', r2.text, re.IGNORECASE)
+                # iframe 2
+                iframes2 = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', r2.text, re.I)
                 for src2 in iframes2:
-                    url2 = urljoin(url, src2)
+                    iframe_url2 = urljoin(iframe_url, src2)
                     try:
-                        r3 = session.get(url2, timeout=15, headers={**HEADERS, "Referer": url})
+                        r3 = session.get(
+                            iframe_url2,
+                            timeout=15,
+                            headers={**HEADERS, "Referer": iframe_url}
+                        )
+                        if r3.status_code != 200:
+                            continue
+
                         m3u8 = search_m3u8_in_html(r3.text)
                         if m3u8:
                             return m3u8
                     except:
                         pass
+
             except:
                 pass
+
     except:
         pass
+
     return None
 
 
@@ -305,27 +230,32 @@ def extract_m3u8(channel_id, session):
 # ─────────────────────────────────────────────
 def generate_m3u(results):
     lines = [
-        '#EXTM3U',
+        "#EXTM3U",
         f'# Updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")}',
-        f'# Source: dlhd.pk',
-        f'# Total: {len([r for r in results if r.get("url")])} channels',
-        ''
+        "# Source: dlhd.pk",
+        f'# Total: {len([r for r in results if r.get("url")])}',
+        ""
     ]
-    for ch in results:
-        if ch.get('url'):
-            lines.append(
-                f'#EXTINF:-1 tvg-id="{ch["id"]}" '
-                f'tvg-name="{ch["name"]}" '
-                f'group-title="{ch["group"]}",{ch["name"]}'
-            )
-            lines.append(f'#EXTVLCOPT:http-referrer=https://dlhd.pk/')
-            lines.append(f'#EXTVLCOPT:http-user-agent={HEADERS["User-Agent"]}')
-            lines.append(ch['url'])
-            lines.append('')
 
-    content = '\n'.join(lines)
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    for ch in results:
+        if not ch.get("url"):
+            continue
+
+        lines.append(
+            f'#EXTINF:-1 tvg-id="{ch["id"]}" '
+            f'tvg-name="{ch["name"]}" '
+            f'group-title="{ch["group"]}",{ch["name"]}'
+        )
+        lines.append('#EXTVLCOPT:http-referrer=https://dlhd.pk/')
+        lines.append(f'#EXTVLCOPT:http-user-agent={HEADERS["User-Agent"]}')
+        lines.append(ch["url"])
+        lines.append("")
+
+    content = "\n".join(lines)
+
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(content)
+
     return content
 
 
@@ -337,14 +267,9 @@ def main():
     log("DLHD 24/7 M3U Generator")
     log("=" * 60)
 
-    # DEBUG MODU: Önce sayfa yapısını kontrol et
-    if "--debug" in sys.argv or len(sys.argv) > 1:
-        debug_page()
-        return 0
-
     channels = fetch_all_channels()
     if not channels:
-        log("✗ Hiç kanal bulunamadı! '--debug' ile çalıştırın")
+        log("✗ Hiç kanal bulunamadı!")
         return 1
 
     log(f"\n{len(channels)} kanal işlenecek...\n")
@@ -355,31 +280,30 @@ def main():
     results = []
     found_count = 0
 
-    for i, ch in enumerate(channels):
-        log(f"[{i+1}/{len(channels)}] {ch['name']} (ID: {ch['id']})")
+    for i, ch in enumerate(channels, 1):
+        log(f"[{i}/{len(channels)}] {ch['name']} (ID: {ch['id']})")
 
-        m3u8_url = extract_m3u8(ch['id'], session)
+        m3u8_url = extract_m3u8(ch["id"], session)
 
         if m3u8_url:
             found_count += 1
-            log(f"  ✓ {m3u8_url[:80]}...")
+            log(f"  ✓ {m3u8_url[:90]}...")
         else:
-            log(f"  ✗ Bulunamadı")
+            log("  ✗ Bulunamadı")
 
         results.append({
-            'id': ch['id'],
-            'name': ch['name'],
-            'group': ch['group'],
-            'url': m3u8_url
+            "id": ch["id"],
+            "name": ch["name"],
+            "group": ch["group"],
+            "url": m3u8_url
         })
 
-        time.sleep(0.5)
+        time.sleep(0.3)
 
     log("\n" + "=" * 60)
-    content = generate_m3u(results)
+    generate_m3u(results)
     log(f"✓ {OUTPUT_FILE} oluşturuldu")
     log(f"SONUÇ: {found_count}/{len(results)} kanal bulundu")
-    print(f"\n{content}")
 
     return 0 if found_count > 0 else 1
 
