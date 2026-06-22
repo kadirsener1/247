@@ -1,17 +1,25 @@
 import re
 import sys
 import time
+import base64
 import html as html_lib
-import requests
+import threading
 from datetime import datetime
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
+
+import requests
 
 # ─────────────────────────────────────────────
 # YAPILANDIRMA
 # ─────────────────────────────────────────────
+BASE_URL = "https://dlhd.pk/"
 CHANNELS_PAGE = "https://dlhd.pk/24-7-channels.php"
 WATCH_URL = "https://dlhd.pk/watch.php?id="
 OUTPUT_FILE = "tv247.m3u"
+
+MAX_DEPTH = 3
+MAX_CANDIDATES_PER_PAGE = 20
+SLEEP_BETWEEN_REQUESTS = 0.15
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -28,8 +36,45 @@ def log(msg):
 
 
 # ─────────────────────────────────────────────
-# HTML TEMİZLE
+# SESSION
 # ─────────────────────────────────────────────
+_thread_local = threading.local()
+
+
+def make_session():
+    # cloudscraper varsa onu kullan, yoksa requests
+    try:
+        import cloudscraper
+        s = cloudscraper.create_scraper(
+            browser={"browser": "chrome", "platform": "windows", "desktop": True}
+        )
+    except Exception:
+        s = requests.Session()
+
+    s.headers.update(HEADERS)
+    return s
+
+
+def get_session():
+    if not hasattr(_thread_local, "session"):
+        _thread_local.session = make_session()
+    return _thread_local.session
+
+
+# ─────────────────────────────────────────────
+# YARDIMCI
+# ─────────────────────────────────────────────
+def normalize_url(url, base_url=None):
+    if not url:
+        return None
+    url = url.strip().strip('"\'')
+    if url.startswith("//"):
+        return "https:" + url
+    if base_url:
+        return urljoin(base_url, url)
+    return url
+
+
 def clean_html_text(fragment):
     if not fragment:
         return ""
@@ -44,31 +89,146 @@ def clean_html_text(fragment):
     return fragment
 
 
+def normalize_channel_name(name, channel_id=None):
+    name = clean_html_text(name)
+    name = re.sub(r'\s*ID\s*:\s*\d+\s*$', '', name, flags=re.I).strip()
+    name = re.sub(r'\s+', ' ', name).strip()
+    if not name:
+        name = f"Channel {channel_id}" if channel_id else "Unknown Channel"
+    return name
+
+
+def is_probably_base64(s):
+    if not s or len(s) < 40:
+        return False
+    if len(s) % 4 != 0:
+        return False
+    return re.fullmatch(r'[A-Za-z0-9+/=]+', s) is not None
+
+
+def decode_variants(text):
+    variants = []
+    seen = set()
+
+    def add(v):
+        if v and v not in seen:
+            seen.add(v)
+            variants.append(v)
+
+    add(text)
+
+    html_unescaped = html_lib.unescape(text)
+    add(html_unescaped)
+    add(html_unescaped.replace("\\/", "/"))
+
+    try:
+        add(bytes(html_unescaped, "utf-8").decode("unicode_escape"))
+    except Exception:
+        pass
+
+    # atob("....")
+    for b64 in re.findall(r'atob\(\s*[\'"]([A-Za-z0-9+/=]{20,})[\'"]\s*\)', text, re.I):
+        try:
+            dec = base64.b64decode(b64).decode("utf-8", errors="ignore")
+            add(dec)
+        except Exception:
+            pass
+
+    # generic quoted base64 strings
+    b64_tokens = re.findall(r'[\'"]([A-Za-z0-9+/=]{60,})[\'"]', text)
+    for token in b64_tokens[:20]:
+        if is_probably_base64(token):
+            try:
+                dec = base64.b64decode(token).decode("utf-8", errors="ignore")
+                if any(x in dec.lower() for x in ["m3u8", "premium", "watch.php", "api.php", "iframe", "http"]):
+                    add(dec)
+            except Exception:
+                pass
+
+    return variants
+
+
+def is_interesting_url(url):
+    if not url:
+        return False
+
+    low = url.lower()
+
+    # gereksiz static / sosyal / reklam şeyleri ele
+    bad_parts = [
+        ".css", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".ico",
+        ".woff", ".woff2", ".ttf", ".eot",
+        "googleapis.com", "gstatic.com", "fontawesome", "cdnjs",
+        "discord.gg", "t.me/", "telegram", "chatango",
+        "histats", "doubleclick", "googlesyndication"
+    ]
+    if any(x in low for x in bad_parts):
+        return False
+
+    good_parts = [
+        ".m3u8", "premium", "watch.php", "embed", "player",
+        "stream", "source", "api.php", "channel", "play"
+    ]
+    if any(x in low for x in good_parts):
+        return True
+
+    parsed = urlparse(url)
+    if parsed.netloc.endswith("dlhd.pk") and parsed.path.endswith(".php"):
+        return True
+
+    return False
+
+
+def candidate_score(url, channel_id=None):
+    low = url.lower()
+    score = 0
+
+    if ".m3u8" in low:
+        score += 100
+    if channel_id and f"premium{channel_id}" in low:
+        score += 80
+    if "premium" in low:
+        score += 40
+    if "api.php" in low:
+        score += 30
+    if "embed" in low:
+        score += 25
+    if "player" in low:
+        score += 20
+    if "stream" in low:
+        score += 20
+    if "watch.php" in low:
+        score += 10
+
+    parsed = urlparse(url)
+    if parsed.netloc.endswith("dlhd.pk"):
+        score += 5
+
+    return score
+
+
 # ─────────────────────────────────────────────
-# KANALLARI DİREKT 24-7-CHANNELS.PHP'DEN ÇEK
+# KANAL LİSTESİ
 # ─────────────────────────────────────────────
 def fetch_all_channels():
     log(f"Kanal listesi çekiliyor: {CHANNELS_PAGE}")
 
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    session = get_session()
 
     try:
-        # Cookie / warm-up
-        session.get("https://dlhd.pk/", timeout=20)
+        # warm-up
+        session.get(BASE_URL, timeout=20)
 
         resp = session.get(CHANNELS_PAGE, timeout=30)
         resp.raise_for_status()
         html = resp.text
 
-        # Debug için istersen bakarsın
         with open("debug_channels.html", "w", encoding="utf-8") as f:
             f.write(html)
 
         channels = []
         seen_ids = set()
 
-        # Anchor içeriği nested olabilir, o yüzden tüm <a ...>...</a> bloğunu yakala
         anchor_pattern = re.compile(
             r'<a\b[^>]*href=["\']([^"\']*?/watch\.php\?id=(\d+)[^"\']*)["\'][^>]*>(.*?)</a>',
             re.I | re.S
@@ -86,25 +246,14 @@ def fetch_all_channels():
             if channel_id in seen_ids:
                 continue
 
-            # Önce anchor iç metninden isim çıkar
-            name = clean_html_text(inner_html)
+            name = normalize_channel_name(inner_html, channel_id)
 
-            # İsim boşsa attribute'lardan dene
-            if not name:
+            if not name or name == f"Channel {channel_id}":
                 for attr in ["title", "aria-label", "data-title", "data-name", "alt"]:
-                    attr_match = re.search(
-                        rf'{attr}=["\']([^"\']+)["\']',
-                        full_anchor,
-                        re.I
-                    )
-                    if attr_match:
-                        name = clean_html_text(attr_match.group(1))
-                        if name:
-                            break
-
-            # Hâlâ boşsa fallback
-            if not name:
-                name = f"Channel {channel_id}"
+                    mm = re.search(rf'{attr}=["\']([^"\']+)["\']', full_anchor, re.I)
+                    if mm:
+                        name = normalize_channel_name(mm.group(1), channel_id)
+                        break
 
             seen_ids.add(channel_id)
             channels.append({
@@ -113,20 +262,6 @@ def fetch_all_channels():
                 "group": "DLHD",
                 "href": href
             })
-
-        # Eğer üstteki yöntem isim bulamazsa, en azından ID'leri kurtar
-        if not channels:
-            log("Anchor parse boş geldi, href fallback deneniyor...")
-            href_ids = re.findall(r'/watch\.php\?id=(\d+)', html, re.I)
-            for cid in href_ids:
-                if cid not in seen_ids:
-                    seen_ids.add(cid)
-                    channels.append({
-                        "id": cid,
-                        "name": f"Channel {cid}",
-                        "group": "DLHD",
-                        "href": f"/watch.php?id={cid}"
-                    })
 
         log(f"✓ {len(channels)} kanal bulundu")
         return channels
@@ -137,96 +272,192 @@ def fetch_all_channels():
 
 
 # ─────────────────────────────────────────────
-# M3U8 ARA
+# STREAM ARAMA
 # ─────────────────────────────────────────────
-def search_m3u8_in_html(html):
+def search_m3u8_in_text(text, channel_id=None):
+    found = []
+
     patterns = [
-        r'(https?://[^\s"\'<>\\]+/premium\d+/index\.m3u8[^\s"\'<>\\]*)',
-        r'(https?://[^\s"\'<>\\]+\.m3u8[^\s"\'<>\\]*)',
-        r'(?:source|file|src|url)\s*[:=]\s*["\']?(https?://[^\s"\'<>\\]+\.m3u8[^\s"\'<>\\]*)',
+        r'(https?:\/\/[^\s"\'<>\\]+?\.m3u8[^\s"\'<>\\]*)',
+        r'((?:https?:)?\/\/[^\s"\'<>\\]+?\/premium\d+\/index\.m3u8[^\s"\'<>\\]*)',
+        r'((?:https?:)?\/\/[^\s"\'<>\\]+?\/premium\d+[^\s"\'<>\\]*)',
+        r'(https?:\\\\/\\\\/[^\s"\'<>]+?\.m3u8[^\s"\'<>]*)',
     ]
 
     for pattern in patterns:
-        matches = re.findall(pattern, html, re.I)
-        for match in matches:
-            url = match.strip().rstrip('"\'\\')
-            url = re.sub(r'\\+', '', url)
-            if ".m3u8" in url:
-                return url
+        for m in re.findall(pattern, text, re.I):
+            url = m.replace("\\/", "/").strip().strip('"\'')
+            url = normalize_url(url)
+            if url and ".m3u8" in url.lower():
+                found.append(url)
 
-    # Escaped JS string fallback
-    js_match = re.search(r'https?:\\\\/\\\\/[^\s"\']+?\.m3u8[^\s"\']*', html, re.I)
-    if js_match:
-        return js_match.group(0).replace("\\/", "/")
+    if not found:
+        return None
 
-    return None
+    # channel id ile premium eşleşmesini öne al
+    if channel_id:
+        for u in found:
+            if f"premium{channel_id}" in u.lower():
+                return u
+
+    return found[0]
 
 
-# ─────────────────────────────────────────────
-# WATCH.PHP İÇİNDEN STREAM ÇEK
-# ─────────────────────────────────────────────
-def extract_m3u8(channel_id, session):
-    watch_url = f"{WATCH_URL}{channel_id}"
+def extract_candidate_urls(text, base_url, channel_id=None):
+    urls = set()
+
+    patterns = [
+        r'<iframe[^>]+src=["\']([^"\']+)["\']',
+        r'<source[^>]+src=["\']([^"\']+)["\']',
+        r'<video[^>]+src=["\']([^"\']+)["\']',
+        r'\b(?:src|href|file|url|source|data-src|data-url|data-file)\b\s*[:=]\s*["\']([^"\']+)["\']',
+        r'["\']((?:https?:)?//[^"\']+)["\']',
+        r'["\']((?:/|\./|\.\./)[^"\']+)["\']',
+    ]
+
+    for pattern in patterns:
+        for raw in re.findall(pattern, text, re.I):
+            url = normalize_url(raw, base_url)
+            if url and is_interesting_url(url):
+                urls.add(url)
+
+    # premium{id} path plain text olarak geçtiyse
+    if channel_id:
+        premium_matches = re.findall(
+            rf'((?:https?:)?//[^\s"\'<>]*premium{channel_id}[^\s"\'<>]*)',
+            text,
+            re.I
+        )
+        for raw in premium_matches:
+            url = normalize_url(raw, base_url)
+            if url:
+                urls.add(url)
+
+    return sorted(
+        urls,
+        key=lambda u: candidate_score(u, channel_id),
+        reverse=True
+    )[:MAX_CANDIDATES_PER_PAGE]
+
+
+def resolve_stream_url(url, session, referer):
+    url = normalize_url(url, referer)
+    if not url:
+        return None
+
+    if ".m3u8" not in url.lower():
+        return url
 
     try:
-        resp = session.get(watch_url, timeout=20)
-        if resp.status_code != 200:
-            return None
+        resp = session.get(
+            url,
+            timeout=15,
+            allow_redirects=True,
+            headers={
+                **HEADERS,
+                "Referer": referer or BASE_URL,
+                "Origin": BASE_URL.rstrip("/")
+            }
+        )
+        final_url = resp.url
 
-        html = resp.text
+        if ".m3u8" in final_url.lower():
+            return final_url
 
-        # Ana sayfada var mı?
-        m3u8 = search_m3u8_in_html(html)
-        if m3u8:
-            return m3u8
+        text = resp.text[:5000]
+        if "#EXTM3U" in text:
+            return final_url if final_url else url
 
-        # iframe 1
-        iframes = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', html, re.I)
-        for src in iframes:
-            iframe_url = urljoin(watch_url, src)
-            try:
-                r2 = session.get(
-                    iframe_url,
-                    timeout=15,
-                    headers={**HEADERS, "Referer": watch_url}
-                )
-                if r2.status_code != 200:
-                    continue
+        nested = search_m3u8_in_text(text)
+        if nested:
+            return nested
 
-                m3u8 = search_m3u8_in_html(r2.text)
-                if m3u8:
-                    return m3u8
-
-                # iframe 2
-                iframes2 = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', r2.text, re.I)
-                for src2 in iframes2:
-                    iframe_url2 = urljoin(iframe_url, src2)
-                    try:
-                        r3 = session.get(
-                            iframe_url2,
-                            timeout=15,
-                            headers={**HEADERS, "Referer": iframe_url}
-                        )
-                        if r3.status_code != 200:
-                            continue
-
-                        m3u8 = search_m3u8_in_html(r3.text)
-                        if m3u8:
-                            return m3u8
-                    except:
-                        pass
-
-            except:
-                pass
-
-    except:
+    except Exception:
         pass
+
+    return url
+
+
+def extract_m3u8(channel_id, session):
+    start_url = f"{WATCH_URL}{channel_id}"
+
+    queue = [(start_url, BASE_URL, 0)]
+    visited = set()
+
+    while queue:
+        current_url, referer, depth = queue.pop(0)
+
+        if not current_url or current_url in visited or depth > MAX_DEPTH:
+            continue
+
+        visited.add(current_url)
+
+        try:
+            # doğrudan m3u8 candidate ise resolve et
+            if ".m3u8" in current_url.lower():
+                resolved = resolve_stream_url(current_url, session, referer)
+                if resolved and ".m3u8" in resolved.lower():
+                    return resolved
+                continue
+
+            resp = session.get(
+                current_url,
+                timeout=20,
+                allow_redirects=True,
+                headers={
+                    **HEADERS,
+                    "Referer": referer or BASE_URL
+                }
+            )
+
+            if resp.status_code != 200:
+                continue
+
+            final_url = resp.url
+            text = resp.text
+
+            # raw + decode varyantları
+            variants = decode_variants(text)
+
+            # 1) direkt m3u8 ara
+            for variant in variants:
+                m3u8 = search_m3u8_in_text(variant, channel_id)
+                if m3u8:
+                    resolved = resolve_stream_url(m3u8, session, final_url)
+                    if resolved and ".m3u8" in resolved.lower():
+                        return resolved
+
+            # 2) candidate URL'leri çıkar
+            next_urls = []
+            seen_next = set()
+
+            for variant in variants:
+                cands = extract_candidate_urls(variant, final_url, channel_id)
+                for c in cands:
+                    if c not in seen_next and c not in visited:
+                        seen_next.add(c)
+                        next_urls.append(c)
+
+            # puana göre sırala
+            next_urls = sorted(
+                next_urls,
+                key=lambda u: candidate_score(u, channel_id),
+                reverse=True
+            )[:MAX_CANDIDATES_PER_PAGE]
+
+            for u in next_urls:
+                queue.append((u, final_url, depth + 1))
+
+            time.sleep(SLEEP_BETWEEN_REQUESTS)
+
+        except Exception:
+            continue
 
     return None
 
 
 # ─────────────────────────────────────────────
-# M3U OLUŞTUR
+# M3U
 # ─────────────────────────────────────────────
 def generate_m3u(results):
     lines = [
@@ -260,12 +491,58 @@ def generate_m3u(results):
 
 
 # ─────────────────────────────────────────────
+# DEBUG TEK KANAL
+# ─────────────────────────────────────────────
+def debug_single_channel(channel_id):
+    session = get_session()
+    watch_url = f"{WATCH_URL}{channel_id}"
+
+    log(f"DEBUG kanal: {channel_id}")
+    try:
+        resp = session.get(watch_url, timeout=20, allow_redirects=True)
+        log(f"watch status: {resp.status_code}")
+        log(f"watch final url: {resp.url}")
+
+        with open(f"debug_watch_{channel_id}.html", "w", encoding="utf-8") as f:
+            f.write(resp.text)
+
+        variants = decode_variants(resp.text)
+        all_candidates = set()
+
+        for i, variant in enumerate(variants[:10], 1):
+            m3u8 = search_m3u8_in_text(variant, channel_id)
+            if m3u8:
+                log(f"variant {i} m3u8: {m3u8}")
+
+            cands = extract_candidate_urls(variant, resp.url, channel_id)
+            for c in cands:
+                all_candidates.add(c)
+
+        ranked = sorted(all_candidates, key=lambda u: candidate_score(u, channel_id), reverse=True)
+
+        log("Aday URL'ler:")
+        for u in ranked[:30]:
+            print(" ", u)
+
+        final = extract_m3u8(channel_id, session)
+        log(f"FINAL: {final}")
+
+    except Exception as e:
+        log(f"DEBUG hata: {e}")
+
+
+# ─────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────
 def main():
     log("=" * 60)
     log("DLHD 24/7 M3U Generator")
     log("=" * 60)
+
+    # python script.py --debug 51
+    if len(sys.argv) >= 3 and sys.argv[1] == "--debug":
+        debug_single_channel(sys.argv[2])
+        return 0
 
     channels = fetch_all_channels()
     if not channels:
@@ -274,8 +551,7 @@ def main():
 
     log(f"\n{len(channels)} kanal işlenecek...\n")
 
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    session = get_session()
 
     results = []
     found_count = 0
@@ -287,7 +563,7 @@ def main():
 
         if m3u8_url:
             found_count += 1
-            log(f"  ✓ {m3u8_url[:90]}...")
+            log(f"  ✓ {m3u8_url[:100]}...")
         else:
             log("  ✗ Bulunamadı")
 
@@ -298,7 +574,7 @@ def main():
             "url": m3u8_url
         })
 
-        time.sleep(0.3)
+        time.sleep(0.2)
 
     log("\n" + "=" * 60)
     generate_m3u(results)
