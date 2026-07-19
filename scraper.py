@@ -13,7 +13,7 @@ from datetime import datetime
 # ─────────────────────────────────────────────
 BASE_URL = "https://tvnow247.top/watch/"
 OUTPUT_FILE = "tv247.m3u"
-CHANNELS_FILE = "channels.txt"
+CHANNELS_FILE = "channels1.txt"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
