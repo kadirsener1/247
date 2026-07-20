@@ -1,0 +1,11 @@
+#EXTM3U
+#EXTINF:-1,Stream 1
+https://xameleon.phantemlis.top/one/secure/048afce85e1bfc819b91745b2ad1e09f/1784596925/premium1010/index.m3u8
+#EXTINF:-1,Stream 2
+https://xameleon.phantemlis.top/one/secure/048afce85e1bfc819b91745b2ad1e09f/1784596925/premium1010/tracks-v1a1/mono.m3u8
+#EXTINF:-1,Stream 3
+https://xameleon.phantemlis.top/one/secure/048afce85e1bfc819b91745b2ad1e09f/1784596925/premium1010/tracks-v1a1/mono.m3u8
+#EXTINF:-1,Stream 4
+https://cdn.bluetier.top/beINSPORTS5TR/index.m3u8?token=YmVJTlNQT1JUUzVUUnxub19jaGVja19pcHwxNzg0NTg2NDQ2.fe9ea549cbf0a681819a07cca6d7d4b3a92c534d28b456af518cdd0ac6a0bb43
+#EXTINF:-1,Stream 5
+https://cdn.bluetier.top/beINSPORTS5TR/tracks-v1/mono.m3u8?token=YmVJTlNQT1JUUzVUUnxub19jaGVja19pcHwxNzg0NTg2NDQ2.fe9ea549cbf0a681819a07cca6d7d4b3a92c534d28b456af518cdd0ac6a0bb43
