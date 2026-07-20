@@ -103,8 +103,6 @@ CHANNEL_IDS = {
 "bein-sports-2-turkey": "63",
 "bein-sports-3-turkey": "64",
 "bein-sports-4-turkey": "67",
-    "bein-sports-max-1-turkey": "196",
-    "bein-sports-2-max-turkey": "196",
 "bein-sports-hd-qatar": "578",
 "bein-sports-usa": "425",
 "bein-sports-en-espanol": "372",
