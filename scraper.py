@@ -4,16 +4,11 @@ import time
 import re
 from urllib.parse import urljoin
 
-# Gerekirse otomatik kur
-def install_playwright():
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright"])
-    subprocess.check_call(["playwright", "install", "chromium"])
-
 try:
     from playwright.sync_api import sync_playwright
 except ImportError:
-    print("Playwright bulunamadı, kuruluyor...")
-    install_playwright()
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright"])
+    subprocess.check_call(["playwright", "install", "chromium"])
     from playwright.sync_api import sync_playwright
 
 
@@ -22,273 +17,196 @@ except ImportError:
 # ============================================================
 
 PLAYER_NUMBER = 6
-OUTPUT_FILE = "channels.m3u"
+OUTPUT_FILE   = "channels.m3u"
+BASE_URL      = "https://dlhd.st"
 
 CHANNELS = [
-    {"group": "Spor",   "id": "1010", "name": "beIN Sports 5 Turkey", "logo": ""},
-    # {"group": "Spor", "id": "1011", "name": "Kanal 2", "logo": ""},
-    # {"group": "Ulusal", "id": "1030", "name": "TRT 1", "logo": ""},
+    {"group": "Spor",   "id": "62", "name": "beIN Sports 5 Turkey", "logo": ""},
+    {"group": "Spor",   "id": "63", "name": "beIN Sports 1 Turkey", "logo": ""},
+    {"group": "Ulusal", "id": "1030", "name": "TRT 1",                "logo": ""},
 ]
 
 
 # ============================================================
-# YARDIMCI FONKSİYONLAR
+# YARDIMCI
 # ============================================================
 
-def abs_url(base, value):
-    if not value:
-        return None
-    return urljoin(base, value)
+SKIP_DOMAINS = [
+    "doubleclick", "googlead", "googlesyndication",
+    "chatango", "histats", "adexchangerapid", "dtscout",
+    "rs4k-adbanner", ".png", ".jpg", ".jpeg", ".gif",
+    ".svg", ".css", ".woff", ".ttf", ".ico", "gprofile.xml",
+    "phantemlis",   # reklam CDN
+]
 
-def is_ad_or_noise(url: str) -> bool:
+def is_noise(url: str) -> bool:
     u = url.lower()
-    bad = [
-        "doubleclick",
-        "googlead",
-        "googlesyndication",
-        "chatango",
-        "histats",
-        "adexchangerapid",
-        "dtscout",
-        "rs4k-adbanner",
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".gif",
-        ".svg",
-        ".css",
-        ".woff",
-        ".ttf",
-        ".ico",
-        "gprofile.xml",
-    ]
-    return any(x in u for x in bad)
+    return any(x in u for x in SKIP_DOMAINS)
 
-def is_media_url(url: str) -> bool:
-    u = url.lower()
-    if is_ad_or_noise(u):
+def is_media(url: str) -> bool:
+    if is_noise(url):
         return False
-    return (".m3u8" in u) or (".mpd" in u)
+    u = url.lower()
+    return ".m3u8" in u or ".mpd" in u
 
 def media_score(url: str) -> int:
-    """
-    En iyi linki seçmek için puanlama.
-    Master playlist'leri öne alır, audio track / chunk linklerini geri atar.
-    """
     u = url.lower()
     score = 0
-
-    if "master" in u:
-        score += 100
-    if "index.m3u8" in u:
-        score += 90
-    if u.endswith(".m3u8"):
-        score += 40
-    if ".mpd" in u:
-        score += 20
-
-    # İstemediğimiz alt playlist / audio track / segment benzeri linkler
-    if "tracks-" in u:
-        score -= 120
-    if "mono.m3u8" in u:
-        score -= 120
-    if "/audio/" in u:
-        score -= 120
-    if "audio" in u:
-        score -= 80
-    if "chunklist" in u:
-        score -= 60
-    if "media_" in u:
-        score -= 60
-    if "seg-" in u or "segment" in u or "frag" in u:
-        score -= 60
-
-    # Çok uzun query bazen alt kalite / tokenlı varyant olabilir ama tamamen eleme yok
-    score -= min(len(u) // 50, 20)
-
+    if "master"   in u: score += 100
+    if "index.m3u8" in u: score += 90
+    if u.endswith(".m3u8"): score += 40
+    # Ceza: audio / segment alt playlistler
+    for bad in ["tracks-", "mono.m3u8", "/audio/", "chunklist",
+                "media_", "seg-", "segment", "frag"]:
+        if bad in u:
+            score -= 120
     return score
 
-def pick_best_media(urls):
-    urls = list(dict.fromkeys(urls))  # uniq
-    urls = [u for u in urls if is_media_url(u)]
+def best_media(urls):
+    urls = list(dict.fromkeys(u for u in urls if is_media(u)))
     if not urls:
         return None
     urls.sort(key=media_score, reverse=True)
     return urls[0]
 
-def extract_media_from_html(html: str):
-    found = []
-
-    # Direkt .m3u8 / .mpd linkleri
-    for m in re.findall(r'https?://[^\'"\s<>]+(?:\.m3u8|\.mpd)[^\'"\s<>]*', html, flags=re.I):
-        found.append(m)
-
-    return found
-
 
 # ============================================================
-# PLAYER 6 IFRAME BULMA
+# PLAYER-N IFRAME URL'Sİ BUL
 # ============================================================
 
-def get_player6_iframe_url(page, watch_url: str, player_number: int = 6):
-    print(f"  📡 Açılıyor: {watch_url}")
+def get_stream_php_url(page, channel_id: str, player_n: int = 6):
+    """
+    watch.php sayfasını açar, Player N butonuna tıklar,
+    playerFrame iframe'inin src'sini döner.
+    """
+    watch_url = f"{BASE_URL}/watch.php?id={channel_id}"
+    print(f"  📡 watch.php açılıyor: {watch_url}")
+
     page.goto(watch_url, wait_until="domcontentloaded", timeout=60000)
     page.wait_for_timeout(3000)
 
-    # İlk iframe src
+    # Player N butonunu bul
+    btn = page.locator(f"button.player-btn >> text=Player {player_n}").first
+    if btn.count() == 0:
+        print(f"  ❌ Player {player_n} butonu yok")
+        return None
+
+    # Tıkla
     try:
-        old_src = page.locator("iframe#playerFrame").get_attribute("src")
+        btn.click(force=True, timeout=5000)
     except:
-        old_src = None
+        page.evaluate(f"""
+            [...document.querySelectorAll('button.player-btn')]
+            .find(b => b.textContent.trim() === 'Player {player_n}')
+            ?.click()
+        """)
 
-    old_src_abs = abs_url(watch_url, old_src) if old_src else None
-    print(f"  ℹ️ İlk iframe: {old_src_abs}")
+    print(f"  ✅ Player {player_n} tıklandı, iframe bekleniyor...")
 
-    # Player 6 butonu
-    button = page.locator("button.player-btn").filter(has_text=f"Player {player_number}").first
-    if button.count() == 0:
-        print(f"  ❌ Player {player_number} butonu bulunamadı")
-        return None
-
-    # Tıklama denemeleri
-    clicked = False
-    for attempt in range(3):
-        try:
-            if attempt == 0:
-                button.click(timeout=5000)
-            elif attempt == 1:
-                button.click(timeout=5000, force=True)
-            else:
-                page.evaluate(
-                    """(n) => {
-                        const btn = [...document.querySelectorAll('button.player-btn')]
-                            .find(b => b.textContent.trim() === `Player ${n}`);
-                        if (btn) btn.click();
-                    }""",
-                    player_number
-                )
-            clicked = True
-            break
-        except Exception:
-            pass
-
-    if not clicked:
-        print(f"  ❌ Player {player_number} tıklanamadı")
-        return None
-
-    print(f"  ✅ Player {player_number} tıklandı, iframe değişimi bekleniyor...")
-    page.wait_for_timeout(2000)
-
-    last_src = old_src_abs
-    became_active = False
-
-    for _ in range(30):
-        state = page.evaluate(
-            """(n) => {
-                const btn = [...document.querySelectorAll('button.player-btn')]
-                    .find(b => b.textContent.trim() === `Player ${n}`);
-                const iframe = document.querySelector('iframe#playerFrame');
-                return {
-                    active: !!(btn && btn.className.includes('is-active')),
-                    iframeSrc: iframe ? (iframe.getAttribute('src') || iframe.src || '') : ''
-                };
-            }""",
-            player_number
-        )
-
-        iframe_src = state.get("iframeSrc") or ""
-        if iframe_src and iframe_src != "javascript:false":
-            last_src = abs_url(watch_url, iframe_src)
-
-        if state.get("active"):
-            became_active = True
-
-        # aktif olduysa ve geçerli bir iframe src varsa dön
-        if became_active and last_src:
-            print(f"  🎯 Player {player_number} iframe: {last_src}")
-            return last_src
-
+    # iframe src değişene kadar bekle (max 10 sn)
+    stream_url = None
+    for _ in range(20):
         page.wait_for_timeout(500)
+        src = page.evaluate("""
+            () => {
+                const f = document.querySelector('iframe#playerFrame');
+                return f ? (f.getAttribute('src') || f.src || '') : '';
+            }
+        """)
+        if src and src != "javascript:false" and "stream-" in src:
+            stream_url = urljoin(BASE_URL, src)
+            break
 
-    print(f"  ❌ Player {player_number} için iframe bulunamadı")
-    return None
+    if stream_url:
+        print(f"  🎯 Stream PHP: {stream_url}")
+    else:
+        print(f"  ❌ Stream PHP URL bulunamadı")
+
+    return stream_url
 
 
 # ============================================================
-# IFRAME SAYFASINDAN GERÇEK YAYINI YAKALA
+# STREAM.PHP SAYFASINDAN M3U8 YAKALA
 # ============================================================
 
-def capture_media_from_page(context, page_url: str, depth: int = 0, max_depth: int = 2):
-    if depth > max_depth:
-        return None
-
-    indent = "    " + ("  " * depth)
+def capture_m3u8(context, stream_php_url: str, referer: str):
+    """
+    stream-XXXX.php sayfasını DOĞRU Referer ile açar,
+    içindeki m3u8 linkini yakalar.
+    """
     page = context.new_page()
+    media_found = []
 
-    media_urls = []
-
-    def on_response(response):
-        url = response.url
-        if is_media_url(url):
-            media_urls.append(url)
-            print(f"{indent}🎯 Media yakalandı: {url}")
+    def on_response(resp):
+        if is_media(resp.url):
+            media_found.append(resp.url)
+            print(f"    🎯 m3u8 yakalandı: {resp.url}")
 
     page.on("response", on_response)
 
+    print(f"  📄 Stream sayfası açılıyor (referer={referer})")
+
     try:
-        print(f"{indent}📄 Açılıyor: {page_url}")
-        page.goto(page_url, wait_until="domcontentloaded", timeout=60000)
+        page.goto(
+            stream_php_url,
+            wait_until="domcontentloaded",
+            timeout=60000,
+            # Referer header'ını watch.php olarak gönder
+            referer=referer
+        )
     except Exception as e:
-        print(f"{indent}⚠️ Açma hatası: {e}")
+        print(f"  ⚠️ Açma hatası: {e}")
         page.close()
         return None
 
-    # Biraz bekle
+    # Yayının başlaması için bekle (autoplay tetikle)
     for i in range(20):
-        if i in (3, 8, 12):
-            # autoplay tetiklemek için hafif tıklama
+        page.wait_for_timeout(500)
+        if i == 3:
             try:
-                page.locator("body").click(timeout=1000, force=True)
+                page.locator("body").click(force=True, timeout=1000)
             except:
                 pass
-        page.wait_for_timeout(500)
+        if i == 8:
+            # play butonunu tıklamayı dene
+            try:
+                page.locator("video").click(force=True, timeout=1000)
+            except:
+                pass
 
-    # HTML içinden de tara
+    # Sayfanın HTML'inden de tara
     try:
         html = page.content()
-        for u in extract_media_from_html(html):
-            if is_media_url(u):
-                media_urls.append(u)
+        for m in re.findall(
+            r'https?://[^\s\'"<>]+\.m3u8[^\s\'"<>]*', html, flags=re.I
+        ):
+            if is_media(m):
+                media_found.append(m)
     except:
         pass
 
-    best = pick_best_media(media_urls)
-    if best:
-        print(f"{indent}✅ En iyi yayın: {best}")
-        page.close()
-        return best
-
-    # Nested iframe fallback
-    try:
-        iframe_urls = page.evaluate(
-            """() => Array.from(document.querySelectorAll('iframe'))
-                .map(f => f.getAttribute('src') || f.src || '')
-                .filter(Boolean)"""
-        )
-    except:
-        iframe_urls = []
-
-    iframe_urls = [abs_url(page_url, u) for u in iframe_urls if u and u != "javascript:false"]
-    iframe_urls = [u for u in iframe_urls if not is_ad_or_noise(u)]
+    # Nested iframe varsa onları da dene
+    if not media_found:
+        try:
+            iframe_srcs = page.evaluate("""
+                () => [...document.querySelectorAll('iframe')]
+                    .map(f => f.getAttribute('src') || f.src || '')
+                    .filter(Boolean)
+            """)
+            for src in iframe_srcs:
+                if src and src != "javascript:false" and not is_noise(src):
+                    nested_url = urljoin(stream_php_url, src)
+                    print(f"  🔍 Nested iframe deneniyor: {nested_url}")
+                    nested = capture_m3u8(context, nested_url, referer=stream_php_url)
+                    if nested:
+                        media_found.append(nested)
+                        break
+        except:
+            pass
 
     page.close()
 
-    for iframe_url in iframe_urls[:5]:
-        nested = capture_media_from_page(context, iframe_url, depth + 1, max_depth)
-        if nested:
-            return nested
-
-    return None
+    return best_media(media_found)
 
 
 # ============================================================
@@ -296,47 +214,42 @@ def capture_media_from_page(context, page_url: str, depth: int = 0, max_depth: i
 # ============================================================
 
 def scrape_channel(context, channel):
-    watch_url = f"https://dlhd.st/watch.php?id={channel['id']}"
-    page = context.new_page()
+    channel_id = channel["id"]
+    watch_url   = f"{BASE_URL}/watch.php?id={channel_id}"
 
-    try:
-        iframe_url = get_player6_iframe_url(page, watch_url, PLAYER_NUMBER)
-    except Exception as e:
-        print(f"  ❌ Kanal işlenemedi: {e}")
-        page.close()
-        return None
+    # 1) watch.php üzerinden Player 6 iframe URL'sini al
+    nav_page = context.new_page()
+    stream_php = get_stream_php_url(nav_page, channel_id, PLAYER_NUMBER)
+    nav_page.close()
 
-    page.close()
+    if not stream_php:
+        # Fallback: Player 6 için stream URL'yi tahmin et
+        guessed = f"{BASE_URL}/player/stream-{channel_id}.php"
+        print(f"  ⚠️ Fallback URL deneniyor: {guessed}")
+        stream_php = guessed
 
-    if not iframe_url:
-        return None
-
-    media_url = capture_media_from_page(context, iframe_url)
+    # 2) Stream sayfasını DOĞRU Referer ile aç ve m3u8 yakala
+    media_url = capture_m3u8(context, stream_php, referer=watch_url)
     return media_url
 
 
 # ============================================================
-# M3U YAZ
+# M3U DOSYASI YAZ
 # ============================================================
 
-def write_m3u(results, output_file):
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write('#EXTM3U\n\n')
-
-        results.sort(key=lambda x: (x[0]["group"], x[0]["name"]))
-
-        for channel, link in results:
-            name = channel["name"]
-            group = channel["group"]
-            logo = channel.get("logo", "")
-
-            line = f'#EXTINF:-1 group-title="{group}"'
+def write_m3u(results):
+    results.sort(key=lambda x: (x[0]["group"], x[0]["name"]))
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        f.write("#EXTM3U\n\n")
+        for ch, link in results:
+            logo = ch.get("logo", "")
+            line = f'#EXTINF:-1 group-title="{ch["group"]}"'
             if logo:
                 line += f' tvg-logo="{logo}"'
-            line += f' tvg-name="{name}",{name}\n'
-
+            line += f' tvg-name="{ch["name"]}",{ch["name"]}\n'
             f.write(line)
             f.write(link + "\n\n")
+    print(f"\n📁 {OUTPUT_FILE} yazıldı ({len(results)} kanal)")
 
 
 # ============================================================
@@ -345,9 +258,9 @@ def write_m3u(results, output_file):
 
 def main():
     print("=" * 60)
-    print("DLHD Player 6 Scraper")
-    print(f"Toplam kanal: {len(CHANNELS)}")
-    print(f"Seçilen player: {PLAYER_NUMBER}")
+    print(f"DLHD Player {PLAYER_NUMBER} Scraper")
+    print(f"Toplam kanal : {len(CHANNELS)}")
+    print(f"Çıktı        : {OUTPUT_FILE}")
     print("=" * 60)
 
     results = []
@@ -363,7 +276,6 @@ def main():
                 "--disable-blink-features=AutomationControlled",
             ]
         )
-
         context = browser.new_context(
             user_agent=(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -372,50 +284,43 @@ def main():
             ),
             viewport={"width": 1280, "height": 720},
             locale="tr-TR",
-            timezone_id="Europe/Istanbul"
+            timezone_id="Europe/Istanbul",
         )
-
-        # Basit anti-bot iyileştirme
         context.add_init_script("""
-            Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-            Object.defineProperty(navigator, 'languages', {get: () => ['tr-TR', 'tr', 'en-US', 'en']});
-            Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4]});
-            window.chrome = { runtime: {} };
+            Object.defineProperty(navigator,'webdriver',{get:()=>undefined});
+            Object.defineProperty(navigator,'languages',{get:()=>['tr-TR','tr','en-US','en']});
+            window.chrome={runtime:{}};
         """)
 
-        for i, channel in enumerate(CHANNELS, 1):
-            print("\n" + "─" * 60)
-            print(f"[{i}/{len(CHANNELS)}] {channel['group']} - {channel['name']} (ID: {channel['id']})")
-
+        for i, ch in enumerate(CHANNELS, 1):
+            print(f"\n{'─'*60}")
+            print(f"[{i}/{len(CHANNELS)}] {ch['group']} – {ch['name']} (ID:{ch['id']})")
             try:
-                media_link = scrape_channel(context, channel)
+                link = scrape_channel(context, ch)
             except Exception as e:
                 print(f"  ❌ Hata: {e}")
-                media_link = None
+                link = None
 
-            if media_link:
-                results.append((channel, media_link))
+            if link:
+                print(f"  ✅ BULUNDU: {link}")
+                results.append((ch, link))
             else:
-                print("  ❌ Player 6 ana link bulunamadı")
+                print(f"  ❌ Link bulunamadı")
 
             time.sleep(2)
 
         browser.close()
 
-    write_m3u(results, OUTPUT_FILE)
+    write_m3u(results)
 
     print("\n" + "=" * 60)
-    print("SONUÇ")
-    print(f"Bulunan kanal: {len(results)}/{len(CHANNELS)}")
-    print(f"M3U dosyası  : {OUTPUT_FILE}")
-    print("=" * 60)
-
+    print(f"✅ Tamamlandı: {len(results)}/{len(CHANNELS)} kanal bulundu")
     if len(results) < len(CHANNELS):
-        found_ids = {c["id"] for c, _ in results}
-        print("Bulunamayanlar:")
+        found = {c["id"] for c, _ in results}
         for c in CHANNELS:
-            if c["id"] not in found_ids:
-                print(f" - [{c['group']}] {c['name']} ({c['id']})")
+            if c["id"] not in found:
+                print(f"  ❌ {c['name']} (ID:{c['id']})")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
