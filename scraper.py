@@ -24,8 +24,9 @@ CHANNELS = [
     {"group": "Spor",   "id": "62", "name": "beIN Sports 1 Turkey", "logo": ""},
     {"group": "Spor",   "id": "63", "name": "beIN Sports 2 Turkey", "logo": ""},
     {"group": "Spor",   "id": "64", "name": "beIN Sports 3 Turkey", "logo": ""},
-    {"group": "Ulusal", "id": "1030", "name": "TRT 1",                "logo": ""},
-    {"group": "Ulusal", "id": "1031", "name": "ATV",                  "logo": ""},
+    {"group": "Spor", "id": "67", "name": "beIN Sports 4 Turkey",                "logo": ""},
+    {"group": "Spor", "id": "1010", "name": "beIN Sports 5 Turkey",                  "logo": ""},
+{"group": "Spor", "id": "1011", "name": "A Spor Turkey",                  "logo": ""},
 ]
 
 
