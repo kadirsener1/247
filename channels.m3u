@@ -1,20 +1,17 @@
 #EXTM3U
 
-#EXTINF:-1 group-title="Spor" tvg-name="A Spor",A Spor
-https://cdn.bluetier.top/ASPORTR/index.m3u8?token=QVNQT1JUUnxub19jaGVja19pcHwxNzg0NTg5OTU0.db43d41909fc6e829682667d28c7d39fccfe8c50fa24b7550d3f4d0470f6a0b0
-
 #EXTINF:-1 group-title="Spor" tvg-name="beIN Sports 1 Turkey",beIN Sports 1 Turkey
-https://cdn.bluetier.top/beINSPORTS1TR/index.m3u8?token=YmVJTlNQT1JUUzFUUnxub19jaGVja19pcHwxNzg0NTg5ODY3.418b80cc2e83e6aab4405a744dd4e1b82c072a91044d4fdd19a1cc806053417b
+https://cdn.bluetier.top/beINSPORTS1TR/index.m3u8?token=YmVJTlNQT1JUUzFUUnxub19jaGVja19pcHwxNzg0NTkwNTk3.b866a66700f4c2d8df34fe379cc331617878a247a434700174fbe2b0330d984a
 
 #EXTINF:-1 group-title="Spor" tvg-name="beIN Sports 2 Turkey",beIN Sports 2 Turkey
-https://cdn.bluetier.top/beINSPORTS2TR/index.m3u8?token=YmVJTlNQT1JUUzJUUnxub19jaGVja19pcHwxNzg0NTg5ODg0.2a860375fd4b32524074b74f2e3f3c70c29aa039bf9951fca6bc5e4990b08cc2
+https://cdn.bluetier.top/beINSPORTS2TR/index.m3u8?token=YmVJTlNQT1JUUzJUUnxub19jaGVja19pcHwxNzg0NTkwNTk3.2712d61476dd3c5f7e7e08a0fa518c0c5df60b61d823f7b017e9e55b08f0965b
 
 #EXTINF:-1 group-title="Spor" tvg-name="beIN Sports 3 Turkey",beIN Sports 3 Turkey
-https://cdn.bluetier.top/beINSPORTS3TR/index.m3u8?token=YmVJTlNQT1JUUzNUUnxub19jaGVja19pcHwxNzg0NTg5OTAx.7d162f966eb807ff9e46700b9d0ce3148bf1823b93e818528c69e28d3150d085
+https://cdn.bluetier.top/beINSPORTS3TR/index.m3u8?token=YmVJTlNQT1JUUzNUUnxub19jaGVja19pcHwxNzg0NTkwNTk3.d664c22564c6169b44a51c81f8d3350168e839bb75eeab6db8ff3c2c19273fc7
 
-#EXTINF:-1 group-title="Spor" tvg-name="beIN Sports 4 Turkey",beIN Sports 4 Turkey
-https://cdn.bluetier.top/BEINSPORT4TR/index.m3u8?token=QkVJTlNQT1JUNFRSfG5vX2NoZWNrX2lwfDE3ODQ1ODk5MTk=.fa08aae200c5dc00e9eed68bd47fe2895df7c99b88e4774f543a7f997d42d696
+#EXTINF:-1 group-title="Ulusal" tvg-name="ATV",ATV
+https://xameleon.phantemlis.top/three/secure/a86dfb1088fa9d5eefc72a46f5ebc85a/1784601112/premium1031/index.m3u8
 
-#EXTINF:-1 group-title="Spor" tvg-name="beIN Sports 5 Turkey",beIN Sports 5 Turkey
-https://cdn.bluetier.top/beINSPORTS5TR/index.m3u8?token=YmVJTlNQT1JUUzVUUnxub19jaGVja19pcHwxNzg0NTg5OTM2.fd9091412d97379a9ba800374f810d2123a93e90ff553d0bf901133a1e16ff6e
+#EXTINF:-1 group-title="Ulusal" tvg-name="TRT 1",TRT 1
+https://xameleon.phantemlis.top/one/secure/3b33f5e2fb22b36d739fd9fb59020f3d/1784601104/premium1030/index.m3u8
 
