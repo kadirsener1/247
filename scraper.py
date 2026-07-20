@@ -26,7 +26,7 @@ CHANNELS = [
     {"group": "Spor",   "id": "64", "name": "beIN Sports 3 Turkey", "logo": ""},
     {"group": "Spor",   "id": "67", "name": "beIN Sports 4 Turkey", "logo": ""},
     {"group": "Spor",   "id": "1010", "name": "beIN Sports 5 Turkey", "logo": ""},
-    {"group": "Spor",   "id": "1011", "name": "A Spor", "logo": ""}
+    {"group": "Spor",   "id": "1011", "name": "A Spor", "logo": ""},
     {"group": "Ulusal", "id": "1000", "name": "Atv",                "logo": ""},
 {"group": "Ulusal", "id": "1001", "name": "Kanal D",                "logo": ""},
 {"group": "Ulusal", "id": "1002", "name": "Show Tv",                "logo": ""},
