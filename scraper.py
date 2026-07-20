@@ -18,7 +18,7 @@ except ImportError:
 import time
 import re
 
-def get_dlhd_player6_m3u(url: str = "https://dlhd.st/watch.php?id=1010", 
+def get_dlhd_player6_m3u(url: str = "https://dlhd.st/watch.php?id=62", 
                           output_file: str = "player6.m3u",
                           player_number: int = 6):
     
