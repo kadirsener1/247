@@ -21,9 +21,18 @@ OUTPUT_FILE   = "channels.m3u"
 BASE_URL      = "https://dlhd.st"
 
 CHANNELS = [
-    {"group": "Spor",   "id": "62", "name": "beIN Sports 5 Turkey", "logo": ""},
-    {"group": "Spor",   "id": "63", "name": "beIN Sports 1 Turkey", "logo": ""},
-    {"group": "Ulusal", "id": "1030", "name": "TRT 1",                "logo": ""},
+    {"group": "Spor",   "id": "62", "name": "beIN Sports 1 Turkey", "logo": ""},
+    {"group": "Spor",   "id": "63", "name": "beIN Sports 2 Turkey", "logo": ""},
+    {"group": "Spor",   "id": "64", "name": "beIN Sports 3 Turkey", "logo": ""},
+    {"group": "Spor",   "id": "67", "name": "beIN Sports 4 Turkey", "logo": ""},
+    {"group": "Spor",   "id": "1010", "name": "beIN Sports 5 Turkey", "logo": ""},
+    {"group": "Spor",   "id": "1011", "name": "A Spor", "logo": ""}
+    {"group": "Ulusal", "id": "1000", "name": "Atv",                "logo": ""},
+{"group": "Ulusal", "id": "1001", "name": "Kanal D",                "logo": ""},
+{"group": "Ulusal", "id": "1002", "name": "Show Tv",                "logo": ""},
+{"group": "Ulusal", "id": "1003", "name": "Now",                "logo": ""},
+{"group": "Ulusal", "id": "1004", "name": "Star Tv",                "logo": ""},
+{"group": "Ulusal", "id": "1005", "name": "Tv 8",                "logo": ""},
 ]
 
 
