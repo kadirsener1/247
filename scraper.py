@@ -873,7 +873,7 @@ def generate_playlist_url(channel_id):
     token_json = json.dumps(token_data, separators=(',', ':'))
     token_b64 = base64.b64encode(token_json.encode()).decode()
     
-    return f"https://chunk.tvdaily.xyz/api/proxy/playlist?token={token_b64}"
+    return f""
 
 
 # ─────────────────────────────────────────────
