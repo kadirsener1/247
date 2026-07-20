@@ -19,11 +19,6 @@ except ImportError:
 
 # ╔══════════════════════════════════════════════════════════════╗
 # ║                    KANAL LİSTESİ                             ║
-# ║  İstediğin kadar kanal ekle/çıkar                           ║
-# ║  group: M3U'daki grup adı                                   ║
-# ║  id: dlhd.st'deki kanal ID'si                               ║
-# ║  name: Kanalın görünen adı                                  ║
-# ║  logo: (opsiyonel) Kanal logosu URL'si                      ║
 # ╚══════════════════════════════════════════════════════════════╝
 
 CHANNELS = [
@@ -31,54 +26,19 @@ CHANNELS = [
     {"group": "Spor",        "id": "62", "name": "beIN Sports 1 TR",     "logo": ""},
     {"group": "Spor",        "id": "63", "name": "beIN Sports 2 TR",     "logo": ""},
     {"group": "Spor",        "id": "64", "name": "beIN Sports 3 TR",     "logo": ""},
-    {"group": "Spor",        "id": "67", "name": "beIN Sports 4 TR",     "logo": ""},
-    {"group": "Spor",        "id": "1014", "name": "S Sport",              "logo": ""},
-    {"group": "Spor",        "id": "1015", "name": "S Sport 2",            "logo": ""},
-    {"group": "Spor",        "id": "1016", "name": "TRT Spor",             "logo": ""},
-    {"group": "Spor",        "id": "1017", "name": "TRT Spor 2",           "logo": ""},
-    {"group": "Spor",        "id": "1018", "name": "ESPN",                 "logo": ""},
-    {"group": "Spor",        "id": "1019", "name": "Eurosport",            "logo": ""},
-
-    # ────────── FUTBOL ──────────
-    {"group": "Futbol",      "id": "1020", "name": "beIN Sports Max 1",    "logo": ""},
-    {"group": "Futbol",      "id": "1021", "name": "beIN Sports Max 2",    "logo": ""},
-    {"group": "Futbol",      "id": "1022", "name": "beIN Sports Haber",    "logo": ""},
-
     # ────────── ULUSAL ──────────
     {"group": "Ulusal",      "id": "1030", "name": "TRT 1",               "logo": ""},
     {"group": "Ulusal",      "id": "1031", "name": "ATV",                 "logo": ""},
-    {"group": "Ulusal",      "id": "1032", "name": "Show TV",             "logo": ""},
-    {"group": "Ulusal",      "id": "1033", "name": "Star TV",             "logo": ""},
-    {"group": "Ulusal",      "id": "1034", "name": "Kanal D",             "logo": ""},
-    {"group": "Ulusal",      "id": "1035", "name": "Fox TV",              "logo": ""},
-    {"group": "Ulusal",      "id": "1036", "name": "TV8",                 "logo": ""},
-
     # ────────── HABER ──────────
     {"group": "Haber",       "id": "1040", "name": "CNN Türk",            "logo": ""},
-    {"group": "Haber",       "id": "1041", "name": "NTV",                 "logo": ""},
-    {"group": "Haber",       "id": "1042", "name": "Habertürk TV",        "logo": ""},
-    {"group": "Haber",       "id": "1043", "name": "TRT Haber",           "logo": ""},
-
-    # ────────── SİNEMA ──────────
-    {"group": "Sinema",      "id": "1050", "name": "FX",                  "logo": ""},
-    {"group": "Sinema",      "id": "1051", "name": "TV2",                 "logo": ""},
-    {"group": "Sinema",      "id": "1052", "name": "Kanal 7",             "logo": ""},
-
-    # ────────── YABANCI SPOR ──────────
-    {"group": "Yabancı Spor","id": "1060", "name": "Sky Sports Premier League", "logo": ""},
-    {"group": "Yabancı Spor","id": "1061", "name": "Sky Sports Football",       "logo": ""},
-    {"group": "Yabancı Spor","id": "1062", "name": "BT Sport 1",                "logo": ""},
-    {"group": "Yabancı Spor","id": "1063", "name": "BT Sport 2",                "logo": ""},
-    {"group": "Yabancı Spor","id": "1064", "name": "DAZN 1",                    "logo": ""},
 ]
-
 
 OUTPUT_FILE = "channels.m3u"
 PLAYER_NUMBER = 6
 
 
 def scrape_channel(page, channel):
-    """Tek bir kanalın m3u8 linkini bulur."""
+    """Tek bir kanalın sadece Player 6 m3u8 linkini bulur."""
     
     url = f"https://dlhd.st/watch.php?id={channel['id']}"
     m3u8_links = []
@@ -100,6 +60,12 @@ def scrape_channel(page, channel):
 
     time.sleep(3)
 
+    # ╔══════════════════════════════════════════════════════════════╗
+    # ║ KRİTİK NOKTA: Player 6 öncesi yakalanan tüm linkleri sil!    ║
+    # ║ Böylece sayfa açılışındaki varsayılan player linki yok olur. ║
+    # ╚══════════════════════════════════════════════════════════════╝
+    m3u8_links.clear()
+
     # Player butonunu tıkla
     selectors = [
         f"text=Player {PLAYER_NUMBER}",
@@ -116,7 +82,6 @@ def scrape_channel(page, channel):
                 page.locator(selector).first.click(timeout=5000)
                 print(f"  ✅ Player {PLAYER_NUMBER} tıklandı")
                 clicked = True
-                time.sleep(5)
                 break
         except:
             continue
@@ -131,9 +96,15 @@ def scrape_channel(page, channel):
                 }}
             }});
         }}""")
-        time.sleep(6)
 
-    time.sleep(3)
+    # Player 6 tıklandıktan sonra linkin yüklenmesini bekle (Max 15 saniye)
+    timeout = 15
+    start_time = time.time()
+    
+    while time.time() - start_time < timeout:
+        if m3u8_links:
+            break
+        time.sleep(1)
 
     page.remove_listener("response", handle_response)
 
@@ -148,13 +119,12 @@ def scrape_channel(page, channel):
 
 def main():
     print("=" * 60)
-    print("🎬 DLHD.ST M3U Scraper - Çoklu Kanal")
+    print("🎬 DLHD.ST M3U Scraper - Sadece Player 6")
     print(f"📋 Toplam kanal: {len(CHANNELS)}")
-    print(f"🎯 Player: {PLAYER_NUMBER}")
     print(f"📁 Çıktı: {OUTPUT_FILE}")
     print("=" * 60)
 
-    results = []  # (channel, link) listesi
+    results = []
 
     with sync_playwright() as p:
         browser = p.chromium.launch(
@@ -185,7 +155,7 @@ def main():
             if link:
                 results.append((channel, link))
             
-            # Rate limit koruması
+            # Rate limit koruması için kanallar arası kısa bekleme
             time.sleep(2)
 
         browser.close()
@@ -197,7 +167,6 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write('#EXTM3U url-tvg="http://epg.streamstv.me/epg/guide-turkey.xml.gz"\n\n')
 
-        # Gruplara göre sırala
         results.sort(key=lambda x: (x[0]["group"], x[0]["name"]))
 
         for channel, link in results:
@@ -223,26 +192,6 @@ def main():
     print(f"  ❌ Başarısız  : {failed}/{total}")
     print(f"  📁 Dosya      : {OUTPUT_FILE}")
     print(f"{'=' * 60}")
-
-    # Grupları listele
-    groups = {}
-    for ch, link in results:
-        g = ch["group"]
-        groups[g] = groups.get(g, 0) + 1
-
-    print("\n  📂 Grup Dağılımı:")
-    for g, count in sorted(groups.items()):
-        print(f"     {g}: {count} kanal")
-
-    print(f"\n{'=' * 60}")
-    print("✅ Tamamlandı!")
-
-    if failed > 0:
-        print("\n  ⚠️ Bulunamayan kanallar:")
-        found_ids = {ch["id"] for ch, _ in results}
-        for ch in CHANNELS:
-            if ch["id"] not in found_ids:
-                print(f"     ❌ [{ch['group']}] {ch['name']} (ID: {ch['id']})")
 
 
 if __name__ == "__main__":
