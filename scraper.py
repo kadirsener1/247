@@ -29,7 +29,7 @@ BASE_URL    = "https://tvnow247.top"
 
 CHANNELS = [
     # ──────── SPOR ────────
-    {"group": "Spor", "slug": "bein-sports-1-turkey",  "name": "beIN Sports 1 TR",    "logo": ""},
+    {"group": "Spor", "slug": "bein-sports-1-turkey",  "name": "bein-sports-1-turkey",    "logo": ""},
     {"group": "Spor", "slug": "bein-sports-2-turkey",  "name": "beIN Sports 2 TR",    "logo": ""},
     {"group": "Spor", "slug": "bein-sports-3-turkey",  "name": "beIN Sports 3 TR",    "logo": ""},
     {"group": "Spor", "slug": "bein-sports-4-turkey",  "name": "beIN Sports 4 TR",    "logo": ""},
