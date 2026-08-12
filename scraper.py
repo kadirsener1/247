@@ -11,7 +11,7 @@ from datetime import datetime
 # ─────────────────────────────────────────────
 # YAPILANDIRMA
 # ─────────────────────────────────────────────
-BASE_URL = "https://tvnow247.top/watch/"
+BASE_URL = "https://sportsbite.org/watch/"
 OUTPUT_FILE = "tv247.m3u"
 CHANNELS_FILE = "channels.txt"
 
@@ -19,7 +19,7 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
-    "Referer": "https://tvnow247.top/",
+    "Referer": "https://sportsbite.org/",
 }
 
 # Bilinen kanal ID'leri (yeni kanallar otomatik eklenir)
@@ -27,7 +27,7 @@ CHANNEL_IDS = {
     "abc-usa": "51",
 "ahc-american-heroes-channel": "206",
 "antenna-tv-usa": "283",
-"a-e-usa": "302",
+"a-e-usa": "ae-usa",
 "amc-usa": "303",
 "animal-planet": "304",
 "astro-supersport-1": "123",
@@ -873,7 +873,7 @@ def generate_playlist_url(channel_id):
     token_json = json.dumps(token_data, separators=(',', ':'))
     token_b64 = base64.b64encode(token_json.encode()).decode()
     
-    return f"https://chunk.tvdaily.xyz/api/proxy/playlist?token={token_b64}"
+    return f""
 
 
 # ─────────────────────────────────────────────
