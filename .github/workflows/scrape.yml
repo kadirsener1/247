@@ -1,19 +1,12 @@
-name: SportsBite Scraper - M3U Güncelle
+name: SportsBite Scraper
 
 on:
-  # Her 6 saatte bir otomatik çalıştır
   schedule:
     - cron: '0 */6 * * *'
-
-  # Manuel tetikleme
   workflow_dispatch:
-
-  # Push'ta da çalıştır (ilk kurulum için)
   push:
-    branches: [ main ]
-    paths:
-      - 'scraper.py'
-      - 'requirements.txt'
+    branches: [main]
+    paths: ['scraper.py']
 
 permissions:
   contents: write
@@ -21,75 +14,25 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
-      - name: 📥 Repo'yu klonla
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: 🐍 Python kur
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
-      - name: 📦 Bağımlılıkları yükle
+      - name: Bağımlılıkları yükle
+        run: pip install -r requirements.txt
+
+      - name: Scraper çalıştır
+        run: python scraper.py
+
+      - name: Commit & Push
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: 🔍 Scraper'ı çalıştır
-        run: |
-          python scraper.py
-        env:
-          PYTHONUNBUFFERED: '1'
-
-      - name: 📊 Sonuçları göster
-        run: |
-          echo "=== tv247.m3u İçeriği ==="
-          if [ -f tv247.m3u ]; then
-            echo "Dosya boyutu: $(wc -c < tv247.m3u) byte"
-            echo "Kanal sayısı: $(grep -c '#EXTINF' tv247.m3u || echo 0)"
-            echo ""
-            echo "=== İlk 50 satır ==="
-            head -50 tv247.m3u
-          else
-            echo "tv247.m3u dosyası oluşturulmadı!"
-          fi
-
-      - name: 📤 Değişiklikleri commit ve push et
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-          # Değişiklik var mı kontrol et
-          if [ -f tv247.m3u ]; then
-            git add tv247.m3u
-            
-            CHANNEL_COUNT=$(grep -c '#EXTINF' tv247.m3u || echo 0)
-            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
-            
-            git diff --staged --quiet || \
-              git commit -m "🔄 M3U güncellendi: ${CHANNEL_COUNT} kanal (${TIMESTAMP})"
-            
-            git push
-          else
-            echo "Commit edilecek dosya yok"
-          fi
-
-      - name: 📋 Özet
-        if: always()
-        run: |
-          echo "## Scraper Sonuçları" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f tv247.m3u ]; then
-            CHANNEL_COUNT=$(grep -c '#EXTINF' tv247.m3u || echo 0)
-            echo "✅ **${CHANNEL_COUNT}** kanal başarıyla işlendi" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Kanallar:" >> $GITHUB_STEP_SUMMARY
-            grep '#EXTINF' tv247.m3u | sed 's/.*,/- /' >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ M3U dosyası oluşturulamadı" >> $GITHUB_STEP_SUMMARY
-          fi
+          git config user.email "bot@github.com"
+          git config user.name "bot"
+          git add tv247.m3u
+          git diff --staged --quiet || git commit -m "🔄 M3U güncellendi $(date -u '+%H:%M UTC')"
+          git push
