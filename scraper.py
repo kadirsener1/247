@@ -1,102 +1,159 @@
 #!/usr/bin/env python3
+"""
+SportsBite - Path Bulucu Debug
+ch1, track, 360 gibi parçaların nerede olduğunu bulur
+"""
+
 import re
-import time
 import cloudscraper
-import base64
 from bs4 import BeautifulSoup
-from urllib.parse import unquote
 
-def extract_from_base64(text):
-    """Metin içindeki base64 olabilecek kısımları çözer."""
-    pattern = r'(?:[A-Za-z0-9+/]{40,})'
-    found = []
-    for match in re.findall(pattern, text):
-        try:
-            decoded = base64.b64decode(match).decode('utf-8', errors='ignore')
-            if 'forestgump' in decoded or 'http' in decoded:
-                found.append(decoded)
-        except:
-            continue
-    return found
+URL = "https://sportsbite.org/watch/channel/5-usa"
 
-def get_stream():
-    url = "https://sportsbite.org/watch/channel/5-usa"
-    print(f"[*] Hedef: {url}")
-
-    # Cloudflare bypass session
+def create_scraper():
     scraper = cloudscraper.create_scraper(
-        browser={'browser': 'chrome','platform': 'windows','desktop': True}
+        browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True}
     )
+    scraper.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Referer': 'https://sportsbite.org/',
+    })
+    return scraper
+
+def main():
+    scraper = create_scraper()
+    resp = scraper.get(URL, timeout=30)
+    html = resp.text
     
-    try:
-        response = scraper.get(url, timeout=20)
-        html = response.text
-        
-        # 1. Klasik iframe tarama
-        soup = BeautifulSoup(html, 'html.parser')
-        iframes = soup.find_all('iframe')
-        for ifr in iframes:
-            src = ifr.get('src') or ifr.get('data-src') or ifr.get('data-lazy-src')
-            if src:
-                print(f"[FOUND iframe]: {src}")
+    print(f"[*] Sayfa boyutu: {len(html)} karakter")
+    print(f"[*] 'forestgump' var mı: {'forestgump' in html.lower()}")
+    print(f"[*] 'track' var mı: {'track' in html.lower()}")
+    print(f"[*] '/ch1' var mı: {'/ch1' in html.lower()}")
+    print(f"[*] '360' var mı: {'360' in html}")
+    
+    # ===============================
+    # 1. forestgump içeren her şey
+    # ===============================
+    print("\n" + "="*50)
+    print("FORESTGUMP İÇEREN SATIRLAR:")
+    print("="*50)
+    
+    for i, line in enumerate(html.split('\n')):
+        if 'forestgump' in line.lower():
+            print(f"[Satır {i}]: {line.strip()[:300]}")
+    
+    # ===============================
+    # 2. ch + sayı pattern'leri
+    # ===============================
+    print("\n" + "="*50)
+    print("CH + SAYI PATTERNLERİ:")
+    print("="*50)
+    
+    ch_patterns = [
+        r'ch\d+',
+        r'channel\s*[=:]\s*["\']?(\d+)',
+        r'ch\s*[=:]\s*["\']?(\d+)',
+    ]
+    
+    for pat in ch_patterns:
+        matches = re.findall(pat, html, re.IGNORECASE)
+        if matches:
+            print(f"  {pat}: {matches[:10]}")
+    
+    # ===============================
+    # 3. track veya embed içeren
+    # ===============================
+    print("\n" + "="*50)
+    print("TRACK/EMBED İÇEREN SATIRLAR:")
+    print("="*50)
+    
+    for i, line in enumerate(html.split('\n')):
+        if 'track' in line.lower() or 'embed' in line.lower():
+            # Sadece ilgili olanları göster
+            if any(x in line.lower() for x in ['src', 'url', 'http', 'channel', '/']):
+                print(f"[Satır {i}]: {line.strip()[:300]}")
+    
+    # ===============================
+    # 4. 360 sayısı geçen yerler
+    # ===============================
+    print("\n" + "="*50)
+    print("'360' SAYISI GEÇEN SATIRLAR:")
+    print("="*50)
+    
+    for i, line in enumerate(html.split('\n')):
+        if '360' in line:
+            print(f"[Satır {i}]: {line.strip()[:300]}")
+    
+    # ===============================
+    # 5. JavaScript değişkenleri
+    # ===============================
+    print("\n" + "="*50)
+    print("ÖNEMLİ JS DEĞİŞKENLERİ:")
+    print("="*50)
+    
+    js_patterns = [
+        r'(var\s+\w+\s*=\s*["\'][^"\']*(?:ch|track|channel|stream)[^"\']*["\'])',
+        r'(let\s+\w+\s*=\s*["\'][^"\']*(?:ch|track|channel|stream)[^"\']*["\'])',
+        r'(const\s+\w+\s*=\s*["\'][^"\']*(?:ch|track|channel|stream)[^"\']*["\'])',
+        r'(\w+\s*:\s*["\'][^"\']*(?:ch\d|track|channel)[^"\']*["\'])',
+        r'(src\s*=\s*["\'][^"\']+["\'])',
+        r'(iframe\.src\s*=\s*[^;]+)',
+    ]
+    
+    for pat in js_patterns:
+        matches = re.findall(pat, html, re.IGNORECASE)
+        for m in matches[:5]:
+            print(f"  → {m[:200]}")
+    
+    # ===============================
+    # 6. Tüm script içerikleri
+    # ===============================
+    print("\n" + "="*50)
+    print("SCRIPT TAG İÇERİKLERİ (forestgump/track/ch içerenler):")
+    print("="*50)
+    
+    soup = BeautifulSoup(html, 'html.parser')
+    scripts = soup.find_all('script')
+    
+    for i, script in enumerate(scripts):
+        content = script.string or ''
+        if any(x in content.lower() for x in ['forestgump', 'track', '/ch']):
+            print(f"\n[Script {i}] ({len(content)} char):")
+            print("-" * 40)
+            # İlgili satırları göster
+            for line in content.split('\n'):
+                if any(x in line.lower() for x in ['forestgump', 'track', '/ch', 'channel', 'src']):
+                    print(f"  {line.strip()[:250]}")
+    
+    # ===============================
+    # 7. URL oluşturma pattern'leri
+    # ===============================
+    print("\n" + "="*50)
+    print("URL BİRLEŞTİRME PATTERNLERİ:")
+    print("="*50)
+    
+    # Bazen URL parçalara bölünmüş olur: baseUrl + "/ch" + channelId + "/track/" + streamId
+    concat_patterns = [
+        r'(["\'][^"\']*forestgump[^"\']*["\']\s*\+\s*[^;]+)',
+        r'(\+\s*["\']/ch[^;]+)',
+        r'(baseUrl[^;]+)',
+        r'(streamUrl[^;]+)',
+        r'(iframeUrl[^;]+)',
+        r'(embedUrl[^;]+)',
+    ]
+    
+    for pat in concat_patterns:
+        matches = re.findall(pat, html, re.IGNORECASE)
+        for m in matches[:3]:
+            print(f"  → {m[:200]}")
+    
+    # ===============================
+    # 8. HTML dosyasını kaydet
+    # ===============================
+    with open('debug_full.html', 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"\n[*] Tam HTML 'debug_full.html' dosyasına kaydedildi")
+    print("[*] Bu dosyayı manuel inceleyebilirsin")
 
-        # 2. forestgump / track kelimelerini içeren her şeyi yakala (en geniş kapsam)
-        # track/360, embed/360, ch1/track gibi varyasyonları arar
-        patterns = [
-            r'(https?://channels\.forestgump\.space/[^\s"\'<>]+)',
-            r'(channels\.forestgump\.space/[^\s"\'<>]+)',
-            r'(/ch\d+/(?:track|embed)/\d+)',
-            r'["\']([^"\']*forestgump\.space[^"\']*)["\']',
-            r'["\']([^"\']*/ch\d+/(?:track|embed)/[^"\']*)["\']'
-        ]
-
-        found_links = []
-        for pat in patterns:
-            matches = re.findall(pat, html)
-            for m in matches:
-                # URL'yi temizle ve tamamla
-                clean_url = m.replace('\\', '')
-                if clean_url.startswith('//'): clean_url = 'https:' + clean_url
-                if clean_url.startswith('/ch'): clean_url = 'https://channels.forestgump.space' + clean_url
-                
-                if 'forestgump' in clean_url and clean_url not in found_links:
-                    found_links.append(clean_url)
-
-        # 3. Base64 tarama (bazen linkler script içinde encode edilmiştir)
-        b64_links = extract_from_base64(html)
-        found_links.extend(b64_links)
-
-        if not found_links:
-            print("[!] Hâlâ bulunamadı. Sayfada 'forestgump' kelimesi geçiyor mu?")
-            print(f"    Cevap: {'forestgump' in html.lower()}")
-            
-            # Eğer forestgump geçmiyorsa, site büyük ihtimalle farklı bir domain kullanıyor olabilir
-            # 'track/' veya '360' içeren tüm linkleri bulalım
-            print("[*] 'track' veya '/360' içeren tüm URL'ler listeleniyor:")
-            others = re.findall(r'(https?://[^\s"\'<>]+(?:track|360)[^\s"\'<>]*)', html)
-            for o in others:
-                print(f"    Şüpheli: {o}")
-
-        return list(set(found_links))
-
-    except Exception as e:
-        print(f"[!] HATA: {e}")
-        return []
-
-def save_to_m3u(links):
-    if not links: return
-    with open("tv247.m3u", "w", encoding="utf-8") as f:
-        f.write("#EXTM3U\n")
-        for i, link in enumerate(links):
-            f.write(f"#EXTINF:-1, Kanal 5 USA - Stream {i+1}\n")
-            f.write(f"{link}\n")
-    print(f"\n[OK] tv247.m3u dosyası oluşturuldu. {len(links)} link eklendi.")
-
-if __name__ == "__main__":
-    links = get_stream()
-    if links:
-        print("\n--- BULUNAN LİNKLER ---")
-        for l in links: print(f"-> {l}")
-        save_to_m3u(links)
-    else:
-        print("\n[X] Maalesef link bulunamadı.")
+if __name__ == '__main__':
+    main()
