@@ -1,0 +1,57 @@
+name: SportsBite M3U Scraper
+
+on:
+  # Her 6 saatte bir otomatik çalış
+  schedule:
+    - cron: '0 */6 * * *'
+
+  # Manuel tetikleme
+  workflow_dispatch:
+
+  # Push'ta da çalış (ilk kurulum için)
+  push:
+    branches: [main]
+    paths:
+      - 'scraper.py'
+      - '.github/workflows/scrape.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Python kurulumu
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Bağımlılıkları yükle
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔍 Scraper'ı çalıştır
+        run: python scraper.py
+
+      - name: 📋 Sonuçları göster
+        run: |
+          echo "=== tv247.m3u İçeriği (ilk 50 satır) ==="
+          head -50 tv247.m3u || echo "Dosya bulunamadı"
+          echo ""
+          echo "=== Özet ==="
+          cat scrape_summary.json || echo "Özet bulunamadı"
+
+      - name: 📤 Değişiklikleri commit & push et
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add tv247.m3u scrape_summary.json
+          git diff --staged --quiet || git commit -m "🔄 M3U listesi güncellendi - $(date +'%Y-%m-%d %H:%M UTC')"
+          git push
