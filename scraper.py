@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
 SportsBite Hızlı Scraper
-Sadece forestgump.space/chX/track/Y formatını dener
-embed URL'leri atlar, sadece track olanları yazar
+- STREAM_BASE domain'i otomatik bulur (değişse bile çalışır)
+- Sadece track URL'lerini yazar (embed atlanır)
+- Kanal adı + ülke bilgisi yazar
 """
 
 import subprocess
 import sys
+import re
 
 def install(pkg):
     subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
@@ -17,11 +19,8 @@ except ImportError:
     install("cloudscraper")
     import cloudscraper
 
-import concurrent.futures
-import time
-
 BASE_URL = "https://sportsbite.org"
-STREAM_BASE = "https://channels.forestgump.space"
+FALLBACK_STREAM_BASE = "https://channels.forestgump.space"
 OUTPUT_FILE = "tv247.m3u"
 
 # =====================================================
@@ -72,7 +71,7 @@ CHANNELS = [
     ("beIN Sports 2", "TR", 1, 63),
     ("beIN Sports 3", "TR", 1, 64),
     ("beIN Sports 4", "TR", 1, 67),
-    ("beIN Sports 4", "TR", 1, 100),
+    ("beIN Sports 5", "TR", 1, 1010),
     ("S Sport 2", "TR", 1, 405),
     ("TRT Spor", "TR", 1, 406),
     ("TRT Spor 2", "TR", 1, 407),
@@ -118,9 +117,92 @@ def create_scraper():
     return scraper
 
 
-def check_stream(scraper, ch, track_id):
+def find_stream_base(scraper):
+    """
+    Ana sayfadan STREAM_BASE domain'ini otomatik bul.
+    3 yöntem dener:
+      1. HTML preconnect linklerinden
+      2. JS bundle içinden
+      3. Fallback (bilinen son domain)
+    """
+    print("\n[*] Stream domain otomatik aranıyor...")
+
+    try:
+        resp = scraper.get(BASE_URL, timeout=30)
+        html = resp.text
+
+        # --- Yöntem 1: preconnect / dns-prefetch linklerinden ---
+        # <link rel="preconnect" href="https://channels.forestgump.space" />
+        preconnect_urls = re.findall(
+            r'<link[^>]+(?:preconnect|dns-prefetch)[^>]+href="(https?://[^"]+)"',
+            html, re.IGNORECASE
+        )
+
+        # Bilinen gereksiz domain'leri filtrele
+        skip = ['google', 'facebook', 'wsrv.nl', 'ibb.co', 'adsterra', 'piano']
+        candidates = []
+        for url in preconnect_urls:
+            url_clean = url.rstrip('/')
+            if not any(s in url_clean.lower() for s in skip):
+                candidates.append(url_clean)
+
+        if candidates:
+            print(f"  Preconnect adayları: {candidates}")
+
+            # Her adayı ch1/track/360 ile test et
+            for candidate in candidates:
+                test_url = f"{candidate}/ch1/track/360"
+                try:
+                    test = scraper.head(test_url, timeout=5, allow_redirects=True)
+                    if test.status_code == 200:
+                        print(f"  ✅ Çalışan domain bulundu: {candidate}")
+                        return candidate
+                except:
+                    pass
+                print(f"  ❌ {candidate} çalışmıyor")
+
+        # --- Yöntem 2: JS bundle içinden ---
+        js_match = re.search(r'src="(/assets/index-[^"]+\.js)"', html)
+        if js_match:
+            js_url = BASE_URL + js_match.group(1)
+            print(f"  JS bundle kontrol ediliyor: {js_url}")
+            try:
+                js_resp = scraper.get(js_url, timeout=20)
+                js = js_resp.text
+
+                # https://XXXXX.YYYYY.ZZZ/ch formatında URL ara
+                stream_domains = re.findall(
+                    r'(https?://[a-zA-Z0-9\-\.]+\.[a-z]{2,})/ch\d+/',
+                    js
+                )
+                if stream_domains:
+                    domain = stream_domains[0].rstrip('/')
+                    print(f"  ✅ JS'den domain bulundu: {domain}")
+                    return domain
+
+                # "channels." ile başlayan domain'leri ara
+                ch_domains = re.findall(
+                    r'(https?://channels\.[a-zA-Z0-9\-\.]+)',
+                    js
+                )
+                if ch_domains:
+                    domain = ch_domains[0].rstrip('/')
+                    print(f"  ✅ JS'den channels domain bulundu: {domain}")
+                    return domain
+            except:
+                pass
+
+    except Exception as e:
+        print(f"  ⚠ Hata: {e}")
+
+    # --- Yöntem 3: Fallback ---
+    print(f"  ⚠ Otomatik bulunamadı, fallback kullanılıyor: {FALLBACK_STREAM_BASE}")
+    return FALLBACK_STREAM_BASE
+
+
+def check_stream(scraper, stream_base, ch, track_id):
     """Tek bir stream URL'sini kontrol et - sadece track formatı"""
-    url = f"{STREAM_BASE}/ch{ch}/track/{track_id}"
+    url = f"{stream_base}/ch{ch}/track/{track_id}"
     try:
         resp = scraper.head(url, timeout=5, allow_redirects=True)
         return resp.status_code == 200, url
@@ -131,33 +213,38 @@ def check_stream(scraper, ch, track_id):
 def main():
     print("=" * 50)
     print("SportsBite Hızlı Scraper")
-    print(f"Toplam {len(CHANNELS)} kanal denenecek")
     print("=" * 50)
 
     scraper = create_scraper()
+
+    # 1. Stream domain'i otomatik bul
+    stream_base = find_stream_base(scraper)
+    print(f"\n[*] Kullanılan stream domain: {stream_base}")
+
+    # 2. Kanalları tara
+    print(f"\n[*] {len(CHANNELS)} kanal taranıyor...")
     working = []
     failed = []
 
     for name, country, ch, track_id in CHANNELS:
-        ok, url = check_stream(scraper, ch, track_id)
+        ok, url = check_stream(scraper, stream_base, ch, track_id)
         if ok:
             working.append((name, country, url))
-            print(f"  ✅ {name} ({country}) → {url}")
+            print(f"  ✅ {name} ({country})")
         else:
             failed.append((name, country, url))
-            print(f"  ❌ {name} ({country}) → {url}")
+            print(f"  ❌ {name} ({country})")
 
-    # M3U dosyası oluştur
+    # 3. M3U dosyası oluştur
     print(f"\n{'='*50}")
-    print(f"✅ Çalışan: {len(working)}")
-    print(f"❌ Çalışmayan: {len(failed)}")
+    print(f"  ✅ Çalışan: {len(working)}")
+    print(f"  ❌ Çalışmayan: {len(failed)}")
     print(f"{'='*50}")
 
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         f.write('#EXTM3U\n\n')
 
         for name, country, url in working:
-            # embed URL'leri atla
             if '/embed/' in url:
                 continue
 
@@ -167,6 +254,12 @@ def main():
             f.write(f'{url}\n\n')
 
     print(f"\n✅ {OUTPUT_FILE} oluşturuldu! ({len(working)} kanal)")
+
+    # 4. Başarısız kanalları logla
+    if failed:
+        print(f"\n⚠ Çalışmayan kanallar:")
+        for name, country, url in failed:
+            print(f"  - {name} ({country}): {url}")
 
 
 if __name__ == '__main__':
