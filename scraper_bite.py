@@ -23,8 +23,8 @@ except ImportError:
 
 BASE_URL = "https://sportsbite.org"
 FALLBACK_STREAM_BASE = "https://channels.forestgump.space"
-OUTPUT_FILE = "tv247.m3u"
-CHANNELS_FILE = "channels.txt"
+OUTPUT_FILE = "tv247_bite.m3u"
+CHANNELS_FILE = "channels_bite.txt"
 
 # Slug -> Track ID
 TRACK_IDS = {
@@ -475,7 +475,7 @@ def find_stream_base(scraper):
 
 
 def load_channels_txt():
-    """channels.txt dosyasından slug -> (name, group) eşlemesi"""
+    """channels_bite.txt dosyasından slug -> (name, group) eşlemesi"""
     info = {}
     if not os.path.exists(CHANNELS_FILE):
         print(f"  ⚠ {CHANNELS_FILE} bulunamadı")
