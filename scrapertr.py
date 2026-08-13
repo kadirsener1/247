@@ -25,14 +25,13 @@ HEADERS = {
 # Bilinen kanal ID'leri (yeni kanallar otomatik eklenir)
 CHANNEL_IDS = {
    
-"atv-turkey": "1000",
-"a-spor-turkey": "1011",
+
+
 "bein-sports-1-turkey": "62",
 "bein-sports-2-turkey": "63",
 "bein-sports-3-turkey": "64",
 "bein-sports-4-turkey": "67",
 "bein-sports-5-turkey": "1010",
-"now-tv-turkey": "1003",
 
 }
 
@@ -361,7 +360,7 @@ def generate_m3u(results):
             lines.append(
                 f'#EXTINF:-1 tvg-id="{ch["slug"]}" '
                 f'tvg-name="{ch["name"]}" '
-                f'group-title="TV247",{ch["name"]}'
+                f'group-title=Bein-TV247",{ch["name"]}'
             )
             lines.append(ch['url'])
             lines.append('')
