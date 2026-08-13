@@ -1,5 +1,10 @@
 #EXTM3U
 
+#EXTINF:-1 group-title="USA" tvg-name="ESPN",ESPN (USA)
+#EXTVLCOPT:http-referrer=https://sportsbite.org/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://channels.forestgump.space/ch1/track/360
+
 #EXTINF:-1 group-title="USA" tvg-name="Fox Sports 1",Fox Sports 1 (USA)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
@@ -35,6 +40,11 @@ https://channels.forestgump.space/ch1/track/368
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/369
 
+#EXTINF:-1 group-title="USA" tvg-name="ESPN News",ESPN News (USA)
+#EXTVLCOPT:http-referrer=https://sportsbite.org/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://channels.forestgump.space/ch1/track/372
+
 #EXTINF:-1 group-title="USA" tvg-name="ESPNU",ESPNU (USA)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
@@ -45,20 +55,15 @@ https://channels.forestgump.space/ch1/track/373
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/374
 
-#EXTINF:-1 group-title="USA" tvg-name="beIN Sports 2",beIN Sports 2 (USA)
+#EXTINF:-1 group-title="UK" tvg-name="Sky Sports Premier League",Sky Sports Premier League (UK)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/377
+https://channels.forestgump.space/ch1/track/381
 
 #EXTINF:-1 group-title="UK" tvg-name="Sky Sports F1",Sky Sports F1 (UK)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/383
-
-#EXTINF:-1 group-title="UK" tvg-name="Sky Sports Cricket",Sky Sports Cricket (UK)
-#EXTVLCOPT:http-referrer=https://sportsbite.org/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/384
 
 #EXTINF:-1 group-title="UK" tvg-name="Sky Sports Golf",Sky Sports Golf (UK)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
@@ -110,30 +115,25 @@ https://channels.forestgump.space/ch1/track/63
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/64
 
-#EXTINF:-1 group-title="TR" tvg-name="S Sport 2",S Sport 2 (TR)
+#EXTINF:-1 group-title="TR" tvg-name="beIN Sports 4",beIN Sports 4 (TR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/405
+https://channels.forestgump.space/ch1/track/67
 
 #EXTINF:-1 group-title="TR" tvg-name="TRT Spor",TRT Spor (TR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/406
 
-#EXTINF:-1 group-title="TR" tvg-name="TRT Spor 2",TRT Spor 2 (TR)
+#EXTINF:-1 group-title="IN" tvg-name="Star Sports 1",Star Sports 1 (IN)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/407
+https://channels.forestgump.space/ch1/track/410
 
-#EXTINF:-1 group-title="IN" tvg-name="Star Sports 3",Star Sports 3 (IN)
+#EXTINF:-1 group-title="IN" tvg-name="Star Sports 2",Star Sports 2 (IN)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/412
-
-#EXTINF:-1 group-title="IN" tvg-name="Sony TEN 2",Sony TEN 2 (IN)
-#EXTVLCOPT:http-referrer=https://sportsbite.org/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/414
+https://channels.forestgump.space/ch1/track/411
 
 #EXTINF:-1 group-title="IN" tvg-name="Willow Cricket",Willow Cricket (IN)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
@@ -155,11 +155,6 @@ https://channels.forestgump.space/ch1/track/418
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/421
 
-#EXTINF:-1 group-title="AR" tvg-name="beIN Sports Premium 1",beIN Sports Premium 1 (AR)
-#EXTVLCOPT:http-referrer=https://sportsbite.org/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/423
-
 #EXTINF:-1 group-title="AR" tvg-name="beIN Sports Premium 2",beIN Sports Premium 2 (AR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
@@ -170,16 +165,6 @@ https://channels.forestgump.space/ch1/track/424
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/425
 
-#EXTINF:-1 group-title="DE" tvg-name="DAZN 1",DAZN 1 (DE)
-#EXTVLCOPT:http-referrer=https://sportsbite.org/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/430
-
-#EXTINF:-1 group-title="DE" tvg-name="DAZN 2",DAZN 2 (DE)
-#EXTVLCOPT:http-referrer=https://sportsbite.org/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/431
-
 #EXTINF:-1 group-title="FR" tvg-name="Canal+ Sport",Canal+ Sport (FR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
@@ -189,4 +174,9 @@ https://channels.forestgump.space/ch1/track/432
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/433
+
+#EXTINF:-1 group-title="ZA" tvg-name="SuperSport",SuperSport (ZA)
+#EXTVLCOPT:http-referrer=https://sportsbite.org/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://channels.forestgump.space/ch1/track/435
 
