@@ -195,20 +195,20 @@ https://channels.forestgump.space/ch1/track/67
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
 https://channels.forestgump.space/ch1/track/1010
 
-#EXTINF:-1 group-title="TR" tvg-name="S Sport 2",S Sport 2 (TR)
+#EXTINF:-1 group-title="TR" tvg-name="A Spor",A Spor (TR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/405
+https://channels.forestgump.space/ch1/track/1011
 
-#EXTINF:-1 group-title="TR" tvg-name="TRT Spor",TRT Spor (TR)
+#EXTINF:-1 group-title="TR" tvg-name="A Tv",A Tv (TR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/406
+https://channels.forestgump.space/ch1/track/1000
 
-#EXTINF:-1 group-title="TR" tvg-name="TRT Spor 2",TRT Spor 2 (TR)
+#EXTINF:-1 group-title="TR" tvg-name="Now Tv",Now Tv (TR)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://channels.forestgump.space/ch1/track/407
+https://channels.forestgump.space/ch1/track/1003
 
 #EXTINF:-1 group-title="IN" tvg-name="Star Sports 1",Star Sports 1 (IN)
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
