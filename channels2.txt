@@ -73,12 +73,7 @@ bein-sports-max-10-france|beIN Sports MAX 10 France-FR|World Sports
 bein-sports-1-france|beIN SPORTS 1 France-FR|World Sports
 bein-sports-2-france|beIN SPORTS 2 France-FR|World Sports
 bein-sports-3-france|beIN SPORTS 3 France-FR|World Sports
-bein-sports-1-turkey|beIN SPORTS 1 Turkey-TR|World Sports
-bein-sports-2-turkey|beIN SPORTS 2 Turkey-TR|World Sports
-bein-sports-3-turkey|beIN SPORTS 3 Turkey-TR|World Sports
-bein-sports-4-turkey|beIN SPORTS 4 Turkey-TR|World Sports
-bein-sports-2-Max-turkey|beIN SPORTS 4 Turkey-TR|World Sports
-bein-sports-max-1-turkey|beIN SPORTS 4 Turkey-TR|World Sports
+
 bein-sports-hd-qatar|BeIN Sports HD Qatar-QA|World Sports
 bein-sports-usa|BeIN SPORTS USA-US|World Sports
 bein-sports-en-espanol|beIN SPORTS en Español-US|World Sports
@@ -108,7 +103,7 @@ bein-sports-1-malaysia|beIN Sports 1 Malaysia-MY|World Sports
 bein-sports-2-malaysia|beIN Sports 2 Malaysia-MY|World Sports
 bein-sports-3-malaysia|beIN Sports 3 Malaysia-MY|World Sports
 bfm-tv-france|BFM TV France-FR|World Sports
-bein-sports-5-turkey|bein Sports 5 Turkey-TR|World Sports
+
 bandsports-brasil|Bandsports Brasil-BR|World Sports
 canal-plus-motogp-france|Canal+ MotoGP France-FR|World Sports
 canal-plus-formula-1|Canal+ Formula 1-FR|World Sports
