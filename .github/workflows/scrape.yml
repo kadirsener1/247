@@ -13,7 +13,7 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -31,13 +31,16 @@ jobs:
       - name: Scraper çalıştır
         run: python scraper.py
 
-      - name: Sonucu göster
-        run: cat tv247.m3u || echo "Dosya yok"
+      - name: Kanal sayısını göster
+        run: |
+          echo "Toplam kanal: $(grep -c '#EXTINF' tv247.m3u)"
+          echo "m3u8 stream: $(grep -c '.m3u8' tv247.m3u)"
+          head -30 tv247.m3u
 
       - name: Commit ve Push
         run: |
           git config user.email "bot@github.com"
           git config user.name "bot"
           git add -A
-          git diff --staged --quiet || git commit -m "M3U güncellendi"
+          git diff --staged --quiet || git commit -m "M3U güncellendi - $(grep -c '#EXTINF' tv247.m3u) kanal"
           git push
