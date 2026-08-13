@@ -3,7 +3,7 @@ name: Update tv247 tr Playlist
 on:
   # Her 1 saatte bir çalışsın
   schedule:
-    - cron: '0 * * * *'
+      - cron: '0 */6 * * *'
 
   # Manuel tetikleme
   workflow_dispatch:
