@@ -73,9 +73,9 @@ CHANNELS = [
     ("beIN Sports 3", "TR", 1, 64),
     ("beIN Sports 4", "TR", 1, 67),
     ("beIN Sports 5", "TR", 1, 1010),
-    ("S Sport 2", "TR", 1, 405),
-    ("TRT Spor", "TR", 1, 406),
-    ("TRT Spor 2", "TR", 1, 407),
+    ("A Spor", "TR", 1, 1011),
+    ("A Tv", "TR", 1, 1000),
+    ("Now Tv", "TR", 1, 1003),
 
     # Hindistan / Pakistan
     ("Star Sports 1", "IN", 1, 410),
