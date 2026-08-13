@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
 SportsBite Hızlı Scraper
-- STREAM_BASE domain'i otomatik bulur (değişse bile çalışır)
-- Sadece track URL'lerini yazar (embed atlanır)
-- Kanal adı + ülke bilgisi yazar
+- Stream domain otomatik bulunur
+- TÜM kanallar M3U'ya yazılır (yayın olmasa bile)
+- embed atlanır, sadece track URL'leri
+- Kanal adı + ülke bilgisi
 """
 
 import subprocess
@@ -28,43 +29,19 @@ OUTPUT_FILE = "tv247.m3u"
 # format: (kanal_adı, ülke, ch_numarası, track_id)
 # =====================================================
 CHANNELS = [
-    # USA Kanalları
+    # USA
     ("ESPN", "USA", 1, 360),
     ("ESPN2", "USA", 1, 361),
     ("Fox Sports 1", "USA", 1, 362),
-    ("Fox Sports 2", "USA", 1, 363),
-    ("CBS Sports", "USA", 1, 364),
-    ("NBC Sports", "USA", 1, 365),
-    ("TNT Sports", "USA", 1, 366),
-    ("USA Network", "USA", 1, 367),
-    ("NFL Network", "USA", 1, 368),
-    ("NBA TV", "USA", 1, 369),
-    ("MLB Network", "USA", 1, 370),
-    ("NHL Network", "USA", 1, 371),
-    ("ESPN News", "USA", 1, 372),
-    ("ESPNU", "USA", 1, 373),
-    ("ESPN Deportes", "USA", 1, 374),
-    ("Fox Deportes", "USA", 1, 375),
-    ("beIN Sports", "USA", 1, 376),
-    ("beIN Sports 2", "USA", 1, 377),
 
-    # UK Kanalları
+
+    # UK
     ("Sky Sports Main Event", "UK", 1, 380),
     ("Sky Sports Premier League", "UK", 1, 381),
     ("Sky Sports Football", "UK", 1, 382),
     ("Sky Sports F1", "UK", 1, 383),
     ("Sky Sports Cricket", "UK", 1, 384),
-    ("Sky Sports Golf", "UK", 1, 385),
-    ("Sky Sports Tennis", "UK", 1, 386),
-    ("Sky Sports NFL", "UK", 1, 387),
-    ("Sky Sports Arena", "UK", 1, 388),
-    ("Sky Sports Action", "UK", 1, 389),
-    ("TNT Sports 1", "UK", 1, 390),
-    ("TNT Sports 2", "UK", 1, 391),
-    ("TNT Sports 3", "UK", 1, 392),
-    ("TNT Sports 4", "UK", 1, 393),
-    ("EuroSport 1", "UK", 1, 394),
-    ("EuroSport 2", "UK", 1, 395),
+   
 
     # Türkiye
     ("beIN Sports 1", "TR", 1, 62),
@@ -72,7 +49,6 @@ CHANNELS = [
     ("beIN Sports 3", "TR", 1, 64),
     ("beIN Sports 4", "TR", 1, 67),
     ("beIN Sports 5", "TR", 1, 1010),
-    ("S Sport 2", "TR", 1, 405),
     ("TRT Spor", "TR", 1, 406),
     ("TRT Spor 2", "TR", 1, 407),
 
@@ -118,28 +94,20 @@ def create_scraper():
 
 
 def find_stream_base(scraper):
-    """
-    Ana sayfadan STREAM_BASE domain'ini otomatik bul.
-    3 yöntem dener:
-      1. HTML preconnect linklerinden
-      2. JS bundle içinden
-      3. Fallback (bilinen son domain)
-    """
-    print("\n[*] Stream domain otomatik aranıyor...")
+    """Ana sayfadan stream domain'ini otomatik bul"""
+    print("[*] Stream domain aranıyor...")
 
     try:
         resp = scraper.get(BASE_URL, timeout=30)
         html = resp.text
 
-        # --- Yöntem 1: preconnect / dns-prefetch linklerinden ---
-        # <link rel="preconnect" href="https://channels.forestgump.space" />
+        # 1. preconnect / dns-prefetch linklerinden
         preconnect_urls = re.findall(
             r'<link[^>]+(?:preconnect|dns-prefetch)[^>]+href="(https?://[^"]+)"',
             html, re.IGNORECASE
         )
 
-        # Bilinen gereksiz domain'leri filtrele
-        skip = ['google', 'facebook', 'wsrv.nl', 'ibb.co', 'adsterra', 'piano']
+        skip = ['google', 'facebook', 'wsrv.nl', 'ibb.co', 'adsterra', 'piano', 'goog']
         candidates = []
         for url in preconnect_urls:
             url_clean = url.rstrip('/')
@@ -147,119 +115,90 @@ def find_stream_base(scraper):
                 candidates.append(url_clean)
 
         if candidates:
-            print(f"  Preconnect adayları: {candidates}")
-
-            # Her adayı ch1/track/360 ile test et
+            print(f"  Adaylar: {candidates}")
             for candidate in candidates:
                 test_url = f"{candidate}/ch1/track/360"
                 try:
                     test = scraper.head(test_url, timeout=5, allow_redirects=True)
                     if test.status_code == 200:
-                        print(f"  ✅ Çalışan domain bulundu: {candidate}")
+                        print(f"  ✅ Domain bulundu: {candidate}")
                         return candidate
                 except:
                     pass
-                print(f"  ❌ {candidate} çalışmıyor")
 
-        # --- Yöntem 2: JS bundle içinden ---
+        # 2. JS bundle içinden
         js_match = re.search(r'src="(/assets/index-[^"]+\.js)"', html)
         if js_match:
             js_url = BASE_URL + js_match.group(1)
-            print(f"  JS bundle kontrol ediliyor: {js_url}")
             try:
                 js_resp = scraper.get(js_url, timeout=20)
                 js = js_resp.text
-
-                # https://XXXXX.YYYYY.ZZZ/ch formatında URL ara
-                stream_domains = re.findall(
-                    r'(https?://[a-zA-Z0-9\-\.]+\.[a-z]{2,})/ch\d+/',
-                    js
-                )
-                if stream_domains:
-                    domain = stream_domains[0].rstrip('/')
-                    print(f"  ✅ JS'den domain bulundu: {domain}")
-                    return domain
-
-                # "channels." ile başlayan domain'leri ara
-                ch_domains = re.findall(
-                    r'(https?://channels\.[a-zA-Z0-9\-\.]+)',
-                    js
-                )
-                if ch_domains:
-                    domain = ch_domains[0].rstrip('/')
-                    print(f"  ✅ JS'den channels domain bulundu: {domain}")
-                    return domain
+                domains = re.findall(r'(https?://[a-zA-Z0-9\-\.]+\.[a-z]{2,})/ch\d+/', js)
+                if domains:
+                    print(f"  ✅ JS'den domain: {domains[0]}")
+                    return domains[0].rstrip('/')
             except:
                 pass
 
     except Exception as e:
         print(f"  ⚠ Hata: {e}")
 
-    # --- Yöntem 3: Fallback ---
-    print(f"  ⚠ Otomatik bulunamadı, fallback kullanılıyor: {FALLBACK_STREAM_BASE}")
+    print(f"  ⚠ Fallback: {FALLBACK_STREAM_BASE}")
     return FALLBACK_STREAM_BASE
-
-
-def check_stream(scraper, stream_base, ch, track_id):
-    """Tek bir stream URL'sini kontrol et - sadece track formatı"""
-    url = f"{stream_base}/ch{ch}/track/{track_id}"
-    try:
-        resp = scraper.head(url, timeout=5, allow_redirects=True)
-        return resp.status_code == 200, url
-    except:
-        return False, url
 
 
 def main():
     print("=" * 50)
     print("SportsBite Hızlı Scraper")
+    print(f"Toplam {len(CHANNELS)} kanal")
     print("=" * 50)
 
     scraper = create_scraper()
 
-    # 1. Stream domain'i otomatik bul
+    # 1. Domain bul
     stream_base = find_stream_base(scraper)
-    print(f"\n[*] Kullanılan stream domain: {stream_base}")
+    print(f"[*] Stream domain: {stream_base}\n")
 
-    # 2. Kanalları tara
-    print(f"\n[*] {len(CHANNELS)} kanal taranıyor...")
-    working = []
-    failed = []
-
-    for name, country, ch, track_id in CHANNELS:
-        ok, url = check_stream(scraper, stream_base, ch, track_id)
-        if ok:
-            working.append((name, country, url))
-            print(f"  ✅ {name} ({country})")
-        else:
-            failed.append((name, country, url))
-            print(f"  ❌ {name} ({country})")
-
-    # 3. M3U dosyası oluştur
-    print(f"\n{'='*50}")
-    print(f"  ✅ Çalışan: {len(working)}")
-    print(f"  ❌ Çalışmayan: {len(failed)}")
-    print(f"{'='*50}")
+    # 2. Tüm kanalları M3U'ya yaz (kontrol etmeden)
+    #    Çünkü bazı kanallar sadece yayın varken aktif
+    print(f"[*] {len(CHANNELS)} kanal M3U'ya yazılıyor...")
 
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         f.write('#EXTM3U\n\n')
 
-        for name, country, url in working:
-            if '/embed/' in url:
-                continue
+        for name, country, ch, track_id in CHANNELS:
+            url = f"{stream_base}/ch{ch}/track/{track_id}"
 
             f.write(f'#EXTINF:-1 group-title="{country}" tvg-name="{name}",{name} ({country})\n')
             f.write(f'#EXTVLCOPT:http-referrer={BASE_URL}/\n')
             f.write(f'#EXTVLCOPT:http-user-agent=Mozilla/5.0\n')
             f.write(f'{url}\n\n')
 
-    print(f"\n✅ {OUTPUT_FILE} oluşturuldu! ({len(working)} kanal)")
+            print(f"  ✅ {name} ({country}) → ch{ch}/track/{track_id}")
 
-    # 4. Başarısız kanalları logla
-    if failed:
-        print(f"\n⚠ Çalışmayan kanallar:")
-        for name, country, url in failed:
-            print(f"  - {name} ({country}): {url}")
+    print(f"\n{'='*50}")
+    print(f"✅ {OUTPUT_FILE} oluşturuldu! ({len(CHANNELS)} kanal)")
+    print(f"{'='*50}")
+
+    # 3. Hızlı durum kontrolü (sadece bilgi amaçlı)
+    print(f"\n[*] Hızlı durum kontrolü...")
+    live_count = 0
+    offline_count = 0
+
+    for name, country, ch, track_id in CHANNELS:
+        url = f"{stream_base}/ch{ch}/track/{track_id}"
+        try:
+            resp = scraper.head(url, timeout=3, allow_redirects=True)
+            if resp.status_code == 200:
+                live_count += 1
+            else:
+                offline_count += 1
+        except:
+            offline_count += 1
+
+    print(f"\n  📺 Şu an yayında: {live_count}")
+    print(f"  💤 Şu an kapalı:  {offline_count}")
+    print(f"  📋 M3U'da toplam: {len(CHANNELS)}")
 
 
 if __name__ == '__main__':
