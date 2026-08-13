@@ -1,3 +1,12 @@
 #EXTM3U
-#EXTINF:-1, Kanal 5 USA - Stream 1
-https://channels.forestgump.space
+
+#EXTINF:-1 group-title="Sports" tvg-name="Channel 1",Channel 1
+#EXTVLCOPT:http-referrer=https://sportsbite.org/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://channels.forestgump.space/ch1/track/360
+
+#EXTINF:-1 group-title="Sports" tvg-name="Channel 2",Channel 2
+#EXTVLCOPT:http-referrer=https://sportsbite.org/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://channels.forestgump.space/ch1/embed/360
+
