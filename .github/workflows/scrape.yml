@@ -29,13 +29,13 @@ jobs:
           python -c "import cloudscraper; print('OK')"
 
       - name: Scraper çalıştır
-        run: python scraper.py
+        run: python scraper_bite.py
 
       - name: Kanal sayısını göster
         run: |
-          echo "Toplam kanal: $(grep -c '#EXTINF' tv247.m3u)"
-          echo "m3u8 stream: $(grep -c '.m3u8' tv247.m3u)"
-          head -30 tv247.m3u
+          echo "Toplam kanal: $(grep -c '#EXTINF' tv247_bite.m3u)"
+          echo "m3u8 stream: $(grep -c '.m3u8' tv247_bite.m3u)"
+          head -30 tv247_bite.m3u
 
       - name: Commit ve Push
         run: |
