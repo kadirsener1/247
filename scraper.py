@@ -1177,7 +1177,7 @@ def generate_m3u(results):
             lines.append(
                 f'#EXTINF:-1 tvg-id="{ch["slug"]}" '
                 f'tvg-name="{ch["name"]}" '
-                f'group-title=World",{ch["name"]}'
+                f'group-title="World",{ch["name"]}'
             )
             lines.append(ch['url'])
             lines.append('')
