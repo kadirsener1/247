@@ -20,22 +20,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Sistem bağımlılıkları (Playwright için)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-            libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
-            libxdamage1 libxfixes3 libxrandr2 libgbm1 \
-            libasound2 libpango-1.0-0 libpangocairo-1.0-0 \
-            libcairo2 libatspi2.0-0 libwayland-client0
-
       - name: Python paketleri
         run: |
           pip install --upgrade pip
           pip install requests urllib3 playwright
-          python -m playwright install chromium
-          python -m playwright install-deps chromium
+
+      - name: Playwright Chromium kur
+        run: |
+          python -m playwright install chromium --with-deps
 
       - name: M3U oluştur
         run: python checker.py
