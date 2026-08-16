@@ -2,29 +2,26 @@
 # -*- coding: utf-8 -*-
 
 import json
-import html
 import os
 import re
-import threading
+import asyncio
 from pathlib import Path
-from urllib.parse import urljoin
 from datetime import datetime, timezone, timedelta
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from playwright.async_api import async_playwright
 
 
 API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
 OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
-DEBUG_DIR = "debug_samples"
 
-TIMEOUT = 20
-MAX_WORKERS = 10
-ONLY_ONLINE = True
-SAVE_DEBUG_SAMPLES = 5
+TIMEOUT = 30000          # ms (Playwright için)
+PAGE_WAIT = 8000         # ms - stream yüklenene kadar bekle
+MAX_CONCURRENT = 3       # Aynı anda kaç sayfa açılsın (fazla olmasın)
+ONLY_ONLINE = True       # Sadece status=online olanları al
 
 HEADERS = {
     "User-Agent": (
@@ -32,260 +29,235 @@ HEADERS = {
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/124.0.0.0 Safari/537.36"
     ),
-    "Accept": "*/*",
-    "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8",
     "Referer": "https://cdnlivetv.tv/",
-    "Origin": "https://cdnlivetv.tv",
-    "Connection": "keep-alive",
 }
 
-thread_local = threading.local()
 
+# ─── YARDIMCI ─────────────────────────────────────────────────────────────────
 
 def make_session():
-    session = requests.Session()
-
-    retry = Retry(
-        total=2,
-        connect=2,
-        read=2,
-        backoff_factor=0.7,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=frozenset(["GET", "HEAD"]),
-    )
-    adapter = HTTPAdapter(max_retries=retry, pool_connections=100, pool_maxsize=100)
-
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    session.headers.update(HEADERS)
-    return session
+    s = requests.Session()
+    retry = Retry(total=3, backoff_factor=0.5,
+                  status_forcelist=[429, 500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry)
+    s.mount("http://", adapter)
+    s.mount("https://", adapter)
+    s.headers.update(HEADERS)
+    return s
 
 
-def get_session():
-    if not hasattr(thread_local, "session"):
-        thread_local.session = make_session()
-    return thread_local.session
-
-
-def load_channels():
-    print(f"🌐 API'den veri çekiliyor...")
-    print(f"   URL: {API_URL}\n")
-
-    session = make_session()
-    r = session.get(API_URL, timeout=30)
-    r.raise_for_status()
-
-    data = r.json()
-    channels = data.get("channels", [])
-    total_channels = data.get("total_channels", len(channels))
-
-    print(f"📡 HTTP Status: {r.status_code}")
-    print(f"📡 API toplam kanal: {total_channels}")
-    print(f"📡 Gelen kanal sayısı: {len(channels)}")
-
-    if ONLY_ONLINE:
-        channels = [c for c in channels if str(c.get("status", "")).lower() == "online"]
-        print(f"✅ Online filtre sonrası: {len(channels)} kanal\n")
-    else:
-        print()
-
-    return channels, total_channels
-
-
-def clean_candidate(value, base_url=""):
-    if not value:
-        return ""
-
-    value = str(value).strip()
-    value = html.unescape(value)
-    value = value.replace("\\/", "/")
-    value = value.replace("\\u0026", "&")
-    value = value.replace("&amp;", "&")
-    value = value.strip(" '\"\t\r\n")
-
-    if value.startswith("//"):
-        value = "https:" + value
-    elif value.startswith("/"):
-        value = urljoin(base_url, value)
-
-    return value
-
-
-def looks_like_stream_url(url):
+def looks_like_stream(url: str) -> bool:
     if not url:
         return False
-
     u = url.lower()
     return any(x in u for x in [
-        ".m3u8",
-        ".mpd",
-        "/manifest",
-        "/playlist",
-        "mpegurl",
-        "master.m3u8",
-        "index.m3u8",
+        ".m3u8", ".mpd", "/manifest", "mpegurl",
+        "application/dash", "master.m3u8", "index.m3u8",
+        "/hls/", "/dash/", "/live/stream",
     ])
 
 
-def find_stream_in_obj(obj, base_url=""):
-    streamish_keys = {
-        "file", "src", "source", "hls", "dash", "manifest",
-        "playlist", "stream", "stream_url", "play_url"
-    }
+def load_channels() -> list:
+    print(f"🌐 API'den kanallar çekiliyor...")
+    session = make_session()
+    r = session.get(API_URL, timeout=30)
+    r.raise_for_status()
+    data = r.json()
 
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            key = str(k).lower()
+    channels = data.get("channels", [])
+    print(f"📡 Toplam API kanalı : {data.get('total_channels', len(channels))}")
 
-            if isinstance(v, str):
-                cand = clean_candidate(v, base_url)
-                if cand and (looks_like_stream_url(cand) or key in streamish_keys):
-                    return cand
+    if ONLY_ONLINE:
+        channels = [c for c in channels
+                    if str(c.get("status", "")).lower() == "online"]
+        print(f"🟢 Online kanal     : {len(channels)}\n")
 
-            found = find_stream_in_obj(v, base_url)
-            if found:
-                return found
-
-    elif isinstance(obj, list):
-        for item in obj:
-            found = find_stream_in_obj(item, base_url)
-            if found:
-                return found
-
-    return ""
+    return channels
 
 
-def extract_stream_from_text(text, base_url=""):
-    if not text:
-        return ""
+# ─── PLAYWRIGHT CORE ──────────────────────────────────────────────────────────
 
-    text = html.unescape(text)
-    text = text.replace("\\/", "/").replace("\\u0026", "&")
+async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
+    """
+    Playwright ile player sayfasını açar,
+    ağ isteklerini dinleyerek .m3u8 / .mpd URL'sini yakalar.
+    """
+    stream_url = ""
+    found_event = asyncio.Event()
 
-    patterns = [
-        r'https?://[^"\'<>\s]+\.m3u8[^"\'<>\s]*',
-        r'https?://[^"\'<>\s]+\.mpd[^"\'<>\s]*',
-        r'["\'](//[^"\']+\.m3u8[^"\']*)["\']',
-        r'["\'](/[^"\']+\.m3u8[^"\']*)["\']',
-        r'(?:file|src|source|hls|dash|manifest|playlist)\s*[:=]\s*["\']([^"\']+)["\']',
-    ]
+    context = await browser.new_context(
+        user_agent=HEADERS["User-Agent"],
+        extra_http_headers={
+            "Accept-Language": HEADERS["Accept-Language"],
+            "Referer": HEADERS["Referer"],
+        },
+        # Reklam / tracker'ları engelle (opsiyonel ama hızlandırır)
+        bypass_csp=True,
+    )
 
-    for pattern in patterns:
-        matches = re.findall(pattern, text, flags=re.IGNORECASE)
-        if not matches:
-            continue
+    page = await context.new_page()
 
-        if isinstance(matches, str):
-            matches = [matches]
+    # ── Ağ isteği dinleyicisi ─────────────────────────────
+    async def on_request(request):
+        nonlocal stream_url
+        url = request.url
+        if looks_like_stream(url) and not stream_url:
+            stream_url = url
+            found_event.set()
 
-        for m in matches:
-            cand = clean_candidate(m, base_url)
-            if looks_like_stream_url(cand):
-                return cand
+    async def on_response(response):
+        nonlocal stream_url
+        url = response.url
+        if looks_like_stream(url) and not stream_url:
+            stream_url = url
+            found_event.set()
 
-    return ""
-
-
-def probe_player(url, depth=0, max_depth=2):
-    if depth > max_depth or not url:
-        return ""
-
-    session = get_session()
+    page.on("request", on_request)
+    page.on("response", on_response)
 
     try:
-        r = session.get(url, timeout=TIMEOUT, allow_redirects=True)
-        final_url = r.url
-        content_type = r.headers.get("Content-Type", "").lower()
+        await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
 
-        # Direkt stream URL'ye geldiyse
-        if looks_like_stream_url(final_url):
-            return final_url
+        # Stream yakalanana kadar ya da süre dolana kadar bekle
+        try:
+            await asyncio.wait_for(found_event.wait(), timeout=PAGE_WAIT / 1000)
+        except asyncio.TimeoutError:
+            pass
 
-        # M3U içeriği geldiyse
-        sample_text = r.text[:5000] if r.text else ""
-        if "#EXTM3U" in sample_text or "application/vnd.apple.mpegurl" in content_type:
-            return final_url
+        # Hala bulamadıysak sayfanın HTML'inden çıkarmayı dene
+        if not stream_url:
+            content = await page.content()
+            stream_url = extract_from_html(content, player_url)
 
-        # JSON ise içinden stream ara
-        if "application/json" in content_type or sample_text.lstrip().startswith(("{", "[")):
-            try:
-                data = r.json()
-                found = find_stream_in_obj(data, final_url)
-                if found:
-                    return found
-            except Exception:
-                pass
+        # Hala bulamadıysak JS değişkenlerini tara
+        if not stream_url:
+            stream_url = await extract_from_js(page)
 
-        # HTML/JS içinden stream ara
-        found = extract_stream_from_text(r.text, final_url)
-        if found:
-            return found
+    except Exception as e:
+        print(f"   ⚠️  Playwright hata [{channel_name}]: {e}")
+    finally:
+        await page.close()
+        await context.close()
 
-        # iframe varsa onun içine gir
-        iframe_matches = re.findall(
-            r'<iframe[^>]+src=["\']([^"\']+)["\']',
-            r.text,
-            flags=re.IGNORECASE
-        )
-        for iframe_src in iframe_matches:
-            iframe_url = clean_candidate(iframe_src, final_url)
-            iframe_url = urljoin(final_url, iframe_url)
-            found = probe_player(iframe_url, depth + 1, max_depth)
-            if found:
-                return found
+    return stream_url
 
-    except requests.RequestException:
-        return ""
-    except Exception:
-        return ""
+
+def extract_from_html(html: str, base_url: str = "") -> str:
+    """HTML içinden stream URL çıkarır."""
+    patterns = [
+        r'https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*',
+        r'https?://[^\s"\'<>]+\.mpd[^\s"\'<>]*',
+        r'(?:file|src|source|hls|stream|manifest)\s*[=:]\s*["\']([^"\']+)["\']',
+        r'["\']([^"\']*(?:\.m3u8|\.mpd)[^"\']*)["\']',
+    ]
+    for pattern in patterns:
+        matches = re.findall(pattern, html, re.IGNORECASE)
+        for m in matches:
+            m = m.strip().replace("\\/", "/")
+            if looks_like_stream(m):
+                if m.startswith("//"):
+                    m = "https:" + m
+                return m
+    return ""
+
+
+async def extract_from_js(page) -> str:
+    """
+    Sayfanın JS scope'undaki yaygın değişkenleri kontrol eder.
+    """
+    js_vars = [
+        "window.stream_url",
+        "window.hls_url",
+        "window.streamUrl",
+        "window.hlsUrl",
+        "window.playerSrc",
+        "window.videoSrc",
+        "window.source",
+        "window.manifestUrl",
+        "typeof jwplayer !== 'undefined' ? jwplayer().getPlaylistItem()?.file : null",
+        "typeof videojs !== 'undefined' ? videojs.getAllPlayers()[0]?.src() : null",
+        "typeof Hls !== 'undefined' ? Hls?.url : null",
+        "document.querySelector('video')?.src",
+        "document.querySelector('video source')?.src",
+    ]
+
+    for expr in js_vars:
+        try:
+            val = await page.evaluate(expr)
+            if val and isinstance(val, str) and looks_like_stream(val):
+                return val
+        except Exception:
+            pass
 
     return ""
 
 
-def process_channel(ch):
-    name = str(ch.get("name", "Bilinmeyen Kanal")).strip()
-    player_url = str(ch.get("url", "")).strip()
-    image = str(ch.get("image", "")).strip()
-    code = str(ch.get("code", "GENEL")).strip().upper()
-    status = str(ch.get("status", "")).strip().lower()
+# ─── BATCH İŞLEME ─────────────────────────────────────────────────────────────
 
-    if not player_url:
-        return {
-            "ok": False,
-            "name": name,
-            "reason": "url yok",
-            "player_url": "",
-            "stream_url": "",
-            "image": image,
-            "group": code,
-        }
+async def process_all(channels: list) -> tuple[list, list]:
+    """Tüm kanalları paralel olarak işler."""
+    success = []
+    failed = []
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
+    total = len(channels)
+    done_count = 0
+    lock = asyncio.Lock()
 
-    stream_url = probe_player(player_url)
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--single-process",
+            ],
+        )
 
-    if stream_url:
-        return {
-            "ok": True,
-            "name": name,
-            "player_url": player_url,
-            "stream_url": stream_url,
-            "image": image,
-            "group": code,
-            "status": status,
-        }
+        async def handle(ch):
+            nonlocal done_count
 
-    return {
-        "ok": False,
-        "name": name,
-        "reason": "stream bulunamadı",
-        "player_url": player_url,
-        "stream_url": "",
-        "image": image,
-        "group": code,
-        "status": status,
-    }
+            name = str(ch.get("name", "?")).strip()
+            player_url = str(ch.get("url", "")).strip()
+            image = str(ch.get("image", "")).strip()
+            group = str(ch.get("code", "GENEL")).strip().upper()
+
+            async with semaphore:
+                stream_url = await get_stream_url(browser, player_url, name)
+
+            async with lock:
+                done_count += 1
+                prefix = f"[{done_count:03d}/{total}]"
+                if stream_url:
+                    print(f"  ✅ {prefix} {name}")
+                    success.append({
+                        "name": name,
+                        "stream_url": stream_url,
+                        "player_url": player_url,
+                        "image": image,
+                        "group": group,
+                    })
+                else:
+                    print(f"  ❌ {prefix} {name} — bulunamadı")
+                    failed.append({
+                        "name": name,
+                        "player_url": player_url,
+                        "image": image,
+                        "group": group,
+                    })
+
+        await asyncio.gather(*[handle(ch) for ch in channels])
+        await browser.close()
+
+    return success, failed
 
 
-def write_m3u(items, output_path):
+# ─── M3U YAZICI ───────────────────────────────────────────────────────────────
+
+def write_m3u(items: list, output_path: str):
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
 
@@ -296,11 +268,11 @@ def write_m3u(items, output_path):
         f.write(f"# Son guncelleme: {now} (TR)\n")
         f.write(f"# Kanal sayisi: {len(items)}\n\n")
 
-        for item in items:
-            name = item["name"]
-            logo = item["image"]
-            group = item["group"]
-            stream_url = item["stream_url"]
+        for ch in items:
+            name = ch["name"]
+            logo = ch["image"]
+            group = ch["group"]
+            stream = ch["stream_url"]
 
             extinf = f'#EXTINF:-1 tvg-name="{name}"'
             if logo:
@@ -310,106 +282,70 @@ def write_m3u(items, output_path):
             extinf += f',{name}'
 
             f.write(extinf + "\n")
-            f.write(stream_url + "\n\n")
+            f.write(stream + "\n\n")
 
 
-def save_debug(failed_items):
-    with open(DEBUG_FILE, "w", encoding="utf-8") as f:
-        json.dump(failed_items, f, ensure_ascii=False, indent=2)
+# ─── MAIN ─────────────────────────────────────────────────────────────────────
 
-    Path(DEBUG_DIR).mkdir(parents=True, exist_ok=True)
+async def main():
+    print("═" * 65)
+    print("   📺 CDN LIVE TV — M3U PLAYLIST OLUŞTURUCU (Playwright)")
+    print("═" * 65 + "\n")
 
-    for i, item in enumerate(failed_items[:SAVE_DEBUG_SAMPLES], start=1):
-        try:
-            session = make_session()
-            r = session.get(item["player_url"], timeout=TIMEOUT)
-            sample_path = Path(DEBUG_DIR) / f"{i:02d}_{safe_filename(item['name'])}.html"
-            sample_path.write_text(r.text, encoding="utf-8", errors="ignore")
-        except Exception:
-            pass
-
-
-def safe_filename(name):
-    return re.sub(r'[^a-zA-Z0-9._-]+', "_", name)[:80]
-
-
-def main():
-    print("═════════════════════════════════════════════════════════════════")
-    print("   📺 CDN LIVE TV - M3U PLAYLIST OLUŞTURUCU")
-    print("═════════════════════════════════════════════════════════════════\n")
-
-    try:
-        channels, total_channels = load_channels()
-    except Exception as e:
-        print(f"❌ API okunamadı: {e}")
-        print("⚠️ Workflow kırılmasın diye çıkış kodu 0 dönülüyor.")
-        return
-
+    # Kanalları yükle
+    channels = load_channels()
     if not channels:
-        print("⚠️ Kanal bulunamadı.")
+        print("⚠️  İşlenecek kanal yok.")
         Path(OUTPUT_FILE).write_text("#EXTM3U\n", encoding="utf-8")
         return
 
-    print("=================================================================")
-    print("🔍 Player sayfalarından gerçek stream linkleri çıkarılıyor...")
-    print(f"⚡ Worker: {MAX_WORKERS}")
-    print("=================================================================\n")
+    print(f"{'='*65}")
+    print(f"🎭 Playwright tarayıcı başlatılıyor...")
+    print(f"⚡ Eşzamanlı sayfa   : {MAX_CONCURRENT}")
+    print(f"⏱️  Sayfa bekleme    : {PAGE_WAIT/1000}s")
+    print(f"{'='*65}\n")
 
-    success = []
-    failed = []
+    success, failed = await process_all(channels)
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {executor.submit(process_channel, ch): ch for ch in channels}
-
-        total = len(futures)
-        done = 0
-
-        for future in as_completed(futures):
-            done += 1
-            try:
-                result = future.result()
-            except Exception as e:
-                ch = futures[future]
-                result = {
-                    "ok": False,
-                    "name": ch.get("name", "Bilinmeyen Kanal"),
-                    "reason": f"hata: {e}",
-                    "player_url": ch.get("url", ""),
-                    "stream_url": "",
-                    "image": ch.get("image", ""),
-                    "group": str(ch.get("code", "GENEL")).upper(),
-                }
-
-            if result["ok"]:
-                success.append(result)
-                print(f"✅ [{done:03}/{total}] {result['name']}")
-            else:
-                failed.append(result)
-                print(f"❌ [{done:03}/{total}] {result['name']} — {result.get('reason', 'hata')}")
-
+    # M3U yaz
     write_m3u(success, OUTPUT_FILE)
-    save_debug(failed)
 
-    print("\n=================================================================")
-    print("📊 SONUÇ")
-    print("=================================================================")
-    print(f"API toplam kanal      : {total_channels}")
-    print(f"İşlenen kanal         : {len(channels)}")
-    print(f"M3U'ya eklenen        : {len(success)}")
-    print(f"Bulunamayan           : {len(failed)}")
-    print(f"M3U dosyası           : {OUTPUT_FILE}")
-    print(f"Debug dosyası         : {DEBUG_FILE}")
-    print(f"Debug örnek klasörü   : {DEBUG_DIR}")
-    print("=================================================================\n")
+    # Debug
+    with open(DEBUG_FILE, "w", encoding="utf-8") as f:
+        json.dump(failed, f, ensure_ascii=False, indent=2)
+
+    # Rapor
+    turkey_tz = timezone(timedelta(hours=3))
+    now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
+
+    print(f"\n{'='*65}")
+    print("📊 SONUÇ RAPORU")
+    print(f"{'='*65}")
+    print(f"  📺 İşlenen kanal    : {len(channels)}")
+    print(f"  ✅ M3U'ya eklenen   : {len(success)}")
+    print(f"  ❌ Bulunamayan       : {len(failed)}")
+    print(f"  📁 M3U dosyası      : {OUTPUT_FILE}")
+    print(f"  🕐 Güncelleme       : {now}")
+    print(f"{'='*65}\n")
+
+    # Grup istatistiği
+    groups: dict = {}
+    for ch in success:
+        g = ch["group"]
+        groups[g] = groups.get(g, 0) + 1
+
+    if groups:
+        print("📂 Ülke / Kategori bazında:")
+        for g, count in sorted(groups.items(), key=lambda x: -x[1]):
+            print(f"   {g:<20}: {count} kanal")
+        print()
 
     if len(success) == 0:
-        print("⚠️ Hiç stream çıkarılamadı.")
-        print("⚠️ Ama workflow artık exit code 1 vermeyecek.")
-        print("⚠️ debug_failed.json ve debug_samples artifact olarak yüklenecek.")
-        return
-
-    print(f"✅ {OUTPUT_FILE} oluşturuldu. ({len(success)} kanal)")
+        print("⚠️  Hiç stream URL çıkarılamadı!")
+        print("💡 debug_failed.json artifact'ına bakın.\n")
+    else:
+        print(f"✅ {OUTPUT_FILE} başarıyla oluşturuldu!\n")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
