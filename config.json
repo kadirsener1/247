@@ -1,0 +1,13 @@
+{
+    "api_url": "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free",
+    "stream_base": "https://cdnlivetv.is/secure/api/v1",
+    "token_api": "https://api.cdnlivetv.is/api/v1/token/?user=cdnlivetv&plan=free",
+    "output_file": "cdnlive.m3u",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "timeout": 30,
+    "check_streams": false,
+    "last_update": "",
+    "last_token": "",
+    "channel_count": 0,
+    "groups": {}
+}
