@@ -1,120 +1,85 @@
-name: 📺 M3U Playlist Güncelle
+name: CDN Live TV M3U Güncelle
 
 on:
+  # Her 4 saatte bir otomatik çalıştır
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: '0 */4 * * *'
+  
+  # Manuel tetikleme
   workflow_dispatch:
-    inputs:
-      force_update:
-        description: "Cache temizle ve zorla güncelle"
-        required: false
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
+  
+  # Push'ta çalıştır (test için)
   push:
-    branches:
-      - main
     paths:
-      - "generator.py"
-      - "config.json"
-
-permissions:
-  contents: write
+      - 'checker.py'
+      - '.github/workflows/update_m3u.yml'
 
 jobs:
-  update:
+  update-playlist:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    name: 🔄 Playlist Güncelle
-
+    timeout-minutes: 30
+    
+    permissions:
+      contents: write
+    
     steps:
-      - name: 📥 Checkout
+      - name: 📥 Repo'yu çek
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
-      - name: 🐍 Python Kur
+      
+      - name: 🐍 Python kur
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: 📦 Bağımlılıkları Yükle
+          python-version: '3.12'
+      
+      - name: 📦 Bağımlılıkları yükle
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install requests
-
-      - name: 🗑️ Cache Temizle (Zorla Güncelleme)
-        if: ${{ github.event.inputs.force_update == 'true' }}
+      
+      - name: 🔍 API'den kanalları kontrol et ve M3U oluştur
         run: |
-          echo "Cache temizleniyor..."
-          python -c "
-          import json, os
-          if os.path.exists('config.json'):
-              with open('config.json', 'r') as f:
-                  cfg = json.load(f)
-              cfg['stream_cache'] = {}
-              with open('config.json', 'w') as f:
-                  json.dump(cfg, f, indent=2)
-              print('Cache temizlendi')
-          else:
-              print('config.json bulunamadi, atlanıyor')
-          "
-
-      - name: 🚀 Generator Çalıştır
-        run: python generator.py
-        timeout-minutes: 12
-        env:
-          PYTHONUNBUFFERED: "1"
-
-      - name: 📋 Sonuç Kontrol
+          python checker.py
+      
+      - name: 📤 Değişiklikleri commit et ve push'la
         run: |
-          echo "=================================="
-          if [ -f "cdnlive.m3u" ]; then
-            KANAL=$(grep -c "^#EXTINF" cdnlive.m3u || echo "0")
-            BOYUT=$(du -h cdnlive.m3u | cut -f1)
-            echo "✅ Başarılı!"
-            echo "📺 Kanal Sayısı : $KANAL"
-            echo "📦 Dosya Boyutu : $BOYUT"
-            echo ""
-            echo "--- İlk 15 Kanal ---"
-            grep "^#EXTINF" cdnlive.m3u | head -15 | sed 's/.*,/  ▶️ /'
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if [ -f cdnlive.m3u ]; then
+            KANAL_SAYISI=$(grep -c '^#EXTINF' cdnlive.m3u || echo 0)
+            TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
+            
+            git add cdnlive.m3u
+            
+            if git diff --staged --quiet; then
+              echo "ℹ️  Değişiklik yok, commit atlanıyor."
+            else
+              git commit -m "📺 Playlist güncellendi — ${KANAL_SAYISI} kanal — ${TARIH}"
+              git push
+              echo "✅ cdnlive.m3u güncellendi ve push edildi."
+            fi
           else
             echo "❌ cdnlive.m3u oluşturulamadı!"
             exit 1
           fi
-          echo "=================================="
-
-      - name: 📤 Commit ve Push
+      
+      - name: 📊 Özet bilgi
+        if: always()
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-          git add cdnlive.m3u config.json README.md 2>/dev/null || true
-
-          if git diff --staged --quiet; then
-            echo "ℹ️ Değişiklik yok, commit atlandı"
+          echo ""
+          echo "=========================================="
+          if [ -f cdnlive.m3u ]; then
+            echo "📁 Dosya boyutu: $(du -h cdnlive.m3u | cut -f1)"
+            echo "📺 Kanal sayısı: $(grep -c '^#EXTINF' cdnlive.m3u || echo 0)"
+            echo ""
+            echo "📂 Gruplar:"
+            grep 'group-title=' cdnlive.m3u | sed 's/.*group-title="\([^"]*\)".*/\1/' | sort | uniq -c | sort -rn
+            echo ""
+            echo "--- İlk 20 satır ---"
+            head -20 cdnlive.m3u
           else
-            KANAL=$(grep -c "^#EXTINF" cdnlive.m3u 2>/dev/null || echo "0")
-            TARIH=$(date -u +'%Y-%m-%d %H:%M UTC')
-            git commit -m "📺 $KANAL kanal | $TARIH"
-            git push
-            echo "✅ Push edildi"
+            echo "❌ Dosya bulunamadı!"
           fi
-
-  notify-on-failure:
-    runs-on: ubuntu-latest
-    needs: update
-    if: failure()
-    name: ⚠️ Hata Bildirimi
-
-    steps:
-      - name: ❌ Hata Bildir
-        run: |
-          echo "=================================="
-          echo "❌ Playlist güncellemesi BAŞARISIZ!"
-          echo "⏰ Zaman  : $(date -u)"
-          echo "🔗 Log    : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          echo "=================================="
+          echo "=========================================="
