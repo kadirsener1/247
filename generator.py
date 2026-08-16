@@ -1,401 +1,369 @@
 #!/usr/bin/env python3
 """
-CDNLiveTV M3U Playlist Generator
-API'den kanal bilgilerini çeker, token'ları doğrular ve cdnlive.m3u dosyası oluşturur.
+CDNLiveTV M3U Playlist Generator v3.0
+API → Player Page → Stream URL → M3U
 """
 
 import requests
 import json
 import os
+import re
+import sys
 import time
-import hashlib
-import logging
+import concurrent.futures
 from datetime import datetime, timezone
+from urllib.parse import quote, unquote
 
 # ─── Ayarlar ───
 API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
-STREAM_BASE = "https://cdnlivetv.is/secure/api/v1"
-TOKEN_API = "https://api.cdnlivetv.is/api/v1/token/?user=cdnlivetv&plan=free"
 OUTPUT_FILE = "cdnlive.m3u"
 CONFIG_FILE = "config.json"
-LOG_FILE = "generator.log"
+MAX_WORKERS = 10  # Paralel istek sayısı
+REQUEST_TIMEOUT = 20
 
-# ─── Logging ───
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(LOG_FILE, encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Ülke kodu → Ülke adı eşlemesi
+COUNTRY_MAP = {
+    "us": "🇺🇸 United States",
+    "gb": "🇬🇧 United Kingdom",
+    "de": "🇩🇪 Germany",
+    "fr": "🇫🇷 France",
+    "es": "🇪🇸 Spain",
+    "it": "🇮🇹 Italy",
+    "pt": "🇵🇹 Portugal",
+    "nl": "🇳🇱 Netherlands",
+    "be": "🇧🇪 Belgium",
+    "tr": "🇹🇷 Turkey",
+    "br": "🇧🇷 Brazil",
+    "ar": "🇦🇷 Argentina",
+    "mx": "🇲🇽 Mexico",
+    "ca": "🇨🇦 Canada",
+    "au": "🇦🇺 Australia",
+    "nz": "🇳🇿 New Zealand",
+    "se": "🇸🇪 Sweden",
+    "dk": "🇩🇰 Denmark",
+    "pl": "🇵🇱 Poland",
+    "ro": "🇷🇴 Romania",
+    "bg": "🇧🇬 Bulgaria",
+    "gr": "🇬🇷 Greece",
+    "il": "🇮🇱 Israel",
+    "ae": "🇦🇪 UAE",
+    "sa": "🇸🇦 Saudi Arabia",
+    "ru": "🇷🇺 Russia",
+    "cy": "🇨🇾 Cyprus",
+    "cz": "🇨🇿 Czech Republic",
+    "at": "🇦🇹 Austria",
+    "cl": "🇨🇱 Chile",
+    "uy": "🇺🇾 Uruguay",
+}
+
+
+def log(msg, level="INFO"):
+    ts = datetime.now().strftime("%H:%M:%S")
+    symbol = {"INFO": "ℹ️", "OK": "✅", "WARN": "⚠️", "ERROR": "❌", "WORK": "🔄"}.get(level, "")
+    print(f"[{ts}] {symbol} {msg}")
+
+
+def get_session():
+    """Reusable session with headers"""
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://cdnlivetv.tv/",
+        "Origin": "https://cdnlivetv.tv"
+    })
+    return session
 
 
 def load_config():
-    """config.json dosyasından ayarları yükle"""
-    default_config = {
-        "api_url": API_URL,
-        "stream_base": STREAM_BASE,
-        "token_api": TOKEN_API,
-        "output_file": OUTPUT_FILE,
-        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "timeout": 30,
-        "check_streams": True,
+    default = {
         "last_update": "",
-        "last_token": ""
+        "channel_count": 0,
+        "groups": {},
+        "stream_cache": {}
     }
-
     if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            config = json.load(f)
-            # Eksik anahtarları default ile doldur
-            for key, value in default_config.items():
-                if key not in config:
-                    config[key] = value
-            return config
-    else:
-        save_config(default_config)
-        return default_config
+        try:
+            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+                for k, v in default.items():
+                    if k not in cfg:
+                        cfg[k] = v
+                return cfg
+        except:
+            pass
+    return default
 
 
 def save_config(config):
-    """config.json dosyasını güncelle"""
+    # stream_cache çok büyük olmasın
+    cache = config.get("stream_cache", {})
+    if len(cache) > 500:
+        config["stream_cache"] = {}
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-        json.dump(config, f, indent=4, ensure_ascii=False)
+        json.dump(config, f, indent=2, ensure_ascii=False)
 
 
-def get_headers(config):
-    """HTTP istekleri için header"""
-    return {
-        "User-Agent": config["user_agent"],
-        "Accept": "application/json, text/plain, */*",
-        "Referer": "https://cdnlivetv.is/",
-        "Origin": "https://cdnlivetv.is"
-    }
-
-
-def fetch_channels(config):
+def fetch_channels():
     """API'den kanal listesini çek"""
-    logger.info("📡 Kanal listesi çekiliyor...")
-
+    log("Kanal listesi API'den çekiliyor...", "WORK")
+    
+    session = get_session()
+    session.headers["Accept"] = "application/json"
+    
     try:
-        response = requests.get(
-            config["api_url"],
-            headers=get_headers(config),
-            timeout=config["timeout"]
-        )
-        response.raise_for_status()
-        data = response.json()
-
-        if isinstance(data, list):
-            channels = data
-        elif isinstance(data, dict):
-            # API farklı yapılarda dönebilir
-            channels = data.get("channels", data.get("data", data.get("items", [])))
-            if not isinstance(channels, list) and isinstance(data, dict):
-                # Tek seviye dict ise direkt listeye çevir
-                channels = [data] if "name" in data or "title" in data else []
-        else:
-            channels = []
-
-        logger.info(f"✅ {len(channels)} kanal bulundu")
+        resp = session.get(API_URL, timeout=REQUEST_TIMEOUT)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        channels = data.get("channels", [])
+        total = data.get("total_channels", len(channels))
+        
+        log(f"API'den {total} kanal bilgisi alındı", "OK")
         return channels
-
-    except requests.exceptions.RequestException as e:
-        logger.error(f"❌ API hatası: {e}")
-        return []
-    except json.JSONDecodeError as e:
-        logger.error(f"❌ JSON parse hatası: {e}")
-        return []
-
-
-def fetch_token(config):
-    """Yeni token al"""
-    logger.info("🔑 Token alınıyor...")
-
-    try:
-        # Yöntem 1: Token API'den çek
-        response = requests.get(
-            config["token_api"],
-            headers=get_headers(config),
-            timeout=config["timeout"]
-        )
-
-        if response.status_code == 200:
-            data = response.json()
-            token = None
-
-            if isinstance(data, dict):
-                token = data.get("token", data.get("access_token", data.get("key", "")))
-            elif isinstance(data, str):
-                token = data
-
-            if token:
-                logger.info(f"✅ Token alındı: {token[:30]}...")
-                config["last_token"] = token
-                save_config(config)
-                return token
-
+    
     except Exception as e:
-        logger.warning(f"⚠️ Token API hatası: {e}")
+        log(f"API hatası: {e}", "ERROR")
+        return []
 
-    # Yöntem 2: Kanal sayfasından token çıkar
+
+def extract_stream_from_player(player_url, session):
+    """
+    Player sayfasından gerçek m3u8 stream URL'sini çıkar.
+    Player sayfası bir HTML/JS wrapper, içinde gerçek stream URL gömülü.
+    """
     try:
-        response = requests.get(
-            "https://cdnlivetv.is/",
-            headers=get_headers(config),
-            timeout=config["timeout"]
-        )
-        text = response.text
-
-        # Token pattern'lerini ara
-        import re
-        patterns = [
-            r'token["\s]*[:=]\s*["\']([A-Za-z0-9+/=]+)["\']',
-            r'playlist\.m3u8\?token=([A-Za-z0-9+/=]+)',
-            r'["\']([A-Za-z0-9]{100,})["\']'
+        resp = session.get(player_url, timeout=REQUEST_TIMEOUT)
+        
+        if resp.status_code != 200:
+            return None
+        
+        text = resp.text
+        
+        # ─── Yöntem 1: Direkt m3u8 URL ara ───
+        m3u8_patterns = [
+            r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)',
+            r'source\s*[:=]\s*["\']?(https?://[^\s"\'<>]+)["\']?',
+            r'file\s*[:=]\s*["\']?(https?://[^\s"\'<>]+)["\']?',
+            r'src\s*[:=]\s*["\']?(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)["\']?',
+            r'video_url\s*[:=]\s*["\']?(https?://[^\s"\'<>]+)["\']?',
+            r'stream_url\s*[:=]\s*["\']?(https?://[^\s"\'<>]+)["\']?',
+            r'hls\.loadSource\(["\']?(https?://[^\s"\'<>]+)["\']?\)',
+            r'Hls\.loadSource\(["\']?(https?://[^\s"\'<>]+)["\']?\)',
+            r'player\.src\(\{.*?src\s*:\s*["\']?(https?://[^\s"\'<>]+)["\']?',
         ]
-
-        for pattern in patterns:
-            match = re.search(pattern, text)
-            if match:
-                token = match.group(1)
-                logger.info(f"✅ Token sayfadan çıkarıldı: {token[:30]}...")
-                config["last_token"] = token
-                save_config(config)
-                return token
-
+        
+        for pattern in m3u8_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for match in matches:
+                url = match.strip().rstrip("'\"\\);}")
+                if ".m3u8" in url or "playlist" in url or "/live/" in url or "/stream/" in url:
+                    return url
+        
+        # ─── Yöntem 2: iframe src ara ───
+        iframe_pattern = r'<iframe[^>]+src=["\']?(https?://[^\s"\'<>]+)["\']?'
+        iframe_matches = re.findall(iframe_pattern, text, re.IGNORECASE)
+        
+        for iframe_url in iframe_matches:
+            try:
+                iframe_resp = session.get(iframe_url, timeout=15)
+                for pattern in m3u8_patterns:
+                    matches = re.findall(pattern, iframe_resp.text, re.IGNORECASE)
+                    for match in matches:
+                        url = match.strip().rstrip("'\"\\);}")
+                        if ".m3u8" in url or "playlist" in url:
+                            return url
+            except:
+                pass
+        
+        # ─── Yöntem 3: JSON veri bloğu ara ───
+        json_patterns = [
+            r'\{[^{}]*"(?:url|source|src|file|stream)":\s*"(https?://[^"]+)"[^{}]*\}',
+            r'atob\(["\']([A-Za-z0-9+/=]+)["\']\)',
+        ]
+        
+        for pattern in json_patterns:
+            matches = re.findall(pattern, text)
+            for match in matches:
+                # Base64 decode dene
+                try:
+                    import base64
+                    decoded = base64.b64decode(match).decode("utf-8")
+                    if "http" in decoded:
+                        url_match = re.search(r'(https?://[^\s"\']+)', decoded)
+                        if url_match:
+                            return url_match.group(1)
+                except:
+                    if "http" in match:
+                        return match
+        
+        # ─── Yöntem 4: API endpoint çağrısı ara ───
+        api_patterns = [
+            r'fetch\(["\']?(https?://[^\s"\'<>]+/api/[^\s"\'<>]+)["\']?',
+            r'axios\.[a-z]+\(["\']?(https?://[^\s"\'<>]+)["\']?',
+            r'\.get\(["\']?(https?://[^\s"\'<>]+/stream[^\s"\'<>]*)["\']?',
+            r'\.get\(["\']?(https?://[^\s"\'<>]+/play[^\s"\'<>]*)["\']?',
+        ]
+        
+        for pattern in api_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for api_url in matches:
+                try:
+                    api_resp = session.get(api_url, timeout=10)
+                    # JSON response'dan URL çıkar
+                    try:
+                        api_data = api_resp.json()
+                        for key in ["url", "source", "src", "file", "stream", "link", "m3u8"]:
+                            if key in api_data and api_data[key]:
+                                return str(api_data[key])
+                            # Nested
+                            if isinstance(api_data, dict):
+                                for v in api_data.values():
+                                    if isinstance(v, dict) and key in v:
+                                        return str(v[key])
+                    except:
+                        # Text response'dan URL çıkar
+                        for p in m3u8_patterns[:3]:
+                            m = re.findall(p, api_resp.text)
+                            if m:
+                                return m[0].strip()
+                except:
+                    pass
+        
+        return None
+    
     except Exception as e:
-        logger.warning(f"⚠️ Sayfa scraping hatası: {e}")
-
-    # Yöntem 3: Kayıtlı token'ı kullan
-    if config.get("last_token"):
-        logger.info("♻️ Kayıtlı token kullanılıyor")
-        return config["last_token"]
-
-    logger.error("❌ Token bulunamadı!")
-    return ""
+        return None
 
 
-def extract_channel_info(channel):
-    """Kanal verisinden bilgileri çıkar (farklı API formatlarını destekle)"""
-    info = {
-        "name": "",
-        "logo": "",
-        "group": "Diğer",
-        "stream_id": "",
-        "url": "",
-        "tvg_id": "",
-        "quality": ""
+def process_channel(channel, session, config):
+    """Tek bir kanalı işle: player page → stream URL"""
+    name = channel.get("name", "")
+    code = channel.get("code", "")
+    player_url = channel.get("url", "")
+    image = channel.get("image", "")
+    status = channel.get("status", "")
+    
+    if not name or not player_url:
+        return None
+    
+    if status != "online":
+        return None
+    
+    # Cache kontrolü
+    cache_key = f"{name}_{code}"
+    cache = config.get("stream_cache", {})
+    
+    cached = cache.get(cache_key)
+    if cached:
+        cached_time = cached.get("time", 0)
+        # 6 saatten eski değilse cache'den kullan
+        if time.time() - cached_time < 21600:
+            return {
+                "name": name,
+                "code": code,
+                "url": cached["url"],
+                "image": image,
+                "group": COUNTRY_MAP.get(code, code.upper())
+            }
+    
+    # Player sayfasından stream URL çıkar
+    stream_url = extract_stream_from_player(player_url, session)
+    
+    if stream_url:
+        # Cache'e kaydet
+        cache[cache_key] = {
+            "url": stream_url,
+            "time": time.time()
+        }
+        config["stream_cache"] = cache
+        
+        return {
+            "name": name,
+            "code": code,
+            "url": stream_url,
+            "image": image,
+            "group": COUNTRY_MAP.get(code, code.upper())
+        }
+    
+    # Stream bulunamadıysa player URL'yi direkt kullan
+    return {
+        "name": name,
+        "code": code,
+        "url": player_url,
+        "image": image,
+        "group": COUNTRY_MAP.get(code, code.upper())
     }
 
-    # İsim
-    for key in ["name", "title", "channel_name", "channelName", "label"]:
-        if key in channel and channel[key]:
-            info["name"] = str(channel[key]).strip()
-            break
 
-    # Logo
-    for key in ["logo", "image", "icon", "thumbnail", "tvg_logo", "tvgLogo", "img"]:
-        if key in channel and channel[key]:
-            logo = str(channel[key]).strip()
-            if not logo.startswith("http"):
-                logo = f"https://cdnlivetv.is{logo}" if logo.startswith("/") else f"https://cdnlivetv.is/{logo}"
-            info["logo"] = logo
-            break
-
-    # Grup
-    for key in ["group", "category", "genre", "group_title", "groupTitle", "cat"]:
-        if key in channel and channel[key]:
-            info["group"] = str(channel[key]).strip()
-            break
-
-    # Stream ID
-    for key in ["id", "stream_id", "streamId", "channel_id", "channelId", "_id"]:
-        if key in channel and channel[key]:
-            info["stream_id"] = str(channel[key]).strip()
-            break
-
-    # Direkt URL
-    for key in ["url", "stream_url", "streamUrl", "link", "source", "src"]:
-        if key in channel and channel[key]:
-            info["url"] = str(channel[key]).strip()
-            break
-
-    # TVG ID
-    for key in ["tvg_id", "tvgId", "epg_id", "epgId"]:
-        if key in channel and channel[key]:
-            info["tvg_id"] = str(channel[key]).strip()
-            break
-
-    # Kalite
-    for key in ["quality", "resolution", "hd"]:
-        if key in channel and channel[key]:
-            info["quality"] = str(channel[key]).strip()
-            break
-
-    return info
-
-
-def build_stream_url(info, token, config):
-    """Kanal için stream URL oluştur"""
-    # Eğer direkt URL varsa onu kullan
-    if info["url"]:
-        url = info["url"]
-        # Token ekle (yoksa)
-        if "token=" not in url and token:
-            separator = "&" if "?" in url else "?"
-            url = f"{url}{separator}token={token}"
-        return url
-
-    # Stream ID'den URL oluştur
-    if info["stream_id"]:
-        return f'{config["stream_base"]}/{info["stream_id"]}/playlist.m3u8?token={token}'
-
-    return ""
-
-
-def check_stream(url, config):
-    """Stream'in çalışıp çalışmadığını kontrol et"""
-    if not config.get("check_streams", False):
-        return True
-
-    try:
-        response = requests.head(
-            url,
-            headers=get_headers(config),
-            timeout=10,
-            allow_redirects=True
-        )
-        return response.status_code in [200, 301, 302]
-    except:
-        return False
-
-
-def categorize_channel(name, current_group):
-    """Kanal isminden otomatik kategori belirle"""
-    if current_group and current_group != "Diğer":
-        return current_group
-
-    name_lower = name.lower()
-
-    categories = {
-        "Spor": ["sport", "spor", "bein", "s sport", "tivibu spor", "eurosport",
-                  "nba", "futbol", "match", "arena"],
-        "Haber": ["haber", "news", "cnn", "ntv", "habertürk", "tgrt haber",
-                   "a haber", "bloomberg", "euronews"],
-        "Sinema": ["sinema", "movie", "film", "cinema", "fx", "tcm",
-                    "premiere", "filmbox"],
-        "Belgesel": ["belgesel", "documentary", "national geo", "discovery",
-                     "animal planet", "history", "bbc earth", "dmax"],
-        "Çocuk": ["çocuk", "child", "kids", "cartoon", "disney", "nickelodeon",
-                   "baby", "minika", "trt çocuk"],
-        "Müzik": ["müzik", "music", "kral", "power", "mtv", "vh1"],
-        "Ulusal": ["trt", "atv", "star tv", "show tv", "kanal d", "fox tv",
-                    "tv8", "tv 8", "now tv", "teve2", "trt 1"],
-        "Eğlence": ["eğlence", "entertainment", "comedy", "tlc", "e!",
-                     "tv2", "dizi"]
-    }
-
-    for group, keywords in categories.items():
-        for keyword in keywords:
-            if keyword in name_lower:
-                return group
-
-    return current_group
-
-
-def generate_m3u(channels, token, config):
+def generate_m3u(results, config):
     """M3U dosyası oluştur"""
-    logger.info(f"📝 {OUTPUT_FILE} oluşturuluyor...")
-
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-
+    
     lines = [
-        f'#EXTM3U url-tvg="" refresh="3600"',
+        '#EXTM3U url-tvg="" refresh="3600"',
         f'# CDNLiveTV M3U Playlist',
-        f'# Son Güncelleme: {now}',
-        f'# Toplam Kanal: {len(channels)}',
-        f'# GitHub: cdnlivetv-m3u',
+        f'# Generated: {now}',
+        f'# Source: https://cdnlivetv.is',
+        f'# Channels: {len(results)}',
         ''
     ]
-
-    success_count = 0
-    failed_count = 0
-    groups = {}
-
-    for channel in channels:
-        info = extract_channel_info(channel)
-
-        if not info["name"]:
-            logger.warning(f"⚠️ İsimsiz kanal atlandı: {channel}")
-            continue
-
-        # URL oluştur
-        stream_url = build_stream_url(info, token, config)
-        if not stream_url:
-            logger.warning(f"⚠️ URL bulunamadı: {info['name']}")
-            failed_count += 1
-            continue
-
-        # Otomatik kategorize et
-        info["group"] = categorize_channel(info["name"], info["group"])
-
-        # Grup sayacı
-        groups[info["group"]] = groups.get(info["group"], 0) + 1
-
-        # Kalite etiketi
-        quality_tag = f' [{info["quality"]}]' if info["quality"] else ""
-
-        # M3U satırları
+    
+    # Grupla sırala
+    results.sort(key=lambda x: (x["group"], x["name"]))
+    
+    groups_count = {}
+    
+    for ch in results:
+        name = ch["name"]
+        code = ch["code"]
+        group = ch["group"]
+        logo = ch["image"]
+        url = ch["url"]
+        
+        # Aynı isimli kanallar için ülke kodu ekle
+        display_name = f'{name} ({code.upper()})' if code else name
+        
+        groups_count[group] = groups_count.get(group, 0) + 1
+        
         extinf = (
             f'#EXTINF:-1 '
-            f'tvg-id="{info["tvg_id"]}" '
-            f'tvg-name="{info["name"]}" '
-            f'tvg-logo="{info["logo"]}" '
-            f'group-title="{info["group"]}"'
-            f',{info["name"]}{quality_tag}'
+            f'tvg-id="{name}.{code}" '
+            f'tvg-name="{display_name}" '
+            f'tvg-logo="{logo}" '
+            f'group-title="{group}"'
+            f',{display_name}'
         )
-
+        
         lines.append(extinf)
-        lines.append(stream_url)
+        lines.append(url)
         lines.append('')
-        success_count += 1
-
-    # Dosyaya yaz
-    with open(config["output_file"], "w", encoding="utf-8") as f:
+    
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
-
-    logger.info(f"✅ {config['output_file']} oluşturuldu!")
-    logger.info(f"📊 Başarılı: {success_count} | Başarısız: {failed_count}")
-    logger.info(f"📂 Gruplar: {json.dumps(groups, ensure_ascii=False)}")
-
-    # Config güncelle
+    
     config["last_update"] = now
-    config["channel_count"] = success_count
-    config["groups"] = groups
+    config["channel_count"] = len(results)
+    config["groups"] = groups_count
     save_config(config)
+    
+    log(f"{OUTPUT_FILE} oluşturuldu: {len(results)} kanal", "OK")
+    return len(results)
 
-    return success_count
 
-
-def update_readme(config):
-    """README.md dosyasını güncelle"""
-    now = config.get("last_update", "Bilinmiyor")
+def create_readme(config):
+    now = config.get("last_update", "")
     count = config.get("channel_count", 0)
     groups = config.get("groups", {})
-
-    groups_table = ""
-    for group, cnt in sorted(groups.items()):
-        groups_table += f"| {group} | {cnt} |\n"
-
+    
+    groups_md = ""
+    for g, c in sorted(groups.items(), key=lambda x: -x[1]):
+        groups_md += f"| {g} | {c} |\n"
+    
     readme = f"""# 📺 CDNLiveTV M3U Playlist
 
-![Güncelleme](https://img.shields.io/badge/Son_Güncelleme-{now.replace(' ', '_')}-brightgreen)
-![Kanal](https://img.shields.io/badge/Kanal_Sayısı-{count}-blue)
-![Otomatik](https://img.shields.io/badge/Otomatik-GitHub_Actions-yellow)
+![Update](https://img.shields.io/badge/Updated-Automatic-brightgreen)
+![Channels](https://img.shields.io/badge/Channels-{count}-blue)
 
-## 📥 Kullanım
-
-### Tivimate / IPTV Oynatıcı
+## 📥 Playlist URL
