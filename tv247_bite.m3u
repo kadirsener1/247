@@ -3,7 +3,7 @@
 #EXTINF:-1 group-title="USA" tvg-name="ABC",ABC
 #EXTVLCOPT:http-referrer=https://channels.forestgump.space/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
-https://channels.forestgump.space/ch1/track/51
+https://proxy.cors.sh/https://channels.forestgump.space/ch1/track/51
 
 #EXTINF:-1 group-title="USA" tvg-name="AHC American Heroes Channel",AHC American Heroes Channel
 #EXTVLCOPT:http-referrer=https://channels.forestgump.space/
