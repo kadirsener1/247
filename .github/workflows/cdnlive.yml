@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Python paketleri
+      - name: Python paketleri yükle
         run: |
           pip install --upgrade pip
           pip install requests urllib3 playwright
@@ -30,9 +30,14 @@ jobs:
           python -m playwright install chromium --with-deps
 
       - name: M3U oluştur
-        run: python checker.py
+        env:
+          DISPLAY: ""
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          GALLIUM_DRIVER: "softpipe"
+        run: |
+          python checker.py
 
-      - name: Artifact yükle (debug)
+      - name: Artifact yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
