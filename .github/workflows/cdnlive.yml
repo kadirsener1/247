@@ -27,10 +27,9 @@ jobs:
       - name: 📦 Bağımlılıklar
         run: pip install requests
 
-      - name: 🚀 Generator Çalıştır
+        - name: 🚀 Generator Çalıştır
         run: python generator.py
-        env:
-          PYTHONUNBUFFERED: "1"
+        timeout-minutes: 12
 
       - name: 📋 Sonuç
         run: |
