@@ -1,85 +1,56 @@
 name: CDN Live TV M3U Güncelle
 
 on:
-  # Her 4 saatte bir otomatik çalıştır
-  schedule:
-    - cron: '0 */4 * * *'
-  
-  # Manuel tetikleme
   workflow_dispatch:
-  
-  # Push'ta çalıştır (test için)
-  push:
-    paths:
-      - 'checker.py'
-      - '.github/workflows/update_m3u.yml'
+  schedule:
+    - cron: '0 */6 * * *'
 
 jobs:
-  update-playlist:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
     permissions:
       contents: write
-    
+
     steps:
-      - name: 📥 Repo'yu çek
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      
-      - name: 🐍 Python kur
+
+      - name: Python kur
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
-      - name: 📦 Bağımlılıkları yükle
+
+      - name: Bağımlılıkları yükle
         run: |
-          pip install --upgrade pip
-          pip install requests
-      
-      - name: 🔍 API'den kanalları kontrol et ve M3U oluştur
+          python -m pip install --upgrade pip
+          pip install requests urllib3
+
+      - name: M3U oluştur
         run: |
           python checker.py
-      
-      - name: 📤 Değişiklikleri commit et ve push'la
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          
-          if [ -f cdnlive.m3u ]; then
-            KANAL_SAYISI=$(grep -c '^#EXTINF' cdnlive.m3u || echo 0)
-            TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
-            
-            git add cdnlive.m3u
-            
-            if git diff --staged --quiet; then
-              echo "ℹ️  Değişiklik yok, commit atlanıyor."
-            else
-              git commit -m "📺 Playlist güncellendi — ${KANAL_SAYISI} kanal — ${TARIH}"
-              git push
-              echo "✅ cdnlive.m3u güncellendi ve push edildi."
-            fi
-          else
-            echo "❌ cdnlive.m3u oluşturulamadı!"
-            exit 1
-          fi
-      
-      - name: 📊 Özet bilgi
+
+      - name: Debug artifact yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cdnlive-debug
+          path: |
+            cdnlive.m3u
+            debug_failed.json
+            debug_samples
+          if-no-files-found: ignore
+
+      - name: Commit ve push
         if: always()
         run: |
-          echo ""
-          echo "=========================================="
-          if [ -f cdnlive.m3u ]; then
-            echo "📁 Dosya boyutu: $(du -h cdnlive.m3u | cut -f1)"
-            echo "📺 Kanal sayısı: $(grep -c '^#EXTINF' cdnlive.m3u || echo 0)"
-            echo ""
-            echo "📂 Gruplar:"
-            grep 'group-title=' cdnlive.m3u | sed 's/.*group-title="\([^"]*\)".*/\1/' | sort | uniq -c | sort -rn
-            echo ""
-            echo "--- İlk 20 satır ---"
-            head -20 cdnlive.m3u
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add cdnlive.m3u debug_failed.json || true
+
+          if git diff --cached --quiet; then
+            echo "Değişiklik yok."
           else
-            echo "❌ Dosya bulunamadı!"
+            git commit -m "cdnlive.m3u guncellendi"
+            git push
           fi
-          echo "=========================================="
