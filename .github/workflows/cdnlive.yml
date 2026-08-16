@@ -1,12 +1,24 @@
-name: 📺 cdnlive M3U Playlist Güncelle
+name: 📺 M3U Playlist Güncelle
 
 on:
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
+    inputs:
+      force_update:
+        description: "Cache temizle ve zorla güncelle"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
   push:
-    branches: [main]
-    paths: ["generator.py", "config.json"]
+    branches:
+      - main
+    paths:
+      - "generator.py"
+      - "config.json"
 
 permissions:
   contents: write
@@ -15,45 +27,94 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    name: 🔄 Güncelle
+    name: 🔄 Playlist Güncelle
 
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-python@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 🐍 Python Kur
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
-      - name: 📦 Bağımlılıklar
-        run: pip install requests
+          cache: "pip"
 
-        - name: 🚀 Generator Çalıştır
+      - name: 📦 Bağımlılıkları Yükle
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 🗑️ Cache Temizle (Zorla Güncelleme)
+        if: ${{ github.event.inputs.force_update == 'true' }}
+        run: |
+          echo "Cache temizleniyor..."
+          python -c "
+          import json, os
+          if os.path.exists('config.json'):
+              with open('config.json', 'r') as f:
+                  cfg = json.load(f)
+              cfg['stream_cache'] = {}
+              with open('config.json', 'w') as f:
+                  json.dump(cfg, f, indent=2)
+              print('Cache temizlendi')
+          else:
+              print('config.json bulunamadi, atlanıyor')
+          "
+
+      - name: 🚀 Generator Çalıştır
         run: python generator.py
         timeout-minutes: 12
+        env:
+          PYTHONUNBUFFERED: "1"
 
-      - name: 📋 Sonuç
+      - name: 📋 Sonuç Kontrol
         run: |
+          echo "=================================="
           if [ -f "cdnlive.m3u" ]; then
             KANAL=$(grep -c "^#EXTINF" cdnlive.m3u || echo "0")
             BOYUT=$(du -h cdnlive.m3u | cut -f1)
-            echo "✅ $KANAL kanal | $BOYUT"
+            echo "✅ Başarılı!"
+            echo "📺 Kanal Sayısı : $KANAL"
+            echo "📦 Dosya Boyutu : $BOYUT"
             echo ""
-            echo "İlk 10 kanal:"
-            grep "^#EXTINF" cdnlive.m3u | head -10 | sed 's/.*,/  📺 /'
+            echo "--- İlk 15 Kanal ---"
+            grep "^#EXTINF" cdnlive.m3u | head -15 | sed 's/.*,/  ▶️ /'
           else
-            echo "❌ Dosya oluşturulamadı"
+            echo "❌ cdnlive.m3u oluşturulamadı!"
             exit 1
           fi
+          echo "=================================="
 
-      - name: 📤 Commit & Push
+      - name: 📤 Commit ve Push
         run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
           git add cdnlive.m3u config.json README.md 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            KANAL=$(grep -c "^#EXTINF" cdnlive.m3u 2>/dev/null || echo "0")
-            git commit -m "📺 $KANAL kanal güncellendi | $(date -u +'%Y-%m-%d %H:%M UTC')"
-            git push
+
+          if git diff --staged --quiet; then
+            echo "ℹ️ Değişiklik yok, commit atlandı"
           else
-            echo "Değişiklik yok"
+            KANAL=$(grep -c "^#EXTINF" cdnlive.m3u 2>/dev/null || echo "0")
+            TARIH=$(date -u +'%Y-%m-%d %H:%M UTC')
+            git commit -m "📺 $KANAL kanal | $TARIH"
+            git push
+            echo "✅ Push edildi"
           fi
+
+  notify-on-failure:
+    runs-on: ubuntu-latest
+    needs: update
+    if: failure()
+    name: ⚠️ Hata Bildirimi
+
+    steps:
+      - name: ❌ Hata Bildir
+        run: |
+          echo "=================================="
+          echo "❌ Playlist güncellemesi BAŞARISIZ!"
+          echo "⏰ Zaman  : $(date -u)"
+          echo "🔗 Log    : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "=================================="
