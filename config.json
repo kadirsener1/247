@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-08-16 21:43:54 UTC",
+  "last_update": "2026-08-16 21:59:00 UTC",
   "channel_count": 414,
   "groups": {
     "Argentina": 4,
@@ -34,5 +34,2078 @@
     "USA": 96,
     "Uruguay": 1
   },
-  "stream_cache": {}
+  "stream_cache": {
+    "ABC_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ABC&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917460.944078,
+      "direct": false
+    },
+    "BBC_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917461.00033,
+      "direct": false
+    },
+    "ACC Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ACC%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917461.060372,
+      "direct": false
+    },
+    "Arizona Diamondbacks_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Arizona%20Diamondbacks&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917461.0801737,
+      "direct": false
+    },
+    "Altitude_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Altitude&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917461.0874994,
+      "direct": false
+    },
+    "BBC One_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC%20One&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917461.1010237,
+      "direct": false
+    },
+    "Astro Cricket_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Astro%20Cricket&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917461.1066253,
+      "direct": false
+    },
+    "Abu Dhabi Sports 1_ae": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Abu%20Dhabi%20Sports%201&code=ae&user=cdnlivetv&plan=free",
+      "time": 1786917461.143686,
+      "direct": false
+    },
+    "BBC Four_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC%20Four&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917461.145117,
+      "direct": false
+    },
+    "Atlanta Braves_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Atlanta%20Braves&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917461.157849,
+      "direct": false
+    },
+    "BBC Two_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC%20Two&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917463.529188,
+      "direct": false
+    },
+    "BBC Three_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC%20Three&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917463.5762901,
+      "direct": false
+    },
+    "CNBC_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CNBC&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.8234582,
+      "direct": false
+    },
+    "CBS_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CBS&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.8471735,
+      "direct": false
+    },
+    "BET_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BET&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.8933227,
+      "direct": false
+    },
+    "CBS Sports Golazo_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CBS%20Sports%20Golazo&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.9401689,
+      "direct": false
+    },
+    "Boston Red Sox_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Boston%20Red%20Sox&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.9868345,
+      "direct": false
+    },
+    "Baltimore Orioles_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Baltimore%20Orioles&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.9920638,
+      "direct": false
+    },
+    "CNN_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CNN&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917463.995407,
+      "direct": false
+    },
+    "Benfica TV_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Benfica%20TV&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917464.0096514,
+      "direct": false
+    },
+    "CP24_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CP24&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917466.1695278,
+      "direct": false
+    },
+    "Canal_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917466.1949794,
+      "direct": false
+    },
+    "Canal Live 10_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%2010&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917466.5896144,
+      "direct": false
+    },
+    "Canal Live 3_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%203&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917466.6145895,
+      "direct": false
+    },
+    "Canal 11_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%2011&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917466.8680446,
+      "direct": false
+    },
+    "Canal 360_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20360&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917466.872176,
+      "direct": false
+    },
+    "Canal 9_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%209&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917466.88404,
+      "direct": false
+    },
+    "Canal 5_it": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%205&code=it&user=cdnlivetv&plan=free",
+      "time": 1786917466.9311678,
+      "direct": false
+    },
+    "Canal Foot_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Foot&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917466.9341118,
+      "direct": false
+    },
+    "Canal Live 11_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%2011&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917466.9617279,
+      "direct": false
+    },
+    "Canal Live 5_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%205&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917468.6094158,
+      "direct": false
+    },
+    "Canal Live 4_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%204&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917468.6227047,
+      "direct": false
+    },
+    "Canal Live 6_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%206&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917468.9104028,
+      "direct": false
+    },
+    "Canal Live 7_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%207&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917469.0842483,
+      "direct": false
+    },
+    "Canal Live 9_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%209&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917469.4005072,
+      "direct": false
+    },
+    "Canal Sport_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917469.439348,
+      "direct": false
+    },
+    "Canal Sport_cz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport&code=cz&user=cdnlivetv&plan=free",
+      "time": 1786917469.4974105,
+      "direct": false
+    },
+    "Canal Live 8_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Live%208&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917469.5084865,
+      "direct": false
+    },
+    "Canal Premium_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Premium&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917469.510753,
+      "direct": false
+    },
+    "Canal Premier League_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Premier%20League&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917469.5457482,
+      "direct": false
+    },
+    "Canal Sport 2_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport%202&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917470.8728065,
+      "direct": false
+    },
+    "Canal Sport 3_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport%203&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917471.0125785,
+      "direct": false
+    },
+    "Canal Sport 4_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport%204&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917471.283816,
+      "direct": false
+    },
+    "Canal Sport 5_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport%205&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917471.492032,
+      "direct": false
+    },
+    "Canvas_be": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canvas&code=be&user=cdnlivetv&plan=free",
+      "time": 1786917471.8313363,
+      "direct": false
+    },
+    "Canal Sport360_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%20Sport360&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917471.9086113,
+      "direct": false
+    },
+    "Channel 4_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Channel%204&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917472.0318687,
+      "direct": false
+    },
+    "Chicago Sports Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Chicago%20Sports%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917472.0394511,
+      "direct": false
+    },
+    "Chicago Cubs_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Chicago%20Cubs&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917472.070285,
+      "direct": false
+    },
+    "Channel 5_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Channel%205&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917472.121434,
+      "direct": false
+    },
+    "Chicago White Sox_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Chicago%20White%20Sox&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917473.1084087,
+      "direct": false
+    },
+    "Cincinnati Reds_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cincinnati%20Reds&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917473.4368033,
+      "direct": false
+    },
+    "Cinemax_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cinemax&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917473.6726844,
+      "direct": false
+    },
+    "Cleveland Guardians_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cleveland%20Guardians&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917473.7240243,
+      "direct": false
+    },
+    "Colorado Rockies_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Colorado%20Rockies&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917474.1131268,
+      "direct": false
+    },
+    "Combate_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Combate&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917474.147095,
+      "direct": false
+    },
+    "Cosmote Sport 4_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%204&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917474.4523556,
+      "direct": false
+    },
+    "Cosmote Sport 5_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%205&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917474.500802,
+      "direct": false
+    },
+    "Cosmote Sport 1_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%201&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917474.5123756,
+      "direct": false
+    },
+    "Cosmote Sport 6_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%206&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917474.5433202,
+      "direct": false
+    },
+    "Cosmote Sport 7_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%207&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917475.34307,
+      "direct": false
+    },
+    "Cosmote Sport 8_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%208&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917475.6345735,
+      "direct": false
+    },
+    "Cosmote Sport 9_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cosmote%20Sport%209&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917475.85726,
+      "direct": false
+    },
+    "Cytavision Sports 1_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%201&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917475.94766,
+      "direct": false
+    },
+    "Cytavision Sports 3_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%203&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917477.8086505,
+      "direct": false
+    },
+    "Cytavision Sports 4_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%204&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917478.2605715,
+      "direct": false
+    },
+    "Cytavision Sports 5_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%205&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917478.3094718,
+      "direct": false
+    },
+    "DAZN 2_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%202&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917478.3399,
+      "direct": false
+    },
+    "DAZN 1_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917478.341627,
+      "direct": false
+    },
+    "Cytavision Sports 2_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%202&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917478.37448,
+      "direct": false
+    },
+    "DAZN 2_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%202&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917478.38872,
+      "direct": false
+    },
+    "Cytavision Sports 7_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%207&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917478.392328,
+      "direct": false
+    },
+    "Cytavision Sports 6_cy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Cytavision%20Sports%206&code=cy&user=cdnlivetv&plan=free",
+      "time": 1786917478.4296353,
+      "direct": false
+    },
+    "DAZN 1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917478.4668195,
+      "direct": false
+    },
+    "DAZN 3_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%203&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917480.1742334,
+      "direct": false
+    },
+    "DAZN 4_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%204&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917480.5586793,
+      "direct": false
+    },
+    "DAZN 5_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%205&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917480.616319,
+      "direct": false
+    },
+    "DAZN LaLiga 2_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%20LaLiga%202&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917480.794133,
+      "direct": false
+    },
+    "DAZN F1_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%20F1&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917480.950976,
+      "direct": false
+    },
+    "DR1_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DR1&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917480.9879105,
+      "direct": false
+    },
+    "DAZN 6_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%206&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917480.9995,
+      "direct": false
+    },
+    "Das Erste_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Das%20Erste&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917481.0227005,
+      "direct": false
+    },
+    "DR2_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DR2&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917481.0265722,
+      "direct": false
+    },
+    "DAZN LaLiga_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%20LaLiga&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917481.1131759,
+      "direct": false
+    },
+    "Detroit Tigers_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Detroit%20Tigers&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917482.4928136,
+      "direct": false
+    },
+    "Diema Sport 2_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Diema%20Sport%202&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917482.894919,
+      "direct": false
+    },
+    "Diema Sport 3_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Diema%20Sport%203&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917483.0039754,
+      "direct": false
+    },
+    "Digi Sport 1_ro": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Digi%20Sport%201&code=ro&user=cdnlivetv&plan=free",
+      "time": 1786917483.184831,
+      "direct": false
+    },
+    "Digi Sport 2_ro": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Digi%20Sport%202&code=ro&user=cdnlivetv&plan=free",
+      "time": 1786917483.370051,
+      "direct": false
+    },
+    "Digi Sport 3_ro": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Digi%20Sport%203&code=ro&user=cdnlivetv&plan=free",
+      "time": 1786917483.4370105,
+      "direct": false
+    },
+    "Disney Channel_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Disney%20Channel&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917483.4531283,
+      "direct": false
+    },
+    "Discovery Channel_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Discovery%20Channel&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917483.4560752,
+      "direct": false
+    },
+    "ESPN_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917483.5184786,
+      "direct": false
+    },
+    "Digi Sport 4_ro": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Digi%20Sport%204&code=ro&user=cdnlivetv&plan=free",
+      "time": 1786917483.522518,
+      "direct": false
+    },
+    "ESPN_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917484.8812962,
+      "direct": false
+    },
+    "ESPN_ar": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN&code=ar&user=cdnlivetv&plan=free",
+      "time": 1786917485.1557457,
+      "direct": false
+    },
+    "ESPN 2_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%202&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917485.4706407,
+      "direct": false
+    },
+    "ESPN 2_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%202&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917485.6071258,
+      "direct": false
+    },
+    "ESPN 2_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%202&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917485.744687,
+      "direct": false
+    },
+    "ESPN 3_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%203&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917485.773603,
+      "direct": false
+    },
+    "ESPN 2_mx": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%202&code=mx&user=cdnlivetv&plan=free",
+      "time": 1786917485.839053,
+      "direct": false
+    },
+    "ESPN 3_mx": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%203&code=mx&user=cdnlivetv&plan=free",
+      "time": 1786917485.8869212,
+      "direct": false
+    },
+    "ESPN 4_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%204&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917485.9370046,
+      "direct": false
+    },
+    "ESPN 4_mx": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%204&code=mx&user=cdnlivetv&plan=free",
+      "time": 1786917486.0625753,
+      "direct": false
+    },
+    "ESPN Deportes_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%20Deportes&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917487.2521465,
+      "direct": false
+    },
+    "ESPN News_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%20News&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917487.4319193,
+      "direct": false
+    },
+    "ESPN Premium_ar": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%20Premium&code=ar&user=cdnlivetv&plan=free",
+      "time": 1786917487.8017666,
+      "direct": false
+    },
+    "ESPN U_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%20U&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917488.230017,
+      "direct": false
+    },
+    "Eleven Sports 4_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eleven%20Sports%204&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917488.3141289,
+      "direct": false
+    },
+    "Eleven Sports 1_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eleven%20Sports%201&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917488.3601053,
+      "direct": false
+    },
+    "ESPN+ USA_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%2B%20USA&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917488.3881993,
+      "direct": false
+    },
+    "Eleven Sports 3_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eleven%20Sports%203&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917488.3932774,
+      "direct": false
+    },
+    "Euro Sport 1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Euro%20Sport%201&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917488.4028826,
+      "direct": false
+    },
+    "Eleven Sports 2_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eleven%20Sports%202&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917488.4376097,
+      "direct": false
+    },
+    "Euro Sport 1_it": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Euro%20Sport%201&code=it&user=cdnlivetv&plan=free",
+      "time": 1786917489.5592148,
+      "direct": false
+    },
+    "Euro Sport 1_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Euro%20Sport%201&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917490.0204678,
+      "direct": false
+    },
+    "Euro Sport 2_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Euro%20Sport%202&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917490.1119714,
+      "direct": false
+    },
+    "Euro Sport 2_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Euro%20Sport%202&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917490.685922,
+      "direct": false
+    },
+    "FOX Deportes_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX%20Deportes&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917490.7374895,
+      "direct": false
+    },
+    "FOX News_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX%20News&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917490.7434652,
+      "direct": false
+    },
+    "FOX_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917490.7929158,
+      "direct": false
+    },
+    "FOX Sports 1_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX%20Sports%201&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917490.8187099,
+      "direct": false
+    },
+    "FOX Soccer Plus_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX%20Soccer%20Plus&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917490.8856122,
+      "direct": false
+    },
+    "FOX Sports 2_mx": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX%20Sports%202&code=mx&user=cdnlivetv&plan=free",
+      "time": 1786917490.9010012,
+      "direct": false
+    },
+    "FOX Sports 2_ar": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX%20Sports%202&code=ar&user=cdnlivetv&plan=free",
+      "time": 1786917491.889951,
+      "direct": false
+    },
+    "Fox Sports 501_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20501&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917492.332191,
+      "direct": false
+    },
+    "Fox Sports 501 Cricket_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20501%20Cricket&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917492.4099445,
+      "direct": false
+    },
+    "Fox Sports 502_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20502&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917493.0628903,
+      "direct": false
+    },
+    "Fox Sports 505_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20505&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917493.0905883,
+      "direct": false
+    },
+    "Fox Sports 503_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20503&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917493.1453447,
+      "direct": false
+    },
+    "Fox Sports 506_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20506&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917493.2172484,
+      "direct": false
+    },
+    "Fox Sports 507_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20507&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917493.2898726,
+      "direct": false
+    },
+    "GOLF TV_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=GOLF%20TV&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917493.3561928,
+      "direct": false
+    },
+    "Fox Sports News_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20News&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917493.383232,
+      "direct": false
+    },
+    "HBO_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=HBO&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917494.0907679,
+      "direct": false
+    },
+    "Hallmark_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Hallmark&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917494.6280582,
+      "direct": false
+    },
+    "History_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=History&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917494.8558059,
+      "direct": false
+    },
+    "ITV 1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ITV%201&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917495.4170926,
+      "direct": false
+    },
+    "Houston Astros_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Houston%20Astros&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917495.5372102,
+      "direct": false
+    },
+    "ITV 2_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ITV%202&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917495.543988,
+      "direct": false
+    },
+    "ITV 3_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ITV%203&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917495.5574698,
+      "direct": false
+    },
+    "ITV 4_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ITV%204&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917495.5978837,
+      "direct": false
+    },
+    "Kansas City Royals_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Kansas%20City%20Royals&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917495.7733529,
+      "direct": false
+    },
+    "Italia 1_it": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Italia%201&code=it&user=cdnlivetv&plan=free",
+      "time": 1786917495.8019319,
+      "direct": false
+    },
+    "LaLiga TV_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=LaLiga%20TV&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917496.506342,
+      "direct": false
+    },
+    "Lifetime_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Lifetime&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917496.9381099,
+      "direct": false
+    },
+    "Los Angeles Angels_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Los%20Angeles%20Angels&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917497.0599182,
+      "direct": false
+    },
+    "Los Angeles Dodgers_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Los%20Angeles%20Dodgers&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917497.7854288,
+      "direct": false
+    },
+    "MAX_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=MAX&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917497.9678447,
+      "direct": false
+    },
+    "MASN_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=MASN&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917497.992019,
+      "direct": false
+    },
+    "MLB Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=MLB%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917498.0101159,
+      "direct": false
+    },
+    "MSG_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=MSG&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917498.015982,
+      "direct": false
+    },
+    "Match Football 1_ru": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Match%20Football%201&code=ru&user=cdnlivetv&plan=free",
+      "time": 1786917498.2198243,
+      "direct": false
+    },
+    "Marquee Sports Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Marquee%20Sports%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917498.303065,
+      "direct": false
+    },
+    "Match Football 2_ru": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Match%20Football%202&code=ru&user=cdnlivetv&plan=free",
+      "time": 1786917498.7406845,
+      "direct": false
+    },
+    "Match Football 3_ru": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Match%20Football%203&code=ru&user=cdnlivetv&plan=free",
+      "time": 1786917499.2505958,
+      "direct": false
+    },
+    "Match Premier_ru": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Match%20Premier&code=ru&user=cdnlivetv&plan=free",
+      "time": 1786917499.343602,
+      "direct": false
+    },
+    "Match TV_ru": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Match%20TV&code=ru&user=cdnlivetv&plan=free",
+      "time": 1786917500.1078594,
+      "direct": false
+    },
+    "Max Sport 3_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Max%20Sport%203&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917500.3347821,
+      "direct": false
+    },
+    "Max Sport 1_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Max%20Sport%201&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917500.379354,
+      "direct": false
+    },
+    "Max Sport 2_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Max%20Sport%202&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917500.3880453,
+      "direct": false
+    },
+    "Max Sport 4_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Max%20Sport%204&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917500.4263937,
+      "direct": false
+    },
+    "Miami Marlins_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Miami%20Marlins&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917500.5270915,
+      "direct": false
+    },
+    "Milwaukee Brewers_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Milwaukee%20Brewers&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917500.6010923,
+      "direct": false
+    },
+    "Minnesota Twins_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Minnesota%20Twins&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917501.043283,
+      "direct": false
+    },
+    "Monumental Sports Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Monumental%20Sports%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917501.5383408,
+      "direct": false
+    },
+    "Movistar Deportes 1_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Deportes%201&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917501.665965,
+      "direct": false
+    },
+    "Movistar Deportes 2_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Deportes%202&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917502.331597,
+      "direct": false
+    },
+    "Movistar Deportes 4_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Deportes%204&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917502.6394057,
+      "direct": false
+    },
+    "NBA TV_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NBA%20TV&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917502.6653717,
+      "direct": false
+    },
+    "NBC_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NBC&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917502.730406,
+      "direct": false
+    },
+    "Movistar Golf_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Golf&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917502.730419,
+      "direct": false
+    },
+    "NBC Universo_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NBC%20Universo&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917502.862298,
+      "direct": false
+    },
+    "NESN_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NESN&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917502.876767,
+      "direct": false
+    },
+    "NFL Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NFL%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917503.3521671,
+      "direct": false
+    },
+    "NHL Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NHL%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917503.8300815,
+      "direct": false
+    },
+    "National Geographic_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=National%20Geographic&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917503.934926,
+      "direct": false
+    },
+    "New York Mets_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=New%20York%20Mets&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917504.6545336,
+      "direct": false
+    },
+    "New York Yankees_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=New%20York%20Yankees&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917504.9247603,
+      "direct": false
+    },
+    "Nova Sport 3_cz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nova%20Sport%203&code=cz&user=cdnlivetv&plan=free",
+      "time": 1786917505.0718548,
+      "direct": false
+    },
+    "Nova Sport_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nova%20Sport&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917505.0841208,
+      "direct": false
+    },
+    "Nickelodeon TV_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nickelodeon%20TV&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917505.127136,
+      "direct": false
+    },
+    "Nova Sport 5_cz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nova%20Sport%205&code=cz&user=cdnlivetv&plan=free",
+      "time": 1786917505.1608794,
+      "direct": false
+    },
+    "Nova Sports News_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nova%20Sports%20News&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917505.3284278,
+      "direct": false
+    },
+    "Nova Sports Prime_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nova%20Sports%20Prime&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917505.7245727,
+      "direct": false
+    },
+    "ONE 1_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ONE%201&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917506.467218,
+      "direct": false
+    },
+    "Nova Sports Start_gr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Nova%20Sports%20Start&code=gr&user=cdnlivetv&plan=free",
+      "time": 1786917506.491497,
+      "direct": false
+    },
+    "ONE 2_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ONE%202&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917507.0035727,
+      "direct": false
+    },
+    "Oakland Athletics_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Oakland%20Athletics&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917507.250783,
+      "direct": false
+    },
+    "Philadelphia Phillies_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Philadelphia%20Phillies&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917507.3838193,
+      "direct": false
+    },
+    "Pittsburgh Pirates_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Pittsburgh%20Pirates&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917507.4115102,
+      "direct": false
+    },
+    "Polsat_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Polsat&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917507.45938,
+      "direct": false
+    },
+    "Polsat News_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Polsat%20News&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917507.5112925,
+      "direct": false
+    },
+    "Polsat Sport 2_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Polsat%20Sport%202&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917507.6747756,
+      "direct": false
+    },
+    "Polsat Sport 3_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Polsat%20Sport%203&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917508.036584,
+      "direct": false
+    },
+    "Polsat Sport Premium 1_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Polsat%20Sport%20Premium%201&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917508.7976031,
+      "direct": false
+    },
+    "Polsat Sport Premium 2_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Polsat%20Sport%20Premium%202&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917508.8018198,
+      "direct": false
+    },
+    "Premier Sports 1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premier%20Sports%201&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917509.5334656,
+      "direct": false
+    },
+    "Porto Canal_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Porto%20Canal&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917509.5773013,
+      "direct": false
+    },
+    "Premier Sports 2_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premier%20Sports%202&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917509.7550452,
+      "direct": false
+    },
+    "Premiere 1_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%201&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917509.7582443,
+      "direct": false
+    },
+    "Premiere 2_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%202&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917510.0107183,
+      "direct": false
+    },
+    "Premiere 3_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%203&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917510.0673022,
+      "direct": false
+    },
+    "Premiere 4_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%204&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917510.0998206,
+      "direct": false
+    },
+    "Premiere 5_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%205&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917510.3537984,
+      "direct": false
+    },
+    "Premiere 6_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%206&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917511.1097195,
+      "direct": false
+    },
+    "Premiere 7_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premiere%207&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917511.1097257,
+      "direct": false
+    },
+    "Prima Sport 1_ro": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Prima%20Sport%201&code=ro&user=cdnlivetv&plan=free",
+      "time": 1786917511.8791656,
+      "direct": false
+    },
+    "Prima Sport 4_ro": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Prima%20Sport%204&code=ro&user=cdnlivetv&plan=free",
+      "time": 1786917511.904264,
+      "direct": false
+    },
+    "RMC Sport 1_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RMC%20Sport%201&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917512.0891724,
+      "direct": false
+    },
+    "RDS_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RDS&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917512.098875,
+      "direct": false
+    },
+    "RMC Sport 2_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RMC%20Sport%202&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917512.2185092,
+      "direct": false
+    },
+    "RTL_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RTL&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917512.3454223,
+      "direct": false
+    },
+    "RTP 1_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RTP%201&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917512.4243653,
+      "direct": false
+    },
+    "Real Madrid TV_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Real%20Madrid%20TV&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917512.6427243,
+      "direct": false
+    },
+    "Ring_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ring&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917513.3381677,
+      "direct": false
+    },
+    "Red Bull_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Red%20Bull&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917513.342514,
+      "direct": false
+    },
+    "SIC_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SIC&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917514.2869616,
+      "direct": false
+    },
+    "SEC Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SEC%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917514.304563,
+      "direct": false
+    },
+    "San Diego Padres_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=San%20Diego%20Padres&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917514.385427,
+      "direct": false
+    },
+    "San Francisco Giants_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=San%20Francisco%20Giants&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917514.4375806,
+      "direct": false
+    },
+    "Seattle Mariners_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Seattle%20Mariners&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917514.5205328,
+      "direct": false
+    },
+    "See_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=See&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917514.6595337,
+      "direct": false
+    },
+    "Showtime_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Showtime&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917514.7263598,
+      "direct": false
+    },
+    "Sky Sport 1_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%201&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917514.977423,
+      "direct": false
+    },
+    "Sky Sport 1_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%201&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917515.603655,
+      "direct": false
+    },
+    "Sky Sport 1_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%201&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917515.7022889,
+      "direct": false
+    },
+    "Sky Sport 2_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%202&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917516.779556,
+      "direct": false
+    },
+    "Sky Sport 10_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%2010&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917516.801667,
+      "direct": false
+    },
+    "Sky Sport 2_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%202&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917516.8545785,
+      "direct": false
+    },
+    "Sky Sport 2_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%202&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917516.8620315,
+      "direct": false
+    },
+    "Sky Sport 3_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%203&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917516.8808897,
+      "direct": false
+    },
+    "Sky Sport 3_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%203&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917516.983081,
+      "direct": false
+    },
+    "Sky Sport 3_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%203&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917517.0383997,
+      "direct": false
+    },
+    "Sky Sport 4_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%204&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917517.2458813,
+      "direct": false
+    },
+    "Sky Sport 4_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%204&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917517.8533542,
+      "direct": false
+    },
+    "Sky Sport 4_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%204&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917517.8641462,
+      "direct": false
+    },
+    "Sky Sport 5_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%205&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917519.1356423,
+      "direct": false
+    },
+    "Sky Sport 5_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%205&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917519.2420323,
+      "direct": false
+    },
+    "Sky Sport 5_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%205&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917519.2521334,
+      "direct": false
+    },
+    "Sky Sport 6_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%206&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917519.3027391,
+      "direct": false
+    },
+    "Sky Sport 7_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%207&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917519.3113072,
+      "direct": false
+    },
+    "Sky Sport 6_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%206&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917519.3154428,
+      "direct": false
+    },
+    "Sky Sport 7_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%207&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917519.3643873,
+      "direct": false
+    },
+    "Sky Sport 8_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%208&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917519.5406,
+      "direct": false
+    },
+    "Sky Sport 8_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%208&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917520.1380935,
+      "direct": false
+    },
+    "Sky Sport 9_at": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%209&code=at&user=cdnlivetv&plan=free",
+      "time": 1786917520.1747088,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 2_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%202&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.7252653,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 1_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%201&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.7702556,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 10_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%2010&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.810267,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 5_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%205&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.8167124,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 3_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%203&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.8266265,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 4_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%204&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.8361626,
+      "direct": false
+    },
+    "Sky Sport 9_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%209&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917521.8458676,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 6_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%206&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917521.8739777,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 7_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%207&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917522.475262,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 8_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%208&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917522.5988748,
+      "direct": false
+    },
+    "Sky Sport Bundesliga 9_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%209&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917524.0115838,
+      "direct": false
+    },
+    "Sky Sport Max_it": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Max&code=it&user=cdnlivetv&plan=free",
+      "time": 1786917524.4672358,
+      "direct": false
+    },
+    "Sky Sport Select_nz": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Select&code=nz&user=cdnlivetv&plan=free",
+      "time": 1786917524.5472198,
+      "direct": false
+    },
+    "Sky Sport Premier League_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Premier%20League&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917524.6513987,
+      "direct": false
+    },
+    "Sky Sport Golf_it": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Golf&code=it&user=cdnlivetv&plan=free",
+      "time": 1786917524.7041342,
+      "direct": false
+    },
+    "Sky Sport Mix_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Mix&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917524.7168946,
+      "direct": false
+    },
+    "Sky Sport Tennis_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Tennis&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917524.720729,
+      "direct": false
+    },
+    "Sky Sport Top Event_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Top%20Event&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917524.7347639,
+      "direct": false
+    },
+    "Sky Sports Action_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Action&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917524.8832316,
+      "direct": false
+    },
+    "Sky Sports Arena_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Arena&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917525.0238404,
+      "direct": false
+    },
+    "Sky Sports Cricket_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Cricket&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917526.3773286,
+      "direct": false
+    },
+    "Sky Sports F1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20F1&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917526.8166103,
+      "direct": false
+    },
+    "Sky Sports Main Event_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Main%20Event&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.0539703,
+      "direct": false
+    },
+    "Sky Sports Premier League_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Premier%20League&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.1182828,
+      "direct": false
+    },
+    "Sky Sports Golf_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Golf&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.1425865,
+      "direct": false
+    },
+    "Sky Sports Football_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Football&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.158196,
+      "direct": false
+    },
+    "Sky Sports Mix_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Mix&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.1609488,
+      "direct": false
+    },
+    "Sky Sports Racing_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Racing&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.188597,
+      "direct": false
+    },
+    "Sky Sports Tennis_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Tennis&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917527.2651706,
+      "direct": false
+    },
+    "Space City Home Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Space%20City%20Home%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917527.3421693,
+      "direct": false
+    },
+    "Sport 1_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%201&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917528.694294,
+      "direct": false
+    },
+    "Sport 2_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%202&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.164734,
+      "direct": false
+    },
+    "Sport 4_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%204&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.4124792,
+      "direct": false
+    },
+    "Sport 3_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%203&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.4190881,
+      "direct": false
+    },
+    "Sport 5 Plus_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%205%20Plus&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.483037,
+      "direct": false
+    },
+    "Sport 5 Stars_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%205%20Stars&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.5800865,
+      "direct": false
+    },
+    "Sport 5 Live_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%205%20Live&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.5868225,
+      "direct": false
+    },
+    "Sport 5 Gold_il": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%205%20Gold&code=il&user=cdnlivetv&plan=free",
+      "time": 1786917529.6382408,
+      "direct": false
+    },
+    "Sport TV_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917529.638247,
+      "direct": false
+    },
+    "Sport TV 1_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%201&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917529.689399,
+      "direct": false
+    },
+    "Sport TV 2_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%202&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917530.972586,
+      "direct": false
+    },
+    "Sport TV 3_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%203&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917531.5750027,
+      "direct": false
+    },
+    "Sport TV 6_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%206&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917531.874241,
+      "direct": false
+    },
+    "Sport TV 5_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%205&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917531.9043403,
+      "direct": false
+    },
+    "SportDigital Fussball_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SportDigital%20Fussball&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917531.9078608,
+      "direct": false
+    },
+    "Sport TV 4_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%204&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917531.9243925,
+      "direct": false
+    },
+    "Sport TV 7_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%207&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917532.0152898,
+      "direct": false
+    },
+    "Sportsnet 360_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20360&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917532.0647857,
+      "direct": false
+    },
+    "Sportsnet East_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20East&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917532.2775655,
+      "direct": false
+    },
+    "SportsNet New York_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SportsNet%20New%20York&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917532.3148937,
+      "direct": false
+    },
+    "Stan Sport 11_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2011&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917532.622599,
+      "direct": false
+    },
+    "Stan Sport 12_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2012&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917532.7003691,
+      "direct": false
+    },
+    "Stan Sport 13_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2013&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917532.8913286,
+      "direct": false
+    },
+    "Stan Sport 14_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2014&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917532.9334633,
+      "direct": false
+    },
+    "Sportsnet One_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20One&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917533.148489,
+      "direct": false
+    },
+    "Stan Sport 15_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2015&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.2390418,
+      "direct": false
+    },
+    "Stan Sport 16_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2016&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.321713,
+      "direct": false
+    },
+    "Stan Sport 18_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2018&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.5238838,
+      "direct": false
+    },
+    "Stan Sport 19_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2019&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.5812032,
+      "direct": false
+    },
+    "Stan Sport 2_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%202&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.7663808,
+      "direct": false
+    },
+    "Sportsnet Ontario_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20Ontario&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917533.8070855,
+      "direct": false
+    },
+    "Stan Sport 3_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%203&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.8729112,
+      "direct": false
+    },
+    "Stan Sport 4_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%204&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917533.9491434,
+      "direct": false
+    },
+    "Stan Sport 5_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%205&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917534.133703,
+      "direct": false
+    },
+    "St. Louis Cardinals_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=St.%20Louis%20Cardinals&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917534.170779,
+      "direct": false
+    },
+    "Stan Sport 6_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%206&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917534.2095711,
+      "direct": false
+    },
+    "Stan Sport 10_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2010&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917534.2604158,
+      "direct": false
+    },
+    "Sportsnet World_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20World&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917534.2900505,
+      "direct": false
+    },
+    "Sportsnet West_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20West&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917534.2952192,
+      "direct": false
+    },
+    "Stan Sport 7_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%207&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917534.3837078,
+      "direct": false
+    },
+    "Stan Sport 9_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%209&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917534.4265275,
+      "direct": false
+    },
+    "Starzplay Sports 1_ae": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Starzplay%20Sports%201&code=ae&user=cdnlivetv&plan=free",
+      "time": 1786917534.4958215,
+      "direct": false
+    },
+    "Starzplay Sports 2_ae": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Starzplay%20Sports%202&code=ae&user=cdnlivetv&plan=free",
+      "time": 1786917534.559647,
+      "direct": false
+    },
+    "TBS_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TBS&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917534.7528036,
+      "direct": false
+    },
+    "TLC_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TLC&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917534.8040369,
+      "direct": false
+    },
+    "TNT_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917534.830902,
+      "direct": false
+    },
+    "TNT_br": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT&code=br&user=cdnlivetv&plan=free",
+      "time": 1786917534.873626,
+      "direct": false
+    },
+    "TNT Sports 1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917534.9098408,
+      "direct": false
+    },
+    "TNT Sports_cl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports&code=cl&user=cdnlivetv&plan=free",
+      "time": 1786917534.9172213,
+      "direct": false
+    },
+    "TNT Sports 2_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%202&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917534.9951928,
+      "direct": false
+    },
+    "TNT Sports 3_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%203&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917535.0296197,
+      "direct": false
+    },
+    "TNT Sports 4_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%204&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917535.112496,
+      "direct": false
+    },
+    "TNT Sports 5_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%205&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917535.1825948,
+      "direct": false
+    },
+    "TNT Sports 6_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%206&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917535.3618326,
+      "direct": false
+    },
+    "TNT Sports 8_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%208&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917535.4289436,
+      "direct": false
+    },
+    "TRT 1_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TRT%201&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917535.4472811,
+      "direct": false
+    },
+    "TRT 2_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TRT%202&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917535.4786692,
+      "direct": false
+    },
+    "TRT Spor_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TRT%20Spor&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917535.5178301,
+      "direct": false
+    },
+    "TRT 3_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TRT%203&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917535.5252144,
+      "direct": false
+    },
+    "TSN 1_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%201&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917535.5973191,
+      "direct": false
+    },
+    "TSN 2_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%202&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917535.6364074,
+      "direct": false
+    },
+    "TSN 3_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%203&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917535.714285,
+      "direct": false
+    },
+    "TSN 4_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%204&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917535.790348,
+      "direct": false
+    },
+    "TSN 5_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%205&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917535.965849,
+      "direct": false
+    },
+    "TUDN_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TUDN&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917536.03217,
+      "direct": false
+    },
+    "TV ONE_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV%20ONE&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917536.0941484,
+      "direct": false
+    },
+    "TV2_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV2&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.1004646,
+      "direct": false
+    },
+    "TV2 Sport_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV2%20Sport&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.1325698,
+      "direct": false
+    },
+    "TV2 Bornholm_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV2%20Bornholm&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.1520412,
+      "direct": false
+    },
+    "TV2 Sport X_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV2%20Sport%20X&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.2490563,
+      "direct": false
+    },
+    "TV3 Max_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV3%20Max&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.253073,
+      "direct": false
+    },
+    "TV3 Puls_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV3%20Puls&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.3362086,
+      "direct": false
+    },
+    "TV3 Sport_dk": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV3%20Sport&code=dk&user=cdnlivetv&plan=free",
+      "time": 1786917536.4042218,
+      "direct": false
+    },
+    "TV4 Sportkanalen_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV4%20Sportkanalen&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917536.5833638,
+      "direct": false
+    },
+    "TVA Sports_ca": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TVA%20Sports&code=ca&user=cdnlivetv&plan=free",
+      "time": 1786917536.6638129,
+      "direct": false
+    },
+    "TVI_pt": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TVI&code=pt&user=cdnlivetv&plan=free",
+      "time": 1786917536.7137523,
+      "direct": false
+    },
+    "Teledeporte_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Teledeporte&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917536.7565641,
+      "direct": false
+    },
+    "TVP Sport_pl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TVP%20Sport&code=pl&user=cdnlivetv&plan=free",
+      "time": 1786917536.7601707,
+      "direct": false
+    },
+    "Tampa Bay Rays_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tampa%20Bay%20Rays&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917536.7601757,
+      "direct": false
+    },
+    "Tennis Channel_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tennis%20Channel&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917536.8836045,
+      "direct": false
+    },
+    "Telemundo_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Telemundo&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917536.8858202,
+      "direct": false
+    },
+    "Texas Rangers_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Texas%20Rangers&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917536.944634,
+      "direct": false
+    },
+    "Toronto Blue Jays_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Toronto%20Blue%20Jays&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917537.011375,
+      "direct": false
+    },
+    "Travel Channel_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Travel%20Channel&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917537.1846735,
+      "direct": false
+    },
+    "Tyc Sports_ar": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tyc%20Sports&code=ar&user=cdnlivetv&plan=free",
+      "time": 1786917537.2933164,
+      "direct": false
+    },
+    "USA Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=USA%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917537.3246245,
+      "direct": false
+    },
+    "V Sport 1_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%201&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917537.382811,
+      "direct": false
+    },
+    "Universal Kids_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Universal%20Kids&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917537.4057846,
+      "direct": false
+    },
+    "Univision_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Univision&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917537.4086583,
+      "direct": false
+    },
+    "V Sport Football_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%20Football&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917537.5063584,
+      "direct": false
+    },
+    "V Sport Extra_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%20Extra&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917537.5090284,
+      "direct": false
+    },
+    "V Sport Motor_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%20Motor&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917537.5539033,
+      "direct": false
+    },
+    "V Sport Premium_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%20Premium&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917537.6320405,
+      "direct": false
+    },
+    "V Sport Ultra_se": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%20Ultra&code=se&user=cdnlivetv&plan=free",
+      "time": 1786917537.805912,
+      "direct": false
+    },
+    "VTV_uy": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=VTV&code=uy&user=cdnlivetv&plan=free",
+      "time": 1786917537.9136345,
+      "direct": false
+    },
+    "Viaplay Sports 1_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Viaplay%20Sports%201&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917537.9434328,
+      "direct": false
+    },
+    "Viaplay Sports 2_gb": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Viaplay%20Sports%202&code=gb&user=cdnlivetv&plan=free",
+      "time": 1786917537.9919229,
+      "direct": false
+    },
+    "Willow Cricket_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Willow%20Cricket&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917538.0328257,
+      "direct": false
+    },
+    "WWE_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=WWE&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917538.035197,
+      "direct": false
+    },
+    "Yes Network_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Yes%20Network&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917538.1189468,
+      "direct": false
+    },
+    "ZDF_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ZDF&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917538.1414433,
+      "direct": false
+    },
+    "ZDF Info_de": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ZDF%20Info&code=de&user=cdnlivetv&plan=free",
+      "time": 1786917538.1742425,
+      "direct": false
+    },
+    "Ziggo Sport 2_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%202&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917538.235637,
+      "direct": false
+    },
+    "Ziggo Sport 3_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%203&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917538.4225724,
+      "direct": false
+    },
+    "Ziggo Sport 5_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%205&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917538.577812,
+      "direct": false
+    },
+    "Ziggo Sport 4_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%204&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917538.5958304,
+      "direct": false
+    },
+    "Ziggo Sport 6_nl": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%206&code=nl&user=cdnlivetv&plan=free",
+      "time": 1786917538.6100976,
+      "direct": false
+    },
+    "bTV_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=bTV&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917538.6454215,
+      "direct": false
+    },
+    "bTV Action_bg": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=bTV%20Action&code=bg&user=cdnlivetv&plan=free",
+      "time": 1786917538.686761,
+      "direct": false
+    },
+    "beIN SPORTS_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917538.7273808,
+      "direct": false
+    },
+    "beIN SPORTS 1_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917538.7500181,
+      "direct": false
+    },
+    "beIN SPORTS 1_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917538.7983718,
+      "direct": false
+    },
+    "beIN SPORTS 1_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917538.8385,
+      "direct": false
+    },
+    "beIN SPORTS 1_au": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=au&user=cdnlivetv&plan=free",
+      "time": 1786917539.053786,
+      "direct": false
+    },
+    "beIN SPORTS 2_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917539.2099159,
+      "direct": false
+    },
+    "beIN SPORTS 2_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917539.2172966,
+      "direct": false
+    },
+    "beIN SPORTS 2_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917539.2222836,
+      "direct": false
+    },
+    "beIN SPORTS 3_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917539.2533903,
+      "direct": false
+    },
+    "beIN SPORTS 3_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917539.3024766,
+      "direct": false
+    },
+    "beIN SPORTS 3_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917539.3439765,
+      "direct": false
+    },
+    "beIN SPORTS 4_sa": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=sa&user=cdnlivetv&plan=free",
+      "time": 1786917539.349671,
+      "direct": false
+    },
+    "beIN SPORTS 4_tr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
+      "time": 1786917539.4224463,
+      "direct": false
+    },
+    "beIN SPORTS 5_sa": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%205&code=sa&user=cdnlivetv&plan=free",
+      "time": 1786917539.4538474,
+      "direct": false
+    },
+    "beIN SPORTS 6_sa": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%206&code=sa&user=cdnlivetv&plan=free",
+      "time": 1786917539.6768563,
+      "direct": false
+    },
+    "beIN SPORTS 7_sa": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%207&code=sa&user=cdnlivetv&plan=free",
+      "time": 1786917539.822956,
+      "direct": false
+    },
+    "beIN SPORTS 8_sa": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%208&code=sa&user=cdnlivetv&plan=free",
+      "time": 1786917539.8604767,
+      "direct": false
+    },
+    "beIN SPORTS 9_sa": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%209&code=sa&user=cdnlivetv&plan=free",
+      "time": 1786917539.91924,
+      "direct": false
+    },
+    "beIN SPORTS MAX 10_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%2010&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917539.9207778,
+      "direct": false
+    },
+    "beIN SPORTS MAX 4_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%204&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917539.9324405,
+      "direct": false
+    },
+    "beIN SPORTS MAX 6_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%206&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917539.9575748,
+      "direct": false
+    },
+    "beIN SPORTS MAX 5_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%205&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917539.9644244,
+      "direct": false
+    },
+    "beIN SPORTS MAX 7_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%207&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917540.0265203,
+      "direct": false
+    },
+    "beIN SPORTS MAX 8_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%208&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917540.071511,
+      "direct": false
+    },
+    "beIN SPORTS MAX 9_fr": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%209&code=fr&user=cdnlivetv&plan=free",
+      "time": 1786917540.2857313,
+      "direct": false
+    },
+    "beIN SPORTS N_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20N&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917540.4612124,
+      "direct": false
+    },
+    "beIN SPORTS XTRA_es": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20XTRA&code=es&user=cdnlivetv&plan=free",
+      "time": 1786917540.4958694,
+      "direct": false
+    },
+    "truTV_us": {
+      "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=truTV&code=us&user=cdnlivetv&plan=free",
+      "time": 1786917540.5379725,
+      "direct": false
+    }
+  },
+  "direct_count": 0,
+  "fallback_count": 414
 }

@@ -6,10 +6,16 @@
 https://raw.githubusercontent.com/kadirsener1/247/main/cdnlive.m3u
 ```
 
-## Kanal Gruplari
+## Ozet
 
-| Ulke / Grup | Kanal Sayisi |
-|-------------|--------------|
+- Toplam kanal: 414
+- Cozulmus/direkt link: 0
+- Fallback player link: 414
+
+## Gruplar
+
+| Grup | Kanal Sayisi |
+|------|--------------|
 | USA | 96 |
 | UK | 36 |
 | France | 26 |
@@ -42,10 +48,8 @@ https://raw.githubusercontent.com/kadirsener1/247/main/cdnlive.m3u
 | Chile | 1 |
 | Uruguay | 1 |
 
-**Toplam: 414 kanal**
-
 ## Son Guncelleme
 
-2026-08-16 21:43:54 UTC
+2026-08-16 21:59:00 UTC
 
-Her 6 saatte bir otomatik guncellenir.
+Not: Fallback olarak yazilan player URL'leri Tivimate'de her zaman dogrudan oynatmayabilir.

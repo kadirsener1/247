@@ -1,7 +1,7 @@
 #EXTM3U url-tvg="" refresh="3600"
 # CDNLiveTV M3U Playlist
-# Generated: 2026-08-16 21:43:54 UTC
-# Total: 414 channels
+# Generated: 2026-08-16 21:59:00 UTC
+# Total Channels: 414
 
 #EXTINF:-1 tvg-id="ESPN.ar" tvg-name="ESPN (AR)" tvg-logo="https://cdnlivetv.tv/api/v1/channels/images6318/ar/espn.webp" group-title="Argentina",ESPN (AR)
 https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN&code=ar&user=cdnlivetv&plan=free
