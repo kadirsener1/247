@@ -1,31 +1,18 @@
 #!/usr/bin/env python3
 """
 cdnlivetv API'den kanalları çekip M3U dosyasına yazar.
-Gelişmiş stream kontrol mekanizması ile.
 """
 
 import json
 import sys
 import os
-import time
 import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta
-from urllib.parse import urlparse
 
 
 # ─── AYARLAR ───────────────────────────────────────────────
 API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
 OUTPUT_FILE = "cdnlive.m3u"
-TIMEOUT = 25
-MAX_WORKERS = 10
-MAX_RETRIES = 3
-
-# Kontrol modları:
-# "strict"  = Sadece gerçekten çalışanları al (yavaş, bazen false-negative)
-# "lenient" = API'den 200 dönerse çalışıyor say (hızlı, güvenilir)
-# "all"     = Tüm kanalları al, kontrol yapma (en hızlı)
-CHECK_MODE = "lenient"
 
 HEADERS = {
     "User-Agent": (
@@ -33,311 +20,236 @@ HEADERS = {
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/121.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "tr-TR,tr;q=0.9",
     "Referer": "https://cdnlivetv.is/",
     "Origin": "https://cdnlivetv.is",
-    "Sec-Fetch-Dest": "document",
-    "Sec-Fetch-Mode": "navigate",
-    "Sec-Fetch-Site": "same-site",
 }
 # ───────────────────────────────────────────────────────────
 
 
 def load_channels_from_api() -> list:
-    """API'den kanal listesini çeker."""
+    """API'den kanal listesini çeker ve yapıyı debug eder."""
+    
     print(f"🌐 API'den veri çekiliyor...")
-    print(f"   URL: {API_URL}")
+    print(f"   URL: {API_URL}\n")
     
     try:
         session = requests.Session()
         session.headers.update(HEADERS)
         
         response = session.get(API_URL, timeout=30)
-        response.raise_for_status()
-        data = response.json()
         
-        channels = data.get("channels", [])
+        print(f"📡 HTTP Status: {response.status_code}")
+        print(f"📡 Content-Type: {response.headers.get('Content-Type', 'bilinmiyor')}")
+        print(f"📡 Response boyutu: {len(response.content)} byte\n")
+        
+        # Raw response'u göster (ilk 500 karakter)
+        raw_text = response.text[:500]
+        print(f"📄 Raw Response (ilk 500 karakter):\n{raw_text}\n")
+        
+        if response.status_code != 200:
+            print(f"❌ HTTP {response.status_code} hatası!")
+            return []
+        
+        # JSON parse
+        try:
+            data = response.json()
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON parse hatası: {e}")
+            print(f"Response text: {response.text[:1000]}")
+            return []
+        
+        # JSON yapısını analiz et
+        print(f"📊 JSON Yapısı:")
+        if isinstance(data, dict):
+            print(f"   Tip: dict")
+            print(f"   Anahtarlar: {list(data.keys())}")
+            for key, val in data.items():
+                if isinstance(val, list):
+                    print(f"   '{key}' listesi: {len(val)} öğe")
+                    if val:
+                        print(f"   İlk öğe örneği: {json.dumps(val[0], ensure_ascii=False, indent=4)}")
+                elif isinstance(val, dict):
+                    print(f"   '{key}' dict: {list(val.keys())}")
+                else:
+                    print(f"   '{key}': {val}")
+        elif isinstance(data, list):
+            print(f"   Tip: list")
+            print(f"   Öğe sayısı: {len(data)}")
+            if data:
+                print(f"   İlk öğe örneği: {json.dumps(data[0], ensure_ascii=False, indent=4)}")
+        
+        print()
+        
+        # Kanalları çıkar
+        channels = extract_channels(data)
         print(f"✅ {len(channels)} kanal bulundu.\n")
         return channels
         
-    except requests.exceptions.RequestException as e:
-        print(f"❌ API hatası: {e}")
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Bağlantı hatası: {e}")
         return []
-    except json.JSONDecodeError as e:
-        print(f"❌ JSON parse hatası: {e}")
+    except requests.exceptions.Timeout:
+        print(f"❌ Timeout hatası!")
+        return []
+    except Exception as e:
+        print(f"❌ Beklenmeyen hata: {type(e).__name__}: {e}")
         return []
 
 
-def check_stream_strict(stream_url: str, session: requests.Session) -> dict:
-    """Katı kontrol - gerçek stream erişimini test eder."""
+def extract_channels(data) -> list:
+    """JSON verisinden kanal listesini çıkarır."""
     
-    for attempt in range(MAX_RETRIES):
-        try:
-            # GET request ile dene (HEAD bazen çalışmıyor)
-            response = session.get(
-                stream_url,
-                timeout=TIMEOUT,
-                allow_redirects=True,
-                stream=True
-            )
-            
-            final_url = response.url
-            status = response.status_code
-            
-            # İçerik kontrolü
-            content_type = response.headers.get("Content-Type", "")
-            
-            # Başarılı durumlar
-            if status == 200:
-                # M3U8 içeriği mi kontrol et
-                try:
-                    first_chunk = next(response.iter_content(chunk_size=512), b"")
-                    response.close()
-                    
-                    # M3U8 işaretçileri
-                    if (b"#EXTM3U" in first_chunk or 
-                        b"#EXT-X-" in first_chunk or
-                        b".ts" in first_chunk or
-                        "mpegurl" in content_type.lower() or
-                        "application/vnd.apple" in content_type.lower()):
-                        return {"alive": True, "final_url": final_url, "status": status}
-                    
-                    # Video içeriği
-                    if ("video" in content_type.lower() or 
-                        "octet-stream" in content_type.lower()):
-                        return {"alive": True, "final_url": final_url, "status": status}
-                        
-                except:
-                    pass
-            
-            # 3xx yönlendirme - final URL'yi kullan
-            if 300 <= status < 400:
-                return {"alive": True, "final_url": final_url, "status": status}
-            
-            # 302 ile m3u8'e yönlendirme
-            if final_url != stream_url and ".m3u8" in final_url:
-                return {"alive": True, "final_url": final_url, "status": status}
-                
-            response.close()
-            
-        except requests.exceptions.Timeout:
-            time.sleep(1)
-            continue
-        except requests.exceptions.RequestException:
-            time.sleep(0.5)
-            continue
-        except Exception:
-            continue
+    # Direkt liste
+    if isinstance(data, list):
+        return data
     
-    return {"alive": False, "final_url": "", "status": 0}
+    # Dict içinde liste ara
+    if isinstance(data, dict):
+        # Olası tüm anahtarları dene
+        for key in [
+            "channels", "data", "items", "results", 
+            "streams", "list", "playlist", "channel_list",
+            "response", "content"
+        ]:
+            if key in data and isinstance(data[key], list):
+                print(f"✅ Kanallar '{key}' anahtarında bulundu.")
+                return data[key]
+        
+        # İç içe dict kontrolü
+        for key, val in data.items():
+            if isinstance(val, list) and len(val) > 0:
+                if isinstance(val[0], dict) and (
+                    "url" in val[0] or "stream_url" in val[0] or 
+                    "link" in val[0] or "name" in val[0]
+                ):
+                    print(f"✅ Kanallar '{key}' anahtarında bulundu (otomatik tespit).")
+                    return val
+    
+    print("⚠️  Kanal listesi otomatik tespit edilemedi!")
+    return []
 
 
-def check_stream_lenient(stream_url: str, session: requests.Session) -> dict:
-    """Esnek kontrol - API erişilebilirliğini kontrol eder."""
-    
-    try:
-        # Sadece bağlantı kontrolü
-        response = session.head(
-            stream_url,
-            timeout=15,
-            allow_redirects=True
-        )
-        
-        final_url = response.url
-        status = response.status_code
-        
-        # 200, 206, 302, 301 başarılı say
-        if status in [200, 206, 301, 302, 303, 307, 308]:
-            return {"alive": True, "final_url": final_url, "status": status}
-        
-        # HEAD çalışmazsa GET dene
-        response = session.get(
-            stream_url,
-            timeout=15,
-            allow_redirects=True,
-            stream=True
-        )
-        response.close()
-        
-        if response.status_code in [200, 206, 301, 302, 303, 307, 308]:
-            return {"alive": True, "final_url": response.url, "status": response.status_code}
-            
-    except:
-        pass
-    
-    return {"alive": False, "final_url": "", "status": 0}
+def extract_url(channel: dict) -> str:
+    """Kanaldan URL çıkarır."""
+    for key in [
+        "stream_url", "url", "link", "src", 
+        "source", "stream", "hls_url", "m3u8_url",
+        "play_url", "video_url"
+    ]:
+        if key in channel and channel[key]:
+            return str(channel[key]).strip()
+    return ""
 
 
-def check_channel(channel: dict, session: requests.Session) -> dict:
-    """Tek bir kanalı kontrol eder."""
-    
-    stream_url = channel.get("stream_url", "")
-    
-    if not stream_url:
-        return {
-            "alive": False,
-            "channel": channel,
-            "final_url": "",
-            "status": 0,
-            "use_api_url": True
-        }
-    
-    # Kontrol moduna göre
-    if CHECK_MODE == "all":
-        # Kontrol yapma, direkt ekle
-        return {
-            "alive": True,
-            "channel": channel,
-            "final_url": stream_url,
-            "status": 200,
-            "use_api_url": True
-        }
-    elif CHECK_MODE == "lenient":
-        result = check_stream_lenient(stream_url, session)
-    else:  # strict
-        result = check_stream_strict(stream_url, session)
-    
-    return {
-        "alive": result["alive"],
-        "channel": channel,
-        "final_url": result.get("final_url", stream_url),
-        "status": result.get("status", 0),
-        "use_api_url": True  # API URL'sini kullan
-    }
+def extract_name(channel: dict) -> str:
+    """Kanaldan isim çıkarır."""
+    for key in ["name", "title", "channel_name", "display_name", "label"]:
+        if key in channel and channel[key]:
+            return str(channel[key]).strip()
+    return "Bilinmeyen Kanal"
+
+
+def extract_logo(channel: dict) -> str:
+    """Kanaldan logo URL'si çıkarır."""
+    for key in ["logo", "image", "icon", "thumbnail", "logo_url", "img"]:
+        if key in channel and channel[key]:
+            return str(channel[key]).strip()
+    return ""
+
+
+def extract_group(channel: dict) -> str:
+    """Kanaldan grup/kategori çıkarır."""
+    for key in ["group", "category", "group_title", "genre", "type", "group-title"]:
+        if key in channel and channel[key]:
+            return str(channel[key]).strip()
+    return "GENEL"
+
+
+def extract_id(channel: dict) -> str:
+    """Kanaldan ID çıkarır."""
+    for key in ["id", "tvg_id", "tvg-id", "channel_id", "epg_id"]:
+        if key in channel and channel[key]:
+            return str(channel[key]).strip()
+    return ""
 
 
 def generate_m3u(channels: list, output_path: str) -> int:
-    """Kanalları M3U formatında dosyaya yazar."""
+    """Tüm kanalları (URL'si olanları) M3U dosyasına yazar."""
     
     # Türkiye saati
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
     
-    total = len(channels)
-    alive_channels = []
-    dead_channels = []
+    valid_channels = []
+    skipped = 0
     
     print(f"{'='*65}")
-    print(f"🔍 Kontrol Modu: {CHECK_MODE.upper()}")
-    print(f"📺 Toplam {total} kanal kontrol edilecek...")
-    print(f"⚡ Eşzamanlı: {MAX_WORKERS} thread | ⏱️ Timeout: {TIMEOUT}s")
+    print(f"📝 M3U dosyası oluşturuluyor...")
     print(f"{'='*65}\n")
     
-    # Session oluştur
-    session = requests.Session()
-    session.headers.update(HEADERS)
-    
-    # Paralel kontrol
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {
-            executor.submit(check_channel, ch, session): ch 
-            for ch in channels
-        }
+    for ch in channels:
+        url = extract_url(ch)
+        name = extract_name(ch)
         
-        done_count = 0
-        for future in as_completed(futures):
-            done_count += 1
-            
-            try:
-                result = future.result()
-            except Exception as e:
-                ch = futures[future]
-                result = {
-                    "alive": False,
-                    "channel": ch,
-                    "final_url": "",
-                    "status": 0
-                }
-            
-            ch = result["channel"]
-            progress = f"[{done_count:3d}/{total}]"
-            name = ch.get("name", "?")[:40]
-            
-            if result["alive"]:
-                alive_channels.append(result)
-                status_info = f"HTTP {result['status']}" if result['status'] else "OK"
-                print(f"  ✅ {progress} {name:<40} — {status_info}")
-            else:
-                dead_channels.append(ch)
-                print(f"  ❌ {progress} {name:<40} — BAŞARISIZ")
+        if not url:
+            print(f"  ⏭️  Atlandı (URL yok): {name}")
+            skipped += 1
+            continue
+        
+        valid_channels.append({
+            "name": name,
+            "url": url,
+            "logo": extract_logo(ch),
+            "group": extract_group(ch),
+            "id": extract_id(ch),
+        })
+        print(f"  ➕ Eklendi: {name}")
     
-    session.close()
+    # İsme göre sırala
+    valid_channels.sort(key=lambda x: x["name"].lower())
     
-    # Eğer hiç kanal çalışmıyorsa ve strict modundaysak, lenient dene
-    if len(alive_channels) == 0 and CHECK_MODE == "strict":
-        print("\n⚠️  Strict modda kanal bulunamadı, tüm kanallar ekleniyor...")
-        for ch in channels:
-            if ch.get("stream_url"):
-                alive_channels.append({
-                    "channel": ch,
-                    "final_url": ch.get("stream_url"),
-                    "status": 0,
-                    "use_api_url": True
-                })
-    
-    # Kanallari isme göre sırala
-    alive_channels.sort(key=lambda x: x["channel"].get("name", "").lower())
-    
-    # M3U dosyası oluştur
+    # M3U yaz
     with open(output_path, "w", encoding="utf-8") as f:
         f.write('#EXTM3U x-tvg-url=""\n')
-        f.write(f'# ════════════════════════════════════════════════════════════\n')
         f.write(f'# 📺 CDN Live TV - M3U Playlist\n')
         f.write(f'# 🕐 Son güncelleme: {now} (TR)\n')
-        f.write(f'# ✅ Toplam kanal: {len(alive_channels)}\n')
-        f.write(f'# 🔗 Kaynak: cdnlivetv.is\n')
-        f.write(f'# ════════════════════════════════════════════════════════════\n\n')
+        f.write(f'# 📊 Toplam kanal: {len(valid_channels)}\n')
+        f.write(f'# 🔗 Kaynak: cdnlivetv.is\n\n')
         
-        for item in alive_channels:
-            ch = item["channel"]
+        for ch in valid_channels:
+            extinf = '#EXTINF:-1'
             
-            # Kanal bilgileri
-            name = ch.get("name", "Bilinmeyen Kanal")
-            logo = ch.get("logo", "")
-            group = ch.get("group", "GENEL")
-            tvg_id = ch.get("id", "")
+            if ch["id"]:
+                extinf += f' tvg-id="{ch["id"]}"'
             
-            # Stream URL - API URL'sini kullan (daha güvenilir)
-            stream_url = ch.get("stream_url", item.get("final_url", ""))
+            extinf += f' tvg-name="{ch["name"]}"'
             
-            if not stream_url:
-                continue
+            if ch["logo"]:
+                extinf += f' tvg-logo="{ch["logo"]}"'
             
-            # EXTINF satırı
-            extinf = f'#EXTINF:-1'
-            
-            if tvg_id:
-                extinf += f' tvg-id="{tvg_id}"'
-            
-            extinf += f' tvg-name="{name}"'
-            
-            if logo:
-                extinf += f' tvg-logo="{logo}"'
-            
-            extinf += f' group-title="{group}"'
-            extinf += f',{name}'
+            extinf += f' group-title="{ch["group"]}"'
+            extinf += f',{ch["name"]}'
             
             f.write(extinf + "\n")
-            f.write(stream_url + "\n")
+            f.write(ch["url"] + "\n")
     
-    # Sonuç raporu
+    # Sonuç
     print(f"\n{'='*65}")
-    print(f"📊 SONUÇ RAPORU")
+    print(f"📊 SONUÇ")
     print(f"{'='*65}")
-    print(f"  📺 API'deki toplam : {total}")
-    print(f"  ✅ M3U'ya eklenen  : {len(alive_channels)}")
-    print(f"  ❌ Başarısız       : {len(dead_channels)}")
-    print(f"  📁 Dosya           : {output_path}")
-    print(f"  🕐 Güncelleme      : {now}")
+    print(f"  📺 API'deki toplam  : {len(channels)}")
+    print(f"  ✅ M3U'ya eklenen   : {len(valid_channels)}")
+    print(f"  ⏭️  Atlanılan        : {skipped}")
+    print(f"  📁 Dosya            : {output_path}")
+    print(f"  🕐 Güncelleme       : {now}")
     print(f"{'='*65}\n")
     
-    # Grup bazında istatistik
+    # Grup istatistiği
     groups = {}
-    for item in alive_channels:
-        g = item["channel"].get("group", "GENEL")
+    for ch in valid_channels:
+        g = ch["group"]
         groups[g] = groups.get(g, 0) + 1
     
     if groups:
@@ -346,7 +258,7 @@ def generate_m3u(channels: list, output_path: str) -> int:
             print(f"   • {g}: {count} kanal")
         print()
     
-    return len(alive_channels)
+    return len(valid_channels)
 
 
 def main():
@@ -358,18 +270,22 @@ def main():
     channels = load_channels_from_api()
     
     if not channels:
-        print("❌ API'den kanal çekilemedi!")
+        print("\n⚠️  API'den kanal çekilemedi!")
+        print("💡 GitHub Actions loglarındaki 'Raw Response' satırına bakın.")
+        print("   API'nin döndürdüğü veriyi görelim.\n")
         sys.exit(1)
     
-    # M3U oluştur
+    # M3U oluştur (kontrol YOK, direkt ekle)
     output = os.environ.get("OUTPUT_FILE", OUTPUT_FILE)
-    alive_count = generate_m3u(channels, output)
+    count = generate_m3u(channels, output)
     
-    if alive_count == 0:
-        print("❌ Hiç kanal eklenemedi!")
+    if count == 0:
+        print("⚠️  URL'si olan kanal bulunamadı!")
+        print("💡 Loglardaki 'İlk öğe örneği' kısmına bakın,")
+        print("   URL hangi anahtarda tutuluyor kontrol edin.\n")
         sys.exit(1)
     
-    print(f"✅ {OUTPUT_FILE} başarıyla oluşturuldu! ({alive_count} kanal)\n")
+    print(f"✅ {output} başarıyla oluşturuldu! ({count} kanal)\n")
 
 
 if __name__ == "__main__":
