@@ -1,0 +1,136 @@
+name: 📺 M3U Playlist Güncelle
+
+on:
+  # ─── Her 6 saatte bir otomatik çalış ───
+  schedule:
+    - cron: "0 */6 * * *"
+
+  # ─── Manuel tetikleme ───
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: "Zorla güncelle (token yenile)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+  # ─── Push ile tetikleme ───
+  push:
+    branches:
+      - main
+    paths:
+      - "generator.py"
+      - "config.json"
+
+# ─── İzinler ───
+permissions:
+  contents: write
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+    name: 🔄 Playlist Güncelle
+
+    steps:
+      # ─── 1. Repo'yu çek ───
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ─── 2. Python kur ───
+      - name: 🐍 Python Kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ─── 3. Bağımlılıkları yükle ───
+      - name: 📦 Bağımlılıkları Yükle
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ─── 4. Zorla güncelleme (token sıfırla) ───
+      - name: 🔑 Token Sıfırla (Manuel)
+        if: ${{ github.event.inputs.force_update == 'true' }}
+        run: |
+          echo "⚠️ Token sıfırlanıyor..."
+          python -c "
+          import json
+          with open('config.json', 'r') as f:
+              config = json.load(f)
+          config['last_token'] = ''
+          with open('config.json', 'w') as f:
+              json.dump(config, f, indent=4)
+          print('✅ Token sıfırlandı')
+          "
+
+      # ─── 5. Generator'ı çalıştır ───
+      - name: 🚀 M3U Oluştur
+        run: python generator.py
+        timeout-minutes: 5
+        env:
+          PYTHONUNBUFFERED: "1"
+
+      # ─── 6. Dosya kontrolü ───
+      - name: 📋 Sonuç Kontrol
+        run: |
+          echo "═══════════════════════════════════"
+          echo "📺 CDNLiveTV M3U Generator Sonucu"
+          echo "═══════════════════════════════════"
+
+          if [ -f "cdnlive.m3u" ]; then
+            KANAL_SAYISI=$(grep -c "^#EXTINF" cdnlive.m3u || echo "0")
+            DOSYA_BOYUT=$(du -h cdnlive.m3u | cut -f1)
+            echo "✅ cdnlive.m3u oluşturuldu"
+            echo "📊 Kanal Sayısı: $KANAL_SAYISI"
+            echo "📦 Dosya Boyutu: $DOSYA_BOYUT"
+            echo ""
+            echo "─── İlk 20 Kanal ───"
+            grep "^#EXTINF" cdnlive.m3u | head -20 | sed 's/.*,/  📺 /'
+          else
+            echo "❌ cdnlive.m3u oluşturulamadı!"
+            exit 1
+          fi
+
+          echo ""
+          echo "═══════════════════════════════════"
+
+      # ─── 7. Değişiklikleri commit et ───
+      - name: 📤 Git Commit & Push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add cdnlive.m3u config.json README.md generator.log 2>/dev/null || true
+
+          # Değişiklik var mı kontrol et
+          if git diff --staged --quiet; then
+            echo "ℹ️ Değişiklik yok, commit atlanıyor"
+          else
+            TARIH=$(date -u +"%Y-%m-%d %H:%M UTC")
+            KANAL=$(grep -c "^#EXTINF" cdnlive.m3u 2>/dev/null || echo "0")
+            git commit -m "📺 Playlist güncellendi | $KANAL kanal | $TARIH"
+            git push
+            echo "✅ Değişiklikler push edildi"
+          fi
+
+  # ─── Hata bildirim job'ı ───
+  notify-failure:
+    runs-on: ubuntu-latest
+    needs: update-playlist
+    if: failure()
+    name: ⚠️ Hata Bildirimi
+
+    steps:
+      - name: ❌ Hata Logla
+        run: |
+          echo "═══════════════════════════════════"
+          echo "❌ M3U güncelleme başarısız!"
+          echo "⏰ Zaman: $(date -u)"
+          echo "🔗 Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "═══════════════════════════════════"
