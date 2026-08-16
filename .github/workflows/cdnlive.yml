@@ -20,16 +20,27 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Bağımlılıkları yükle
+      - name: Sistem bağımlılıkları (Playwright için)
         run: |
-          python -m pip install --upgrade pip
-          pip install requests urllib3
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+            libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
+            libxdamage1 libxfixes3 libxrandr2 libgbm1 \
+            libasound2 libpango-1.0-0 libpangocairo-1.0-0 \
+            libcairo2 libatspi2.0-0 libwayland-client0
+
+      - name: Python paketleri
+        run: |
+          pip install --upgrade pip
+          pip install requests urllib3 playwright
+          python -m playwright install chromium
+          python -m playwright install-deps chromium
 
       - name: M3U oluştur
-        run: |
-          python checker.py
+        run: python checker.py
 
-      - name: Debug artifact yükle
+      - name: Artifact yükle (debug)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -37,7 +48,6 @@ jobs:
           path: |
             cdnlive.m3u
             debug_failed.json
-            debug_samples
           if-no-files-found: ignore
 
       - name: Commit ve push
@@ -49,8 +59,10 @@ jobs:
           git add cdnlive.m3u debug_failed.json || true
 
           if git diff --cached --quiet; then
-            echo "Değişiklik yok."
+            echo "ℹ️ Değişiklik yok."
           else
-            git commit -m "cdnlive.m3u guncellendi"
+            KANAL=$(grep -c '^#EXTINF' cdnlive.m3u 2>/dev/null || echo 0)
+            TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
+            git commit -m "📺 $KANAL kanal — $TARIH"
             git push
           fi
