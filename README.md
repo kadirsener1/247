@@ -46,6 +46,6 @@ https://raw.githubusercontent.com/kadirsener1/247/main/cdnlive.m3u
 
 ## Son Guncelleme
 
-2026-08-16 21:43:19 UTC
+2026-08-16 21:43:54 UTC
 
 Her 6 saatte bir otomatik guncellenir.
