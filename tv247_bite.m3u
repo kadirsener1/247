@@ -260,10 +260,10 @@ https://channels.forestgump.space/ch1/track/961
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://channels.forestgump.space/ch1/track/1000
 
-#EXTINF:-1 group-title="Turkey" tvg-name="A Spor",A Spor proxy
+#EXTINF:-1 group-title="Turkey" tvg-name="A Spor",A Spor
 #EXTVLCOPT:http-referrer=https://channels.forestgump.space/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
-https://proxy.cors.sh/https://channels.forestgump.space/ch1/track/1011
+https://channels.forestgump.space/ch1/track/1011
 
 #EXTINF:-1 group-title="Qatar" tvg-name="beIN Sports MENA EN 1",beIN Sports MENA EN 1
 #EXTVLCOPT:http-referrer=https://channels.forestgump.space/
