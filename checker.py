@@ -11,7 +11,7 @@ from datetime import datetime, timezone, timedelta
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
 # ─── AYARLAR ──────────────────────────────────────────────────────────────────
@@ -19,10 +19,10 @@ API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
 OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
 
-TIMEOUT = 30000       # ms (Playwright için)
-PAGE_WAIT = 10000     # ms - stream yüklenene kadar bekle
-MAX_CONCURRENT = 3    # Aynı anda kaç sayfa açılsın
-ONLY_ONLINE = True    # Sadece status=online olanları al
+TIMEOUT = 30000
+PAGE_WAIT = 10000
+MAX_CONCURRENT = 3
+ONLY_ONLINE = True
 
 HEADERS = {
     "User-Agent": (
@@ -35,42 +35,20 @@ HEADERS = {
     "Origin": "https://cdnlivetv.tv",
 }
 
+# ✅ SADELEŞTIRILDI - sorunlu argümanlar kaldırıldı
 BROWSER_ARGS = [
     "--no-sandbox",
     "--disable-setuid-sandbox",
     "--disable-dev-shm-usage",
     "--disable-gpu",
-    "--disable-gpu-sandbox",
-    "--disable-software-rasterizer",
-    "--disable-accelerated-2d-canvas",
-    "--disable-accelerated-video-decode",
-    "--disable-accelerated-video-encode",
-    "--disable-webgl",
-    "--disable-webgl2",
-    "--disable-3d-apis",
-    "--disable-extensions",
-    "--no-zygote",
-    "--single-process",
-    "--no-first-run",
-    "--no-default-browser-check",
-    "--disable-background-networking",
-    "--disable-default-apps",
-    "--disable-sync",
-    "--disable-translate",
-    "--hide-scrollbars",
-    "--metrics-recording-only",
     "--mute-audio",
-    "--safebrowsing-disable-auto-update",
     "--ignore-certificate-errors",
     "--ignore-ssl-errors",
-    "--ignore-certificate-errors-spki-list",
+    "--disable-extensions",
+    "--disable-background-networking",
+    "--hide-scrollbars",
 ]
 
-BROWSER_ENV = {
-    "DISPLAY": "",
-    "LIBGL_ALWAYS_SOFTWARE": "1",
-    "GALLIUM_DRIVER": "softpipe",
-}
 # ──────────────────────────────────────────────────────────────────────────────
 
 
@@ -131,7 +109,6 @@ def load_channels() -> list:
 
 
 def extract_from_html(html_text: str, base_url: str = "") -> str:
-    """HTML / JS içinden stream URL çıkarır."""
     if not html_text:
         return ""
 
@@ -157,7 +134,6 @@ def extract_from_html(html_text: str, base_url: str = "") -> str:
 
 
 async def extract_from_js(page) -> str:
-    """Sayfanın JS scope'undaki değişkenleri kontrol eder."""
     expressions = [
         "window.stream_url",
         "window.hls_url",
@@ -205,37 +181,45 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
     stream_url = ""
     found_event = asyncio.Event()
 
-    context = await browser.new_context(
-        user_agent=HEADERS["User-Agent"],
-        extra_http_headers={
-            "Accept-Language": HEADERS["Accept-Language"],
-            "Referer": HEADERS["Referer"],
-        },
-        bypass_csp=True,
-        ignore_https_errors=True,
-    )
+    # ✅ Browser kapalıysa erken dön
+    if not browser.is_connected():
+        print(f"      ⚠️  [{channel_name}] Browser bağlı değil, atlanıyor.")
+        return ""
 
-    page = await context.new_page()
-
-    # ── Ağ isteği dinleyicisi ──────────────────────────────────────────────────
-    async def on_request(request):
-        nonlocal stream_url
-        url = request.url
-        if looks_like_stream(url) and not stream_url:
-            stream_url = url
-            found_event.set()
-
-    async def on_response(response):
-        nonlocal stream_url
-        url = response.url
-        if looks_like_stream(url) and not stream_url:
-            stream_url = url
-            found_event.set()
-
-    page.on("request", on_request)
-    page.on("response", on_response)
+    context = None
+    page = None
 
     try:
+        context = await browser.new_context(
+            user_agent=HEADERS["User-Agent"],
+            extra_http_headers={
+                "Accept-Language": HEADERS["Accept-Language"],
+                "Referer": HEADERS["Referer"],
+            },
+            bypass_csp=True,
+            ignore_https_errors=True,
+        )
+
+        page = await context.new_page()
+
+        # ── Ağ isteği dinleyicisi ──────────────────────────────────────────
+        async def on_request(request):
+            nonlocal stream_url
+            url = request.url
+            if looks_like_stream(url) and not stream_url:
+                stream_url = url
+                found_event.set()
+
+        async def on_response(response):
+            nonlocal stream_url
+            url = response.url
+            if looks_like_stream(url) and not stream_url:
+                stream_url = url
+                found_event.set()
+
+        page.on("request", on_request)
+        page.on("response", on_response)
+
         await page.goto(
             player_url,
             timeout=TIMEOUT,
@@ -277,17 +261,27 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
+    except PlaywrightError as e:
+        err_msg = str(e)
+        # ✅ Browser kapandıysa sessizce geç, diğer hataları göster
+        if "closed" in err_msg.lower() or "crashed" in err_msg.lower():
+            print(f"      ⚠️  [{channel_name}] Browser/Context kapandı, atlanıyor.")
+        else:
+            print(f"      ⚠️  [{channel_name}] Playwright hatası: {type(e).__name__}: {e}")
     except Exception as e:
         print(f"      ⚠️  [{channel_name}] Hata: {type(e).__name__}: {e}")
     finally:
-        try:
-            await page.close()
-        except Exception:
-            pass
-        try:
-            await context.close()
-        except Exception:
-            pass
+        # ✅ Her zaman temizle
+        if page:
+            try:
+                await page.close()
+            except Exception:
+                pass
+        if context:
+            try:
+                await context.close()
+            except Exception:
+                pass
 
     return stream_url
 
@@ -305,8 +299,17 @@ async def process_all(channels: list) -> tuple:
         browser = await pw.chromium.launch(
             headless=True,
             args=BROWSER_ARGS,
-            env=BROWSER_ENV,
+            # ✅ ENV kaldırıldı - sorun çıkarabilir
         )
+
+        # ✅ Browser çöküşünü yakala
+        browser_crashed = asyncio.Event()
+
+        def on_disconnected():
+            print("\n⚠️  Browser bağlantısı kesildi!")
+            browser_crashed.set()
+
+        browser.on("disconnected", on_disconnected)
 
         print(f"✅ Tarayıcı başlatıldı.\n")
 
@@ -328,6 +331,19 @@ async def process_all(channels: list) -> tuple:
                         "image": image,
                         "group": group,
                         "reason": "URL yok",
+                    })
+                return
+
+            # ✅ Browser çöktüyse işlemi atla
+            if browser_crashed.is_set():
+                async with lock:
+                    done_count += 1
+                    failed.append({
+                        "name": name,
+                        "player_url": player_url,
+                        "image": image,
+                        "group": group,
+                        "reason": "browser crashed",
                     })
                 return
 
@@ -358,7 +374,11 @@ async def process_all(channels: list) -> tuple:
                         "reason": "stream bulunamadı",
                     })
 
-        await asyncio.gather(*[handle(ch) for ch in channels])
+        # ✅ return_exceptions=True ile bir task patlarsa diğerleri durmuyor
+        await asyncio.gather(
+            *[handle(ch) for ch in channels],
+            return_exceptions=True
+        )
 
         try:
             await browser.close()
@@ -369,7 +389,6 @@ async def process_all(channels: list) -> tuple:
 
 
 def write_m3u(items: list, output_path: str):
-    """M3U dosyasını yazar."""
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
 
@@ -413,7 +432,6 @@ def print_report(channels: list, success: list, failed: list):
     print(f"  🕐 Güncelleme       : {now}")
     print(f"{'═'*65}\n")
 
-    # Grup istatistiği
     if success:
         groups: dict = {}
         for ch in success:
@@ -432,7 +450,6 @@ async def main():
     print("   📺 CDN LIVE TV — M3U PLAYLIST OLUŞTURUCU (Playwright)")
     print("═" * 65 + "\n")
 
-    # Kanalları yükle
     try:
         channels = load_channels()
     except Exception as e:
@@ -452,17 +469,13 @@ async def main():
     print(f"⏱️  Timeout         : {TIMEOUT / 1000}s")
     print(f"{'═'*65}\n")
 
-    # Tüm kanalları işle
     success, failed = await process_all(channels)
 
-    # M3U yaz
     write_m3u(success, OUTPUT_FILE)
 
-    # Debug dosyası yaz
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    # Rapor
     print_report(channels, success, failed)
 
     if len(success) == 0:
