@@ -375,7 +375,7 @@ https://channels.forestgump.space/ch1/track/117
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://channels.forestgump.space/ch1/track/118
 
-#EXTINF:-1 group-title="Turkey" tvg-name="beIN Sports 1",beIN Sports 1 proxy
+#EXTINF:-1 group-title="Turkey" tvg-name="beIN Sports 1",beIN Sports 1
 #EXTVLCOPT:http-referrer=https://channels.forestgump.space/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://channels.forestgump.space/ch1/track/62
