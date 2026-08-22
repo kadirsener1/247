@@ -1,9 +1,345 @@
 [
   {
+    "name": "Sky Sports Football",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Football&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/sky-sports-football.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sky Sports Main Event",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Main%20Event&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/sky-sports-main-event.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sky Sports Premier League",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Premier%20League&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/sky-sports-premier-league.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sky Sports Racing",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Racing&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/sky-sports-racing.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sky Sports Tennis",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Tennis&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/sky-sports-tennis.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sport 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%201&code=il&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/israel/sport-1.webp",
+    "group": "IL",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sport TV 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%201&code=pt&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/portugal/sport-tv-1.webp",
+    "group": "PT",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "SportsNet New York",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SportsNet%20New%20York&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/sportsnet-new-york.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sportsnet 360",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20360&code=ca&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/canada/sportsnet-360.webp",
+    "group": "CA",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Sportsnet West",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20West&code=ca&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/canada/sportsnet-west.webp",
+    "group": "CA",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 10",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2010&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-10.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 11",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2011&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-11.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 12",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2012&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-12.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 13",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2013&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-13.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 14",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2014&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-14.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 15",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2015&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-15.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 16",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2016&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-16.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 18",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%2018&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-18.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%202&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-2.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 4",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%204&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-4.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Stan Sport 9",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport%209&code=au&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/australia/stan-sport-9.webp",
+    "group": "AU",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TBS",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TBS&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/tbs.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TLC",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TLC&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/tlc.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/tnt.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports&code=cl&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/cl/tnt-sports.webp",
+    "group": "CL",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-1.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%202&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-2.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 3",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%203&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-3.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 4",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%204&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-4.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 5",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%205&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-5.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 6",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%206&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-6.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TNT Sports 8",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%208&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/tnt-sports-8.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TSN 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%201&code=ca&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/canada/tsn-1.webp",
+    "group": "CA",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TSN 3",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%203&code=ca&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/canada/tsn-3.webp",
+    "group": "CA",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TUDN",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TUDN&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/tudn.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TV ONE",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV%20ONE&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/tv-one.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "TVA Sports",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TVA%20Sports&code=ca&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/canada/tva-sports.webp",
+    "group": "CA",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Tennis Channel",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tennis%20Channel&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/tennis-channel.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
     "name": "Travel Channel",
     "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Travel%20Channel&code=us&user=cdnlivetv&plan=free",
     "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/travel-channel.webp",
     "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Tyc Sports",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tyc%20Sports&code=ar&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/ar/tyc-sports.webp",
+    "group": "AR",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "USA Network",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=USA%20Network&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/usa-network.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "V Sport Premium",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=V%20Sport%20Premium&code=se&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/sweden/v-sport-premium.webp",
+    "group": "SE",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Viaplay Sports 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Viaplay%20Sports%201&code=gb&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-kingdom/viaplay-sports-1.webp",
+    "group": "GB",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Willow Cricket",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Willow%20Cricket&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/willow-cricket.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "Ziggo Sport 2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%202&code=nl&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/netherlands/ziggo-sport-2.webp",
+    "group": "NL",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "beIN SPORTS",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/bein-sports.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "beIN SPORTS 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=fr&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/france/bein-sports-1.webp",
+    "group": "FR",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "beIN SPORTS 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/bein-sports-1.webp",
+    "group": "US",
+    "reason": "stream bulunamadı"
+  },
+  {
+    "name": "beIN SPORTS 1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-1.webp",
+    "group": "TR",
     "reason": "stream bulunamadı"
   },
   {
@@ -36,20 +372,6 @@
   },
   {
     "name": "beIN SPORTS 3",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=us&user=cdnlivetv&plan=free",
-    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/bein-sports-3.webp",
-    "group": "US",
-    "reason": "stream bulunamadı"
-  },
-  {
-    "name": "beIN SPORTS 3",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
-    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-3.webp",
-    "group": "TR",
-    "reason": "stream bulunamadı"
-  },
-  {
-    "name": "beIN SPORTS 3",
     "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=fr&user=cdnlivetv&plan=free",
     "image": "https://cdnlivetv.tv/api/v1/channels/images6318/france/bein-sports-3.webp",
     "group": "FR",
@@ -63,17 +385,10 @@
     "reason": "stream bulunamadı"
   },
   {
-    "name": "beIN SPORTS 8",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%208&code=sa&user=cdnlivetv&plan=free",
-    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/saudi-arabia/bein-sports-8.webp",
-    "group": "SA",
-    "reason": "stream bulunamadı"
-  },
-  {
-    "name": "beIN SPORTS MAX 10",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%2010&code=fr&user=cdnlivetv&plan=free",
-    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/france/bein-sports-max-10.webp",
-    "group": "FR",
+    "name": "beIN SPORTS 4",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-4.webp",
+    "group": "TR",
     "reason": "stream bulunamadı"
   },
   {
@@ -91,17 +406,17 @@
     "reason": "stream bulunamadı"
   },
   {
-    "name": "beIN SPORTS MAX 6",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%206&code=fr&user=cdnlivetv&plan=free",
-    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/france/bein-sports-max-6.webp",
+    "name": "beIN SPORTS MAX 8",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%208&code=fr&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/france/bein-sports-max-8.webp",
     "group": "FR",
     "reason": "stream bulunamadı"
   },
   {
-    "name": "beIN SPORTS MAX 7",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%207&code=fr&user=cdnlivetv&plan=free",
-    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/france/bein-sports-max-7.webp",
-    "group": "FR",
+    "name": "truTV",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=truTV&code=us&user=cdnlivetv&plan=free",
+    "image": "https://cdnlivetv.tv/api/v1/channels/images6318/united-states/trutv.webp",
+    "group": "US",
     "reason": "stream bulunamadı"
   }
 ]
