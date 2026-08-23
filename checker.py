@@ -15,20 +15,20 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 # ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
 KANALLAR = [
     {
-        "name": "BeinSport 1",
+        "name": "Bein Sports 1",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
         "image": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1pt7gT.img",
         "group": "ULUSAL"
     },
     {
-        "name": "BeinSport 2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
+        "name": "Show TV",
+        "url": "https://cdnlivetv.tv/player.php?id=showtv",
         "image": "",
         "group": "ULUSAL"
     },
     {
-        "name": "BeinSport 3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
+        "name": "TRT 1",
+        "url": "https://cdnlivetv.tv/player.php?id=trt1",
         "image": "",
         "group": "TRT"
     }
@@ -36,7 +36,7 @@ KANALLAR = [
 ]
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_DIR = "cdnlive"          # Kanal dosyalarının kaydedileceği klasör adı
+OUTPUT_DIR_NAME = "cdnlive"     # Klasör adı
 DEBUG_FILE = "debug_failed.json"
 
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
@@ -76,7 +76,6 @@ BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 
 
 def is_valid_stream_url(url: str) -> bool:
-    """URL'nin geçerli bir m3u8 veya mpd akışı olup olmadığını doğrular."""
     if not url or not isinstance(url, str):
         return False
 
@@ -391,9 +390,20 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
-def write_individual_m3u8(items: list, output_dir: str):
+def write_individual_m3u8(items: list, output_dir_name: str):
     """Bulunan her kanal için cdnlive klasörü altında ayrı bir .m3u8 dosyası oluşturur."""
-    os.makedirs(output_dir, exist_ok=True)
+    # Projenin çalıştığı ana dizini baz alarak mutlak (absolute) yol oluşturuyoruz.
+    base_path = Path(__file__).parent.resolve()
+    target_dir = base_path / output_dir_name
+    
+    # Klasörü kesin olarak oluştur
+    target_dir.mkdir(parents=True, exist_ok=True)
+    
+    print(f"\n📂 Yazma İşlemi Başlatıldı (Klasör: {target_dir})")
+
+    if not items:
+        print("   ⚠️ Yazılacak başarılı kanal bulunamadı.")
+        return
 
     for ch in items:
         name = ch["name"]
@@ -401,22 +411,26 @@ def write_individual_m3u8(items: list, output_dir: str):
         logo = ch.get("image", "")
         group = ch.get("group", "GENEL")
 
-        # Güvenli dosya adı oluşturma
+        # Güvenli dosya adı
         safe_name = sanitize_filename(name)
-        file_path = os.path.join(output_dir, f"{safe_name}.m3u8")
+        file_path = target_dir / f"{safe_name}.m3u8"
 
-        # Oynatıcıların okuyabileceği standart tekli M3U8 yapısı
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write("#EXTM3U\n")
-            extinf = f'#EXTINF:-1 tvg-name="{name}"'
-            if logo:
-                extinf += f' tvg-logo="{logo}"'
-            if group:
-                extinf += f' group-title="{group}"'
-            extinf += f',{name}\n'
-            
-            f.write(extinf)
-            f.write(stream + "\n")
+        # M3U8 içeriğini oluşturup dosyaya kaydet
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write("#EXTM3U\n")
+                extinf = f'#EXTINF:-1 tvg-name="{name}"'
+                if logo:
+                    extinf += f' tvg-logo="{logo}"'
+                if group:
+                    extinf += f' group-title="{group}"'
+                extinf += f',{name}\n'
+                
+                f.write(extinf)
+                f.write(stream + "\n")
+            print(f"   💾 Yazıldı: {file_path.name}")
+        except Exception as e:
+            print(f"   ❌ Dosya yazma hatası ({name}): {e}")
 
 
 def print_report(channels: list, success: list, failed: list):
@@ -429,7 +443,7 @@ def print_report(channels: list, success: list, failed: list):
     print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
     print(f"  ✅ Başarıyla çözülen     : {len(success)}")
     print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Kayıt klasörü         : ./{OUTPUT_DIR}/")
+    print(f"  📁 Çıktı Klasör Yolu     : ./{OUTPUT_DIR_NAME}/")
     print(f"  🕐 Güncelleme zamanı     : {now}")
     print(f"{'═'*65}\n")
 
@@ -445,18 +459,18 @@ async def main():
 
     print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
     print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
-    print(f"📁 Çıktı Klasörü         : ./{OUTPUT_DIR}/\n")
+    print(f"📁 Klasör Hedefi         : ./{OUTPUT_DIR_NAME}/\n")
 
     success, failed = await process_all(KANALLAR)
 
-    # Kanalları ayrı ayrı kaydetme fonksiyonu çağrılıyor
-    write_individual_m3u8(success, OUTPUT_DIR)
+    # Kanalları ayrı dosyalar halinde yazdır
+    write_individual_m3u8(success, OUTPUT_DIR_NAME)
 
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
     print_report(KANALLAR, success, failed)
-    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_DIR}/' klasörüne kaydedildi.\n")
+    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_DIR_NAME}/' klasörüne kaydedildi.\n")
 
 
 if __name__ == "__main__":
