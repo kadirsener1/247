@@ -3,7 +3,7 @@ name: CDN Live TV M3U8 lerini Güncelle
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */3 * * *'
 
 jobs:
   build:
