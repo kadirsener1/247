@@ -23,7 +23,7 @@ TIMEOUT = 30000
 PAGE_WAIT = 12000               # Yenileme sonrası maksimum bekleme (ms)
 FIRST_WAIT = 4.0                # İlk yüklemede kısa bekleme (saniye)
 MAX_CONCURRENT = 2              # GitHub Actions için düşürüldü
-ONLY_ONLINE = True
+ONLY_ONLINE = False             # 🟢 TÜM KANALLARIN TARANMASI İÇİN "False" YAPILDI
 MAX_RELOADS = 2                 # Bulunamazsa kaç kez yeniden yüklensin
 
 HEADERS = {
