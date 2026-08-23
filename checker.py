@@ -20,9 +20,11 @@ OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
 
 TIMEOUT = 30000
-PAGE_WAIT = 10000
-MAX_CONCURRENT = 3
+PAGE_WAIT = 12000               # Yenileme sonrası maksimum bekleme (ms)
+FIRST_WAIT = 4.0                # İlk yüklemede kısa bekleme (saniye)
+MAX_CONCURRENT = 2              # GitHub Actions için düşürüldü
 ONLY_ONLINE = True
+MAX_RELOADS = 2                 # Bulunamazsa kaç kez yeniden yüklensin
 
 HEADERS = {
     "User-Agent": (
@@ -35,7 +37,6 @@ HEADERS = {
     "Origin": "https://cdnlivetv.tv",
 }
 
-# ✅ SADELEŞTIRILDI - sorunlu argümanlar kaldırıldı
 BROWSER_ARGS = [
     "--no-sandbox",
     "--disable-setuid-sandbox",
@@ -47,6 +48,10 @@ BROWSER_ARGS = [
     "--disable-extensions",
     "--disable-background-networking",
     "--hide-scrollbars",
+    # Otomatik oynatma kısıtlamalarını kaldır (kritik!)
+    "--autoplay-policy=no-user-gesture-required",
+    # Bot tespitini biraz azaltmak için:
+    "--disable-blink-features=AutomationControlled",
 ]
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -173,15 +178,66 @@ async def extract_from_js(page) -> str:
     return ""
 
 
+async def try_trigger_play(page):
+    """Oynatıcıyı tetiklemek için tıklama ve video.play() dener."""
+    # 1) Sayfaya tıkla
+    try:
+        await page.mouse.click(200, 200)
+    except Exception:
+        pass
+
+    # 2) Video elementini bulup play() çağır
+    try:
+        await page.evaluate("""
+            () => {
+                const vids = document.querySelectorAll('video');
+                vids.forEach(v => {
+                    try { v.muted = true; v.play(); } catch(e) {}
+                });
+                // Yaygın oynat düğmeleri
+                const selectors = [
+                    '.jw-icon-display',
+                    '.vjs-big-play-button',
+                    '.plyr__control--overlaid',
+                    'button[aria-label*="play" i]',
+                    '.play-button',
+                    '#play',
+                ];
+                for (const sel of selectors) {
+                    const el = document.querySelector(sel);
+                    if (el) { try { el.click(); } catch(e) {} }
+                }
+            }
+        """)
+    except Exception:
+        pass
+
+
+async def scan_iframes(page, player_url: str) -> str:
+    """iframe içeriklerini tarayarak akış bulmayı dener."""
+    try:
+        for frame in page.frames:
+            if frame.url and frame.url != player_url:
+                try:
+                    fc = await frame.content()
+                    found = extract_from_html(fc, frame.url)
+                    if found:
+                        return found
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return ""
+
+
 async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
     """
-    Playwright ile player sayfasını açar,
+    Playwright ile player sayfasını açar, gerekirse birkaç kez yeniler,
     ağ isteklerini dinleyerek .m3u8 / .mpd URL'sini yakalar.
     """
     stream_url = ""
     found_event = asyncio.Event()
 
-    # ✅ Browser kapalıysa erken dön
     if not browser.is_connected():
         print(f"      ⚠️  [{channel_name}] Browser bağlı değil, atlanıyor.")
         return ""
@@ -198,11 +254,17 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             },
             bypass_csp=True,
             ignore_https_errors=True,
+            viewport={"width": 1280, "height": 720},
+        )
+
+        # Webdriver izini gizle
+        await context.add_init_script(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
         )
 
         page = await context.new_page()
 
-        # ── Ağ isteği dinleyicisi ──────────────────────────────────────────
+        # ── Ağ İsteği Dinleyicisi ───────────────────────────────────────
         async def on_request(request):
             nonlocal stream_url
             url = request.url
@@ -220,50 +282,84 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         page.on("request", on_request)
         page.on("response", on_response)
 
-        await page.goto(
-            player_url,
-            timeout=TIMEOUT,
-            wait_until="domcontentloaded",
-        )
-
-        # Stream yakalanana kadar bekle
+        # ── 1. İLK YÜKLEME ──────────────────────────────────────────────
         try:
-            await asyncio.wait_for(
-                found_event.wait(),
-                timeout=PAGE_WAIT / 1000
+            await page.goto(
+                player_url,
+                timeout=TIMEOUT,
+                wait_until="domcontentloaded",
             )
+        except PlaywrightError as e:
+            print(f"      ⚠️  [{channel_name}] İlk yükleme hatası: {e}")
+
+        # İlk kısa bekleme
+        try:
+            await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
         except asyncio.TimeoutError:
             pass
 
-        # Hala bulunamadıysa HTML'den dene
-        if not stream_url:
-            content = await page.content()
-            stream_url = extract_from_html(content, player_url)
+        # ── 2. BULUNAMADIYSA: TIKLA + RELOAD DÖNGÜSÜ ────────────────────
+        reload_count = 0
+        while not stream_url and reload_count < MAX_RELOADS:
+            reload_count += 1
 
-        # Hala bulunamadıysa JS değişkenlerinden dene
-        if not stream_url:
-            stream_url = await extract_from_js(page)
+            # Oynatıcıyı tetikle
+            await try_trigger_play(page)
 
-        # Hala bulunamadıysa iframe'lere gir
+            # Kısa bir bekleme (play tetiklendikten sonra)
+            try:
+                await asyncio.wait_for(found_event.wait(), timeout=2.0)
+            except asyncio.TimeoutError:
+                pass
+
+            if stream_url:
+                break
+
+            # Sayfayı yenile
+            try:
+                print(f"      🔄 [{channel_name}] Yenileniyor (deneme {reload_count}/{MAX_RELOADS})...")
+                await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
+            except PlaywrightError as e:
+                print(f"      ⚠️  [{channel_name}] Reload hatası: {e}")
+                continue
+
+            # Yenileme sonrası daha uzun bekle
+            try:
+                await asyncio.wait_for(
+                    found_event.wait(),
+                    timeout=PAGE_WAIT / 1000
+                )
+            except asyncio.TimeoutError:
+                pass
+
+            if stream_url:
+                break
+
+            # Yine tetikle
+            await try_trigger_play(page)
+            try:
+                await asyncio.wait_for(found_event.wait(), timeout=3.0)
+            except asyncio.TimeoutError:
+                pass
+
+        # ── 3. HTML'DEN ARA ─────────────────────────────────────────────
         if not stream_url:
             try:
-                frames = page.frames
-                for frame in frames:
-                    if frame.url and frame.url != player_url:
-                        try:
-                            fc = await frame.content()
-                            found = extract_from_html(fc, frame.url)
-                            if found:
-                                stream_url = found
-                                break
-                        except Exception:
-                            pass
+                content = await page.content()
+                stream_url = extract_from_html(content, player_url)
             except Exception:
                 pass
 
+        # ── 4. JS DEĞİŞKENLERİNDEN ARA ──────────────────────────────────
+        if not stream_url:
+            stream_url = await extract_from_js(page)
+
+        # ── 5. IFRAME'LERDEN ARA ────────────────────────────────────────
+        if not stream_url:
+            stream_url = await scan_iframes(page, player_url)
+
     except PlaywrightError as e:
         err_msg = str(e)
-        # ✅ Browser kapandıysa sessizce geç, diğer hataları göster
         if "closed" in err_msg.lower() or "crashed" in err_msg.lower():
             print(f"      ⚠️  [{channel_name}] Browser/Context kapandı, atlanıyor.")
         else:
@@ -271,7 +367,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
     except Exception as e:
         print(f"      ⚠️  [{channel_name}] Hata: {type(e).__name__}: {e}")
     finally:
-        # ✅ Her zaman temizle
         if page:
             try:
                 await page.close()
@@ -299,10 +394,8 @@ async def process_all(channels: list) -> tuple:
         browser = await pw.chromium.launch(
             headless=True,
             args=BROWSER_ARGS,
-            # ✅ ENV kaldırıldı - sorun çıkarabilir
         )
 
-        # ✅ Browser çöküşünü yakala
         browser_crashed = asyncio.Event()
 
         def on_disconnected():
@@ -334,7 +427,6 @@ async def process_all(channels: list) -> tuple:
                     })
                 return
 
-            # ✅ Browser çöktüyse işlemi atla
             if browser_crashed.is_set():
                 async with lock:
                     done_count += 1
@@ -374,7 +466,6 @@ async def process_all(channels: list) -> tuple:
                         "reason": "stream bulunamadı",
                     })
 
-        # ✅ return_exceptions=True ile bir task patlarsa diğerleri durmuyor
         await asyncio.gather(
             *[handle(ch) for ch in channels],
             return_exceptions=True
@@ -465,7 +556,9 @@ async def main():
     print(f"{'═'*65}")
     print(f"🎭 Playwright Chromium başlatılıyor...")
     print(f"⚡ Eşzamanlı sayfa  : {MAX_CONCURRENT}")
-    print(f"⏱️  Sayfa bekleme   : {PAGE_WAIT / 1000}s")
+    print(f"⏱️  İlk bekleme     : {FIRST_WAIT}s")
+    print(f"⏱️  Reload bekleme  : {PAGE_WAIT / 1000}s")
+    print(f"🔄 Max reload      : {MAX_RELOADS}")
     print(f"⏱️  Timeout         : {TIMEOUT / 1000}s")
     print(f"{'═'*65}\n")
 
