@@ -14,17 +14,17 @@ from urllib3.util.retry import Retry
 from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
-# ─── AYARLAR ──────────────────────────────────────────────────────────────────
+# ─── HIZ VE PERFORMANS AYARLARI ───────────────────────────────────────────────
 API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
 OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
 
-TIMEOUT = 30000
-PAGE_WAIT = 12000               # Yenileme sonrası maksimum bekleme (ms)
-FIRST_WAIT = 4.0                # İlk yüklemede kısa bekleme (saniye)
-MAX_CONCURRENT = 2              # GitHub Actions için düşürüldü
-ONLY_ONLINE = False             # 🟢 TÜM KANALLARIN TARANMASI İÇİN "False" YAPILDI
-MAX_RELOADS = 2                 # Bulunamazsa kaç kez yeniden yüklensin
+TIMEOUT = 12000                 # Sayfa yükleme timeout (12s)
+FIRST_WAIT = 2.0                # İlk yükleme bekleme süresi (sn)
+RELOAD_WAIT = 4.0               # Yenileme sonrası bekleme süresi (sn)
+MAX_RELOADS = 1                 # Bulunamazsa en fazla 1 kez yenile
+MAX_CONCURRENT = 6              # Eşzamanlı sekme sayısı (hız için 6'ya çıkarıldı)
+ONLY_ONLINE = False             # Tüm kanalları tara
 
 HEADERS = {
     "User-Agent": (
@@ -48,11 +48,12 @@ BROWSER_ARGS = [
     "--disable-extensions",
     "--disable-background-networking",
     "--hide-scrollbars",
-    # Otomatik oynatma kısıtlamalarını kaldır (kritik!)
     "--autoplay-policy=no-user-gesture-required",
-    # Bot tespitini biraz azaltmak için:
     "--disable-blink-features=AutomationControlled",
 ]
+
+# Engellenecek gereksiz kaynak türleri (Sayfa yüklemelerini aşırı hızlandırır)
+BLOCKED_RESOURCE_TYPES = {"image", "media", "font", "stylesheet"}
 
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -61,7 +62,7 @@ def make_session() -> requests.Session:
     s = requests.Session()
     retry = Retry(
         total=3,
-        backoff_factor=0.5,
+        backoff_factor=0.3,
         status_forcelist=[429, 500, 502, 503, 504],
     )
     adapter = HTTPAdapter(max_retries=retry)
@@ -94,7 +95,7 @@ def load_channels() -> list:
     print(f"   {API_URL}\n")
 
     session = make_session()
-    r = session.get(API_URL, timeout=30)
+    r = session.get(API_URL, timeout=20)
     r.raise_for_status()
     data = r.json()
 
@@ -108,7 +109,7 @@ def load_channels() -> list:
         ]
         print(f"🟢 Online kanal     : {len(channels)}\n")
     else:
-        print(f"📋 İşlenecek kanal  : {len(channels)}\n")
+        print(f"📋 İşlenecek kanal  : {len(channels)} (Tümü)\n")
 
     return channels
 
@@ -150,21 +151,11 @@ async def extract_from_js(page) -> str:
         "window.manifestUrl",
         "window.file",
         "window.streamFile",
-        (
-            "typeof jwplayer !== 'undefined' && jwplayer() ? "
-            "jwplayer().getPlaylistItem()?.file : null"
-        ),
-        (
-            "typeof videojs !== 'undefined' ? "
-            "videojs.getAllPlayers()[0]?.src() : null"
-        ),
+        "typeof jwplayer !== 'undefined' && jwplayer() ? jwplayer().getPlaylistItem()?.file : null",
+        "typeof videojs !== 'undefined' ? videojs.getAllPlayers()[0]?.src() : null",
         "typeof Hls !== 'undefined' ? Hls?.url : null",
         "document.querySelector('video')?.src",
         "document.querySelector('video source')?.src",
-        (
-            "Array.from(document.querySelectorAll('source'))"
-            ".map(s => s.src).find(s => s.includes('.m3u8'))"
-        ),
     ]
 
     for expr in expressions:
@@ -179,67 +170,26 @@ async def extract_from_js(page) -> str:
 
 
 async def try_trigger_play(page):
-    """Oynatıcıyı tetiklemek için tıklama ve video.play() dener."""
-    # 1) Sayfaya tıkla
-    try:
-        await page.mouse.click(200, 200)
-    except Exception:
-        pass
-
-    # 2) Video elementini bulup play() çağır
+    """Video oynatmayı tetikler."""
     try:
         await page.evaluate("""
             () => {
-                const vids = document.querySelectorAll('video');
-                vids.forEach(v => {
+                document.querySelectorAll('video').forEach(v => {
                     try { v.muted = true; v.play(); } catch(e) {}
                 });
-                // Yaygın oynat düğmeleri
-                const selectors = [
-                    '.jw-icon-display',
-                    '.vjs-big-play-button',
-                    '.plyr__control--overlaid',
-                    'button[aria-label*="play" i]',
-                    '.play-button',
-                    '#play',
-                ];
-                for (const sel of selectors) {
-                    const el = document.querySelector(sel);
-                    if (el) { try { el.click(); } catch(e) {} }
-                }
+                const btns = document.querySelectorAll('.jw-icon-display, .vjs-big-play-button, button[aria-label*="play" i], .play-button');
+                btns.forEach(b => { try { b.click(); } catch(e) {} });
             }
         """)
     except Exception:
         pass
 
 
-async def scan_iframes(page, player_url: str) -> str:
-    """iframe içeriklerini tarayarak akış bulmayı dener."""
-    try:
-        for frame in page.frames:
-            if frame.url and frame.url != player_url:
-                try:
-                    fc = await frame.content()
-                    found = extract_from_html(fc, frame.url)
-                    if found:
-                        return found
-                except Exception:
-                    pass
-    except Exception:
-        pass
-    return ""
-
-
 async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
-    """
-    Playwright ile player sayfasını açar, gerekirse birkaç kez yeniler,
-    ağ isteklerini dinleyerek .m3u8 / .mpd URL'sini yakalar.
-    """
     stream_url = ""
     found_event = asyncio.Event()
 
     if not browser.is_connected():
-        print(f"      ⚠️  [{channel_name}] Browser bağlı değil, atlanıyor.")
         return ""
 
     context = None
@@ -254,17 +204,29 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             },
             bypass_csp=True,
             ignore_https_errors=True,
-            viewport={"width": 1280, "height": 720},
+            viewport={"width": 800, "height": 600},
         )
 
-        # Webdriver izini gizle
         await context.add_init_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
         )
 
         page = await context.new_page()
 
-        # ── Ağ İsteği Dinleyicisi ───────────────────────────────────────
+        # ── HIZLANDIRICI: Gereksiz resim, css, font isteklerini engelle ──
+        async def route_filter(route):
+            req = route.request
+            # Stream URL'leri engellenmesin
+            if looks_like_stream(req.url):
+                await route.continue_()
+            elif req.resource_type in BLOCKED_RESOURCE_TYPES:
+                await route.abort()
+            else:
+                await route.continue_()
+
+        await page.route("**/*", route_filter)
+
+        # ── Ağ İsteği Dinleyicisi ──
         async def on_request(request):
             nonlocal stream_url
             url = request.url
@@ -282,67 +244,31 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         page.on("request", on_request)
         page.on("response", on_response)
 
-        # ── 1. İLK YÜKLEME ──────────────────────────────────────────────
+        # ── 1. İlk Yükleme ──
         try:
-            await page.goto(
-                player_url,
-                timeout=TIMEOUT,
-                wait_until="domcontentloaded",
-            )
-        except PlaywrightError as e:
-            print(f"      ⚠️  [{channel_name}] İlk yükleme hatası: {e}")
+            await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
+        except Exception:
+            pass
 
-        # İlk kısa bekleme
+        # Kısa bekleme
         try:
             await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
         except asyncio.TimeoutError:
             pass
 
-        # ── 2. BULUNAMADIYSA: TIKLA + RELOAD DÖNGÜSÜ ────────────────────
-        reload_count = 0
-        while not stream_url and reload_count < MAX_RELOADS:
-            reload_count += 1
-
-            # Oynatıcıyı tetikle
+        # ── 2. Bulunamadıysa Hızlı Yenileme (Reload) ──
+        if not stream_url and MAX_RELOADS > 0:
             await try_trigger_play(page)
-
-            # Kısa bir bekleme (play tetiklendikten sonra)
             try:
-                await asyncio.wait_for(found_event.wait(), timeout=2.0)
-            except asyncio.TimeoutError:
-                pass
-
-            if stream_url:
-                break
-
-            # Sayfayı yenile
-            try:
-                print(f"      🔄 [{channel_name}] Yenileniyor (deneme {reload_count}/{MAX_RELOADS})...")
                 await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
-            except PlaywrightError as e:
-                print(f"      ⚠️  [{channel_name}] Reload hatası: {e}")
-                continue
-
-            # Yenileme sonrası daha uzun bekle
-            try:
-                await asyncio.wait_for(
-                    found_event.wait(),
-                    timeout=PAGE_WAIT / 1000
-                )
-            except asyncio.TimeoutError:
+                await asyncio.wait_for(found_event.wait(), timeout=RELOAD_WAIT)
+            except Exception:
                 pass
 
-            if stream_url:
-                break
+        # ── 3. DOM & JS Taraması (Hala yakalanmadıysa) ──
+        if not stream_url:
+            stream_url = await extract_from_js(page)
 
-            # Yine tetikle
-            await try_trigger_play(page)
-            try:
-                await asyncio.wait_for(found_event.wait(), timeout=3.0)
-            except asyncio.TimeoutError:
-                pass
-
-        # ── 3. HTML'DEN ARA ─────────────────────────────────────────────
         if not stream_url:
             try:
                 content = await page.content()
@@ -350,22 +276,8 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
-        # ── 4. JS DEĞİŞKENLERİNDEN ARA ──────────────────────────────────
-        if not stream_url:
-            stream_url = await extract_from_js(page)
-
-        # ── 5. IFRAME'LERDEN ARA ────────────────────────────────────────
-        if not stream_url:
-            stream_url = await scan_iframes(page, player_url)
-
-    except PlaywrightError as e:
-        err_msg = str(e)
-        if "closed" in err_msg.lower() or "crashed" in err_msg.lower():
-            print(f"      ⚠️  [{channel_name}] Browser/Context kapandı, atlanıyor.")
-        else:
-            print(f"      ⚠️  [{channel_name}] Playwright hatası: {type(e).__name__}: {e}")
-    except Exception as e:
-        print(f"      ⚠️  [{channel_name}] Hata: {type(e).__name__}: {e}")
+    except Exception:
+        pass
     finally:
         if page:
             try:
@@ -382,7 +294,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
 
 async def process_all(channels: list) -> tuple:
-    """Tüm kanalları paralel olarak işler."""
     success = []
     failed = []
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
@@ -396,16 +307,6 @@ async def process_all(channels: list) -> tuple:
             args=BROWSER_ARGS,
         )
 
-        browser_crashed = asyncio.Event()
-
-        def on_disconnected():
-            print("\n⚠️  Browser bağlantısı kesildi!")
-            browser_crashed.set()
-
-        browser.on("disconnected", on_disconnected)
-
-        print(f"✅ Tarayıcı başlatıldı.\n")
-
         async def handle(ch):
             nonlocal done_count
 
@@ -417,25 +318,9 @@ async def process_all(channels: list) -> tuple:
             if not player_url:
                 async with lock:
                     done_count += 1
-                    print(f"  ⏭️  [{done_count:03d}/{total}] {name} — URL yok")
                     failed.append({
-                        "name": name,
-                        "player_url": "",
-                        "image": image,
-                        "group": group,
-                        "reason": "URL yok",
-                    })
-                return
-
-            if browser_crashed.is_set():
-                async with lock:
-                    done_count += 1
-                    failed.append({
-                        "name": name,
-                        "player_url": player_url,
-                        "image": image,
-                        "group": group,
-                        "reason": "browser crashed",
+                        "name": name, "player_url": "", "image": image,
+                        "group": group, "reason": "URL yok"
                     })
                 return
 
@@ -447,8 +332,7 @@ async def process_all(channels: list) -> tuple:
                 prefix = f"[{done_count:03d}/{total}]"
 
                 if stream_url:
-                    print(f"  ✅ {prefix} {name}")
-                    print(f"      → {stream_url[:80]}...")
+                    print(f"  ✅ {prefix} {name} → {stream_url[:60]}...")
                     success.append({
                         "name": name,
                         "stream_url": stream_url,
@@ -457,7 +341,7 @@ async def process_all(channels: list) -> tuple:
                         "group": group,
                     })
                 else:
-                    print(f"  ❌ {prefix} {name} — stream bulunamadı")
+                    print(f"  ❌ {prefix} {name} (bulunamadı)")
                     failed.append({
                         "name": name,
                         "player_url": player_url,
@@ -466,10 +350,7 @@ async def process_all(channels: list) -> tuple:
                         "reason": "stream bulunamadı",
                     })
 
-        await asyncio.gather(
-            *[handle(ch) for ch in channels],
-            return_exceptions=True
-        )
+        await asyncio.gather(*[handle(ch) for ch in channels], return_exceptions=True)
 
         try:
             await browser.close()
@@ -482,7 +363,6 @@ async def process_all(channels: list) -> tuple:
 def write_m3u(items: list, output_path: str):
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
-
     items = sorted(items, key=lambda x: x["name"].lower())
 
     with open(output_path, "w", encoding="utf-8") as f:
@@ -515,30 +395,17 @@ def print_report(channels: list, success: list, failed: list):
     print(f"\n{'═'*65}")
     print(f"📊 SONUÇ RAPORU")
     print(f"{'═'*65}")
-    print(f"  📺 İşlenen kanal    : {len(channels)}")
+    print(f"  📺 Toplam kanal     : {len(channels)}")
     print(f"  ✅ M3U'ya eklenen   : {len(success)}")
     print(f"  ❌ Bulunamayan      : {len(failed)}")
     print(f"  📁 M3U dosyası      : {OUTPUT_FILE}")
-    print(f"  📁 Debug dosyası    : {DEBUG_FILE}")
     print(f"  🕐 Güncelleme       : {now}")
     print(f"{'═'*65}\n")
-
-    if success:
-        groups: dict = {}
-        for ch in success:
-            g = ch.get("group", "GENEL")
-            groups[g] = groups.get(g, 0) + 1
-
-        print("📂 Ülke / Kategori bazında:")
-        for g, count in sorted(groups.items(), key=lambda x: -x[1]):
-            bar = "█" * min(count, 30)
-            print(f"   {g:<20}: {count:>4} kanal  {bar}")
-        print()
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — M3U PLAYLIST OLUŞTURUCU (Playwright)")
+    print("   📺 CDN LIVE TV — HIZLI PLAYLIST OLUŞTURUCU")
     print("═" * 65 + "\n")
 
     try:
@@ -553,14 +420,8 @@ async def main():
         Path(OUTPUT_FILE).write_text("#EXTM3U\n", encoding="utf-8")
         return
 
-    print(f"{'═'*65}")
-    print(f"🎭 Playwright Chromium başlatılıyor...")
-    print(f"⚡ Eşzamanlı sayfa  : {MAX_CONCURRENT}")
-    print(f"⏱️  İlk bekleme     : {FIRST_WAIT}s")
-    print(f"⏱️  Reload bekleme  : {PAGE_WAIT / 1000}s")
-    print(f"🔄 Max reload      : {MAX_RELOADS}")
-    print(f"⏱️  Timeout         : {TIMEOUT / 1000}s")
-    print(f"{'═'*65}\n")
+    print(f"⚡ Eşzamanlı Sekme  : {MAX_CONCURRENT}")
+    print(f"⚡ Hızlı Mod         : Aktif (Görseller ve CSS engellendi)\n")
 
     success, failed = await process_all(channels)
 
@@ -570,12 +431,7 @@ async def main():
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
     print_report(channels, success, failed)
-
-    if len(success) == 0:
-        print("⚠️  Hiç stream URL çıkarılamadı!")
-        print(f"💡 {DEBUG_FILE} dosyasına bakın.\n")
-    else:
-        print(f"✅ {OUTPUT_FILE} başarıyla oluşturuldu! ({len(success)} kanal)\n")
+    print(f"✅ İşlem tamamlandı! Toplam bulunan: {len(success)} kanal\n")
 
 
 if __name__ == "__main__":
