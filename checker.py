@@ -19,11 +19,10 @@ API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
 OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
 
-# Zaman ve Eşzamanlılık Ayarları
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
-FIRST_WAIT = 3.5                # İlk yüklemede akış bekleme süresi (saniye)
-RELOAD_WAIT = 5.0               # Yenileme sonrası bekleme süresi (saniye)
-MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı (Stabilite ve hız için 4)
+FIRST_WAIT = 3.0                # İlk yüklemede akış bekleme süresi (sn)
+RELOAD_WAIT = 4.5               # Yenileme sonrası bekleme süresi (sn)
+MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı
 ONLY_ONLINE = False             # Tüm kanalları tara
 
 HEADERS = {
@@ -52,7 +51,6 @@ BROWSER_ARGS = [
     "--disable-blink-features=AutomationControlled",
 ]
 
-# Sadece ağır ve gereksiz medya/fontlar engellenir (CSS ve JS serbest bırakıldı)
 BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -72,22 +70,40 @@ def make_session() -> requests.Session:
     return s
 
 
-def looks_like_stream(url: str) -> bool:
-    if not url:
+def is_valid_stream_url(url: str) -> bool:
+    """
+    URL'nin gerçekten geçerli bir medya akış adresi (.m3u8 / .mpd) olup olmadığını
+    kesin kurallarla doğrular. JS kodlarını ve çöp metinleri reddeder.
+    """
+    if not url or not isinstance(url, str):
         return False
-    u = url.lower()
-    return any(x in u for x in [
-        ".m3u8",
-        ".mpd",
-        "/manifest",
-        "mpegurl",
-        "application/dash",
-        "master.m3u8",
-        "index.m3u8",
-        "/hls/",
-        "/dash/",
-        "/live/stream",
-    ])
+
+    url = url.strip()
+
+    # 1. Mutlaka http veya https ile başlamalı
+    if not (url.startswith("http://") or url.startswith("https://")):
+        return False
+
+    # 2. İçinde JS kod parçacıkları, parantezler, HTML karakterleri olamaz
+    invalid_chars = [
+        " ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
+        "\\", "\n", "\r", "\t", "&&", "||", "import", "function"
+    ]
+    if any(c in url for c in invalid_chars):
+        return False
+
+    # 3. Kütüphane / JS bundle / web worker adları olamaz
+    junk_keywords = ["parser", "bundle", "webpack", "chunk", "worker", "player.min"]
+    url_lower = url.lower()
+    if any(k in url_lower for k in junk_keywords):
+        return False
+
+    # 4. Temiz path kısmında .m3u8 veya .mpd uzantısı bulunmalı
+    base_path = url.split("?")[0].lower()
+    if not (".m3u8" in base_path or ".mpd" in base_path):
+        return False
+
+    return True
 
 
 def load_channels() -> list:
@@ -115,80 +131,64 @@ def load_channels() -> list:
 
 
 def extract_from_html(html_text: str, base_url: str = "") -> str:
+    """HTML veya metin içinden sadece geçerli HTTP URL'lerini ayıklar."""
     if not html_text:
         return ""
 
     html_text = html_text.replace("\\/", "/").replace("\\u0026", "&")
 
-    patterns = [
-        r'https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*',
-        r'https?://[^\s"\'<>]+\.mpd[^\s"\'<>]*',
-        r'(?:file|src|source|hls|stream|manifest|url)\s*[=:]\s*["\']([^"\']+)["\']',
-        r'["\']([^"\']*(?:\.m3u8|\.mpd)[^"\']*)["\']',
-    ]
+    # Yalnızca geçerli URL yapısını yakalayan sıkı Regex
+    pattern = r'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]+\.(?:m3u8|mpd)(?:\?[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]*)?'
 
-    for pattern in patterns:
-        matches = re.findall(pattern, html_text, re.IGNORECASE)
-        for m in matches:
-            m = m.strip().replace("\\/", "/")
-            if looks_like_stream(m):
-                if m.startswith("//"):
-                    m = "https:" + m
-                return m
+    matches = re.findall(pattern, html_text, re.IGNORECASE)
+    for m in matches:
+        if is_valid_stream_url(m):
+            return m
 
     return ""
 
 
 async def extract_from_js(page) -> str:
-    """Sayfadaki aktif JS nesnelerinden (Player, Video tag, Script etiketleri) token'lı URL arar."""
+    """Sadece doğrudan video oynatıcı nesnelerinin src değerlerini kontrol eder."""
     try:
         val = await page.evaluate("""
             () => {
-                // 1. JWPlayer
+                // 1. JWPlayer kontrolü
                 try {
                     if (typeof jwplayer !== 'undefined' && jwplayer().getPlaylistItem) {
                         const f = jwplayer().getPlaylistItem()?.file;
-                        if (f && f.includes('.m3u8')) return f;
+                        if (f && typeof f === 'string' && f.startsWith('http')) return f;
                     }
                 } catch(e){}
 
-                // 2. VideoJS
+                // 2. VideoJS kontrolü
                 try {
                     if (typeof videojs !== 'undefined') {
                         const players = videojs.getAllPlayers();
                         for (let p of players) {
                             const src = p.currentSrc ? p.currentSrc() : (p.src ? p.src() : null);
-                            if (src && src.includes('.m3u8')) return src;
+                            if (src && typeof src === 'string' && src.startsWith('http')) return src;
                         }
                     }
                 } catch(e){}
 
-                // 3. Hls.js
+                // 3. Hls.js kontrolü
                 try {
-                    if (typeof Hls !== 'undefined' && Hls.url) return Hls.url;
+                    if (typeof Hls !== 'undefined' && Hls.url && Hls.url.startsWith('http')) return Hls.url;
                 } catch(e){}
 
-                // 4. Video Elementi
+                // 4. Standart HTML5 Video Elementi
                 const v = document.querySelector('video');
-                if (v && v.src && v.src.includes('.m3u8')) return v.src;
+                if (v && v.src && v.src.startsWith('http')) return v.src;
 
                 // 5. Source Elementi
                 const s = document.querySelector('video source');
-                if (s && s.src && s.src.includes('.m3u8')) return s.src;
+                if (s && s.src && s.src.startsWith('http')) return s.src;
 
-                // 6. Inline script tag'leri içinde arama
-                for (let script of document.scripts) {
-                    if (script.textContent && script.textContent.includes('.m3u8')) {
-                        const match = script.textContent.match(/https?:\\/\\/[^"\'\\s<>]+\\.m3u8[^"\'\\s<>]*/i);
-                        if (match) return match[0].replace(/\\\\/g, '');
-                    }
-                }
-
-                // 7. Global Değişkenler
-                return window.stream_url || window.hls_url || window.streamUrl || window.playerSrc || null;
+                return null;
             }
         """)
-        if val and isinstance(val, str) and looks_like_stream(val):
+        if val and is_valid_stream_url(val):
             return val
     except Exception:
         pass
@@ -197,9 +197,9 @@ async def extract_from_js(page) -> str:
 
 
 async def try_trigger_play(page):
-    """Oynatıcıyı ve token isteğini tetiklemek için etkileşim simüle eder."""
+    """Oynatıcıyı ve token oluşturmayı tetiklemek için sayfaya tıklar."""
     try:
-        await page.mouse.click(250, 250)
+        await page.mouse.click(200, 200)
     except Exception:
         pass
 
@@ -209,10 +209,10 @@ async def try_trigger_play(page):
                 document.querySelectorAll('video').forEach(v => {
                     try { v.muted = true; v.play(); } catch(e) {}
                 });
-                const buttons = document.querySelectorAll(
-                    '.jw-icon-display, .vjs-big-play-button, .plyr__control--overlaid, button[aria-label*="play" i], .play-button, #play'
+                const btns = document.querySelectorAll(
+                    '.jw-icon-display, .vjs-big-play-button, button[aria-label*="play" i], .play-button, #play'
                 );
-                buttons.forEach(b => { try { b.click(); } catch(e) {} });
+                btns.forEach(b => { try { b.click(); } catch(e) {} });
             }
         """)
     except Exception:
@@ -220,10 +220,6 @@ async def try_trigger_play(page):
 
 
 async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
-    """
-    Playwright ile sayfayı açar, network/AJAX yanıtlarını dinler,
-    gerekirse sayfayı yenileyerek benzersiz token'lı stream URL'sini yakalar.
-    """
     stream_url = ""
     found_event = asyncio.Event()
 
@@ -251,10 +247,10 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
         page = await context.new_page()
 
-        # ── Gereksiz Ağ Trafiğini Engelle ──────────────────────────────
+        # Kaynak filtreleme (Görsel ve gereksiz medya isteklerini kes)
         async def route_filter(route):
             req = route.request
-            if looks_like_stream(req.url):
+            if is_valid_stream_url(req.url):
                 await route.continue_()
             elif req.resource_type in BLOCKED_RESOURCE_TYPES:
                 await route.abort()
@@ -263,11 +259,11 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
         await page.route("**/*", route_filter)
 
-        # ── Ağ İsteği ve Yanıt Dinleyicileri ───────────────────────────
+        # ── Ağ İstek Dinleyicileri ──
         async def on_request(request):
             nonlocal stream_url
             url = request.url
-            if looks_like_stream(url) and not stream_url:
+            if not stream_url and is_valid_stream_url(url):
                 stream_url = url
                 found_event.set()
 
@@ -277,19 +273,19 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
                 return
 
             url = response.url
-            if looks_like_stream(url):
+            if is_valid_stream_url(url):
                 stream_url = url
                 found_event.set()
                 return
 
-            # JSON veya AJAX ile gelen arka plan token yanıtlarını yakala
+            # SADECE gerçek JSON API yanıtlarını tara (JS kodlarını ASLA metin olarak tarama!)
             ct = response.headers.get("content-type", "").lower()
-            if any(t in ct for t in ["json", "javascript", "text"]):
+            if "application/json" in ct:
                 try:
                     text = await response.text()
                     if ".m3u8" in text or ".mpd" in text:
                         found = extract_from_html(text, url)
-                        if found:
+                        if found and is_valid_stream_url(found):
                             stream_url = found
                             found_event.set()
                 except Exception:
@@ -298,47 +294,42 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         page.on("request", on_request)
         page.on("response", on_response)
 
-        # ── 1. İLK YÜKLEME ──────────────────────────────────────────────
+        # ── 1. İlk Yükleme ──
         try:
             await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
         except Exception:
             pass
 
-        # İlk kısa bekleme
         try:
             await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
         except asyncio.TimeoutError:
             pass
 
-        # ── 2. BULUNAMADIYSA: TIKLA VE SAYFAYI YENİLE (REFRESH) ────────
+        # ── 2. Bulunamadıysa Sayfa Yenileme (Refresh & Token Alma) ──
         if not stream_url:
             await try_trigger_play(page)
-            
             try:
-                # Sayfayı yenile (Token bu adımda üretilir)
                 await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
-                
-                # Yenilemeden hemen sonra tekrar oynatmayı tetikle
                 await try_trigger_play(page)
-                
-                # Token'ın ağdan geçmesini bekle
                 await asyncio.wait_for(found_event.wait(), timeout=RELOAD_WAIT)
             except Exception:
                 pass
 
-        # ── 3. DOM & JS NESNELERİNİ TARA ────────────────────────────────
+        # ── 3. DOM & JS Oynatıcı Nesnelerinden Ara ──
         if not stream_url:
             stream_url = await extract_from_js(page)
 
-        # ── 4. HTML KAYNAĞINI TARA ──────────────────────────────────────
+        # ── 4. HTML Kaynağından Ara ──
         if not stream_url:
             try:
                 content = await page.content()
-                stream_url = extract_from_html(content, player_url)
+                found = extract_from_html(content, player_url)
+                if is_valid_stream_url(found):
+                    stream_url = found
             except Exception:
                 pass
 
-        # ── 5. IFRAME İÇERİKLERİNİ TARA ────────────────────────────────
+        # ── 5. Iframe'leri Tara ──
         if not stream_url:
             try:
                 for frame in page.frames:
@@ -346,7 +337,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
                         try:
                             fc = await frame.content()
                             found = extract_from_html(fc, frame.url)
-                            if found:
+                            if is_valid_stream_url(found):
                                 stream_url = found
                                 break
                         except Exception:
@@ -368,7 +359,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
-    return stream_url
+    return stream_url if is_valid_stream_url(stream_url) else ""
 
 
 async def process_all(channels: list) -> tuple:
@@ -409,7 +400,7 @@ async def process_all(channels: list) -> tuple:
                 done_count += 1
                 prefix = f"[{done_count:03d}/{total}]"
 
-                if stream_url:
+                if stream_url and is_valid_stream_url(stream_url):
                     print(f"  ✅ {prefix} {name} → {stream_url[:65]}...")
                     success.append({
                         "name": name,
@@ -419,13 +410,13 @@ async def process_all(channels: list) -> tuple:
                         "group": group,
                     })
                 else:
-                    print(f"  ❌ {prefix} {name} (Kanal kapalı veya token alınamadı)")
+                    print(f"  ❌ {prefix} {name} (Kanal kapalı / Token alınamadı)")
                     failed.append({
                         "name": name,
                         "player_url": player_url,
                         "image": image,
                         "group": group,
-                        "reason": "stream/token bulunamadı",
+                        "reason": "Geçerli stream URL bulunamadı",
                     })
 
         await asyncio.gather(*[handle(ch) for ch in channels], return_exceptions=True)
@@ -473,18 +464,17 @@ def print_report(channels: list, success: list, failed: list):
     print(f"\n{'═'*65}")
     print(f"📊 SONUÇ RAPORU")
     print(f"{'═'*65}")
-    print(f"  📺 Toplam taranan kanal  : {len(channels)}")
-    print(f"  ✅ Orijinal Token'lı M3U : {len(success)}")
-    print(f"  ❌ Çevrimdışı / Kapalı   : {len(failed)}")
+    print(f"  📺 Taranan kanal sayısı  : {len(channels)}")
+    print(f"  ✅ Geçerli akış (M3U)    : {len(success)}")
+    print(f"  ❌ Başarısız / Kapalı    : {len(failed)}")
     print(f"  📁 M3U dosyası           : {OUTPUT_FILE}")
-    print(f"  📁 Debug dosyası         : {DEBUG_FILE}")
     print(f"  🕐 Güncelleme            : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — GÜVENİLİR VE HIZLI M3U OLUŞTURUCU")
+    print("   📺 CDN LIVE TV — TEMİZ VE GÜVENİLİR M3U OLUŞTURUCU")
     print("═" * 65 + "\n")
 
     try:
@@ -500,7 +490,7 @@ async def main():
         return
 
     print(f"⚡ Eşzamanlı Sekme : {MAX_CONCURRENT}")
-    print(f"🔄 Akıllı Yenileme : Aktif (Orijinal Token Garantisi)\n")
+    print(f"🛡️  URL Doğrulayıcı : Aktif (Sadece gerçek .m3u8/.mpd linkleri alınır)\n")
 
     success, failed = await process_all(channels)
 
@@ -510,7 +500,7 @@ async def main():
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
     print_report(channels, success, failed)
-    print(f"✅ Tamamlandı! Eklenen {len(success)} kanalın tamamı çalışan orijinal token'a sahiptir.\n")
+    print(f"✅ İşlem tamamlandı! Toplam {len(success)} geçerli kanal eklendi.\n")
 
 
 if __name__ == "__main__":
