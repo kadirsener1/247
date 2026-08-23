@@ -23,7 +23,7 @@ TIMEOUT = 12000                 # Sayfa yükleme timeout (12s)
 FIRST_WAIT = 2.0                # İlk yükleme bekleme süresi (sn)
 RELOAD_WAIT = 4.0               # Yenileme sonrası bekleme süresi (sn)
 MAX_RELOADS = 1                 # Bulunamazsa en fazla 1 kez yenile
-MAX_CONCURRENT = 6              # Eşzamanlı sekme sayısı (hız için 6'ya çıkarıldı)
+MAX_CONCURRENT = 6              # Eşzamanlı sekme sayısı (Hızlı tarama için)
 ONLY_ONLINE = False             # Tüm kanalları tara
 
 HEADERS = {
@@ -52,7 +52,7 @@ BROWSER_ARGS = [
     "--disable-blink-features=AutomationControlled",
 ]
 
-# Engellenecek gereksiz kaynak türleri (Sayfa yüklemelerini aşırı hızlandırır)
+# Engellenecek gereksiz kaynak türleri (Hızlandırma için)
 BLOCKED_RESOURCE_TYPES = {"image", "media", "font", "stylesheet"}
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -88,6 +88,44 @@ def looks_like_stream(url: str) -> bool:
         "/dash/",
         "/live/stream",
     ])
+
+
+def get_channel_slug(player_url: str, code: str) -> str:
+    """Kanalın sistemdeki benzersiz ID/Slug değerini çözer."""
+    if code and len(code) > 1 and not code.isdigit():
+        return code.lower().strip()
+    
+    if player_url:
+        match = re.search(r'(?:id|ch|v|name)=([^&?#]+)', player_url, re.IGNORECASE)
+        if match:
+            return match.group(1).strip().lower()
+        
+        path = player_url.split('?')[0].split('#')[0]
+        parts = [p for p in path.split('/') if p]
+        if parts:
+            last = parts[-1]
+            if last and not last.endswith('.php') and not last.endswith('.html'):
+                return last.lower().strip()
+    return ""
+
+
+def learn_stream_template(success_list: list) -> str:
+    """
+    Bulunan başarılı yayınlardan Token ve URL Şablonu üretir.
+    Örnek çıktı: "https://sunucu.com/live/{id}.m3u8?token=12345"
+    """
+    for ch in success_list:
+        stream_url = ch.get("stream_url", "")
+        player_url = ch.get("player_url", "")
+        code = ch.get("code", "")
+        
+        slug = get_channel_slug(player_url, code)
+        if slug and slug in stream_url:
+            # Kanal ID'sini şablon değişkeni {id} ile değiştiriyoruz
+            template = stream_url.replace(slug, "{id}")
+            if "{id}" in template:
+                return template
+    return ""
 
 
 def load_channels() -> list:
@@ -170,7 +208,6 @@ async def extract_from_js(page) -> str:
 
 
 async def try_trigger_play(page):
-    """Video oynatmayı tetikler."""
     try:
         await page.evaluate("""
             () => {
@@ -213,10 +250,8 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
         page = await context.new_page()
 
-        # ── HIZLANDIRICI: Gereksiz resim, css, font isteklerini engelle ──
         async def route_filter(route):
             req = route.request
-            # Stream URL'leri engellenmesin
             if looks_like_stream(req.url):
                 await route.continue_()
             elif req.resource_type in BLOCKED_RESOURCE_TYPES:
@@ -226,7 +261,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
         await page.route("**/*", route_filter)
 
-        # ── Ağ İsteği Dinleyicisi ──
         async def on_request(request):
             nonlocal stream_url
             url = request.url
@@ -244,19 +278,16 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         page.on("request", on_request)
         page.on("response", on_response)
 
-        # ── 1. İlk Yükleme ──
         try:
             await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
         except Exception:
             pass
 
-        # Kısa bekleme
         try:
             await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
         except asyncio.TimeoutError:
             pass
 
-        # ── 2. Bulunamadıysa Hızlı Yenileme (Reload) ──
         if not stream_url and MAX_RELOADS > 0:
             await try_trigger_play(page)
             try:
@@ -265,7 +296,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
-        # ── 3. DOM & JS Taraması (Hala yakalanmadıysa) ──
         if not stream_url:
             stream_url = await extract_from_js(page)
 
@@ -313,14 +343,15 @@ async def process_all(channels: list) -> tuple:
             name = str(ch.get("name", "?")).strip()
             player_url = str(ch.get("url", "")).strip()
             image = str(ch.get("image", "")).strip()
-            group = str(ch.get("code", "GENEL")).strip().upper()
+            code = str(ch.get("code", "")).strip()
+            group = str(ch.get("group", "GENEL")).strip().upper()
 
             if not player_url:
                 async with lock:
                     done_count += 1
                     failed.append({
                         "name": name, "player_url": "", "image": image,
-                        "group": group, "reason": "URL yok"
+                        "group": group, "code": code, "reason": "URL yok"
                     })
                 return
 
@@ -339,14 +370,16 @@ async def process_all(channels: list) -> tuple:
                         "player_url": player_url,
                         "image": image,
                         "group": group,
+                        "code": code,
                     })
                 else:
-                    print(f"  ❌ {prefix} {name} (bulunamadı)")
+                    print(f"  ❌ {prefix} {name} (Playwright ile bulunamadı, beklemeye alındı)")
                     failed.append({
                         "name": name,
                         "player_url": player_url,
                         "image": image,
                         "group": group,
+                        "code": code,
                         "reason": "stream bulunamadı",
                     })
 
@@ -377,6 +410,9 @@ def write_m3u(items: list, output_path: str):
             group = ch.get("group", "GENEL")
             stream = ch["stream_url"]
 
+            # Klonlanan kanalları ayırt etmek isterseniz isminin yanına küçük bir işaret koyabilirsiniz.
+            # Örneğin: if ch.get("cloned"): name += " 🔄"
+
             extinf = f'#EXTINF:-1 tvg-name="{name}"'
             if logo:
                 extinf += f' tvg-logo="{logo}"'
@@ -388,24 +424,26 @@ def write_m3u(items: list, output_path: str):
             f.write(stream + "\n\n")
 
 
-def print_report(channels: list, success: list, failed: list):
+def print_report(channels: list, success: list, failed: list, cloned_count: int):
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
 
     print(f"\n{'═'*65}")
     print(f"📊 SONUÇ RAPORU")
     print(f"{'═'*65}")
-    print(f"  📺 Toplam kanal     : {len(channels)}")
-    print(f"  ✅ M3U'ya eklenen   : {len(success)}")
-    print(f"  ❌ Bulunamayan      : {len(failed)}")
-    print(f"  📁 M3U dosyası      : {OUTPUT_FILE}")
-    print(f"  🕐 Güncelleme       : {now}")
+    print(f"  📺 Toplam kanal           : {len(channels)}")
+    print(f"  ✅ Direkt bulunan (Web)   : {len(success) - cloned_count}")
+    print(f"  🔄 Token ile klonlanan    : {cloned_count}")
+    print(f"  🎉 Toplam eklenen (M3U)   : {len(success)}")
+    print(f"  ❌ Gerçekten bulunamayan  : {len(failed)}")
+    print(f"  📁 M3U dosyası            : {OUTPUT_FILE}")
+    print(f"  🕐 Güncelleme             : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — HIZLI PLAYLIST OLUŞTURUCU")
+    print("   📺 CDN LIVE TV — AKILLI VE HIZLI PLAYLIST OLUŞTURUCU")
     print("═" * 65 + "\n")
 
     try:
@@ -421,17 +459,41 @@ async def main():
         return
 
     print(f"⚡ Eşzamanlı Sekme  : {MAX_CONCURRENT}")
-    print(f"⚡ Hızlı Mod         : Aktif (Görseller ve CSS engellendi)\n")
+    print(f"⚡ Performans Modu  : Aktif (Görseller ve CSS yüklenmiyor)")
+    print(f"🔑 Akıllı Kurtarma  : Aktif (Token klonlama devrede)\n")
 
     success, failed = await process_all(channels)
+
+    # ── KEY DETECT & FALLBACK RECONSTRUCTION (TOKEN KLONLAMA) ────────────────
+    cloned_count = 0
+    template = learn_stream_template(success)
+
+    if template and failed:
+        print(f"\n🔑 Token ve Şablon Çözüldü: {template[:90]}...")
+        print(f"🔄 Bulunamayan {len(failed)} kanal şablon kullanılarak kurtarılıyor...")
+        
+        still_failed = []
+        for ch in failed:
+            slug = get_channel_slug(ch.get("player_url", ""), ch.get("code", ""))
+            if slug:
+                fallback_stream = template.replace("{id}", slug)
+                ch["stream_url"] = fallback_stream
+                ch["cloned"] = True
+                success.append(ch)
+                cloned_count += 1
+            else:
+                still_failed.append(ch)
+        failed = still_failed
+
+    # ──────────────────────────────────────────────────────────────────────────
 
     write_m3u(success, OUTPUT_FILE)
 
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    print_report(channels, success, failed)
-    print(f"✅ İşlem tamamlandı! Toplam bulunan: {len(success)} kanal\n")
+    print_report(channels, success, failed, cloned_count)
+    print(f"✅ Başarıyla tamamlandı! ({len(success)} kanal M3U listesine eklendi.)\n")
 
 
 if __name__ == "__main__":
