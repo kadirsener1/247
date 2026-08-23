@@ -18,19 +18,25 @@ KANALLAR = [
         "name": "Bein Sports 1",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
         "image": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1pt7gT.img",
-        "group": "ULUSAL"
+        "group": "Turkey"
     },
     {
-        "name": "Show TV",
-        "url": "https://cdnlivetv.tv/player.php?id=showtv",
+        "name": "Bein Sports 2",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
         "image": "",
-        "group": "ULUSAL"
+        "group": "Turkey"
     },
     {
-        "name": "TRT 1",
-        "url": "https://cdnlivetv.tv/player.php?id=trt1",
+        "name": "Bein Sports 3",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
         "image": "",
-        "group": "TRT"
+        "group": "Turkey"
+    },
+    {
+        "name": "Bein Sports 4",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "Turkey"
     }
     # Yeni kanalları yukarıdaki şablona göre buraya ekleyebilirsiniz.
 ]
