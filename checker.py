@@ -15,7 +15,7 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
 # ─── AYARLAR ──────────────────────────────────────────────────────────────────
-API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
+API_URL = "https://streamsports99.ru/live-tv/beIN%20SPORTS%201__tr"
 OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
 
