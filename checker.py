@@ -9,21 +9,40 @@ from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
-# ─── AYARLAR ──────────────────────────────────────────────────────────────────
-API_URL = "https://api.cdnlivetv.is/api/v1/channels/?user=cdnlivetv&plan=free"
+# ─── KULLANICI KANAL LİSTESİ (Buraya dilediğiniz kadar link ekleyebilirsiniz) ───
+KANALLAR = [
+    {
+        "name": "Bein 1",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
+        "image": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1pt7gT.img", # İsteğe bağlı logo
+        "group": "ULUSAL"  # İsteğe bağlı kategori
+    },
+    {
+        "name": "bein 2",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "ULUSAL"
+    },
+    {
+        "name": "TRT 1",
+        "url": "https://cdnlivetv.tv/player.php?id=trt1",
+        "image": "",
+        "group": "TRT"
+    }
+    # Yeni kanalları yukarıdaki şablona göre virgülle ayırarak ekleyebilirsiniz.
+]
+
+# ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
 OUTPUT_FILE = "cdnlive.m3u"
 DEBUG_FILE = "debug_failed.json"
 
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
 FIRST_WAIT = 3.0                # İlk yüklemede akış bekleme süresi (sn)
 RELOAD_WAIT = 4.5               # Yenileme sonrası bekleme süresi (sn)
-MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı
-ONLY_ONLINE = False             # Tüm kanalları tara
+MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı (Aynı anda kaç link taransın?)
 
 HEADERS = {
     "User-Agent": (
@@ -56,24 +75,10 @@ BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 # ──────────────────────────────────────────────────────────────────────────────
 
 
-def make_session() -> requests.Session:
-    s = requests.Session()
-    retry = Retry(
-        total=3,
-        backoff_factor=0.3,
-        status_forcelist=[429, 500, 502, 503, 504],
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    s.mount("http://", adapter)
-    s.mount("https://", adapter)
-    s.headers.update(HEADERS)
-    return s
-
-
 def is_valid_stream_url(url: str) -> bool:
     """
-    URL'nin gerçekten geçerli bir medya akış adresi (.m3u8 / .mpd) olup olmadığını
-    kesin kurallarla doğrular. JS kodlarını ve çöp metinleri reddeder.
+    URL'nin gerçekten geçerli bir medya akış adresi (.m3u8 / .mpd) olup olmadığını doğrular.
+    JS kodlarını ve çöp metinleri eler.
     """
     if not url or not isinstance(url, str):
         return False
@@ -106,30 +111,6 @@ def is_valid_stream_url(url: str) -> bool:
     return True
 
 
-def load_channels() -> list:
-    print(f"🌐 API'den kanallar çekiliyor...")
-    print(f"   {API_URL}\n")
-
-    session = make_session()
-    r = session.get(API_URL, timeout=20)
-    r.raise_for_status()
-    data = r.json()
-
-    channels = data.get("channels", [])
-    print(f"📡 API toplam kanal  : {data.get('total_channels', len(channels))}")
-
-    if ONLY_ONLINE:
-        channels = [
-            c for c in channels
-            if str(c.get("status", "")).lower() == "online"
-        ]
-        print(f"🟢 Online kanal     : {len(channels)}\n")
-    else:
-        print(f"📋 İşlenecek kanal  : {len(channels)} (Tümü)\n")
-
-    return channels
-
-
 def extract_from_html(html_text: str, base_url: str = "") -> str:
     """HTML veya metin içinden sadece geçerli HTTP URL'lerini ayıklar."""
     if not html_text:
@@ -137,7 +118,7 @@ def extract_from_html(html_text: str, base_url: str = "") -> str:
 
     html_text = html_text.replace("\\/", "/").replace("\\u0026", "&")
 
-    # Yalnızca geçerli URL yapısını yakalayan sıkı Regex
+    # Sıkı regex filtresi
     pattern = r'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]+\.(?:m3u8|mpd)(?:\?[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]*)?'
 
     matches = re.findall(pattern, html_text, re.IGNORECASE)
@@ -153,7 +134,7 @@ async def extract_from_js(page) -> str:
     try:
         val = await page.evaluate("""
             () => {
-                // 1. JWPlayer kontrolü
+                // 1. JWPlayer
                 try {
                     if (typeof jwplayer !== 'undefined' && jwplayer().getPlaylistItem) {
                         const f = jwplayer().getPlaylistItem()?.file;
@@ -161,7 +142,7 @@ async def extract_from_js(page) -> str:
                     }
                 } catch(e){}
 
-                // 2. VideoJS kontrolü
+                // 2. VideoJS
                 try {
                     if (typeof videojs !== 'undefined') {
                         const players = videojs.getAllPlayers();
@@ -172,7 +153,7 @@ async def extract_from_js(page) -> str:
                     }
                 } catch(e){}
 
-                // 3. Hls.js kontrolü
+                // 3. Hls.js
                 try {
                     if (typeof Hls !== 'undefined' && Hls.url && Hls.url.startsWith('http')) return Hls.url;
                 } catch(e){}
@@ -247,7 +228,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
         page = await context.new_page()
 
-        # Kaynak filtreleme (Görsel ve gereksiz medya isteklerini kes)
         async def route_filter(route):
             req = route.request
             if is_valid_stream_url(req.url):
@@ -278,7 +258,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
                 found_event.set()
                 return
 
-            # SADECE gerçek JSON API yanıtlarını tara (JS kodlarını ASLA metin olarak tarama!)
+            # JS dosyaları hariç sadece JSON tipindeki yanıtları oku
             ct = response.headers.get("content-type", "").lower()
             if "application/json" in ct:
                 try:
@@ -305,7 +285,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         except asyncio.TimeoutError:
             pass
 
-        # ── 2. Bulunamadıysa Sayfa Yenileme (Refresh & Token Alma) ──
+        # ── 2. Bulunamadıysa Sayfa Yenileme (Refresh & Token Alımı) ──
         if not stream_url:
             await try_trigger_play(page)
             try:
@@ -315,11 +295,11 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
-        # ── 3. DOM & JS Oynatıcı Nesnelerinden Ara ──
+        # ── 3. DOM & JS Taraması ──
         if not stream_url:
             stream_url = await extract_from_js(page)
 
-        # ── 4. HTML Kaynağından Ara ──
+        # ── 4. HTML Kaynağından Tara ──
         if not stream_url:
             try:
                 content = await page.content()
@@ -382,7 +362,7 @@ async def process_all(channels: list) -> tuple:
             name = str(ch.get("name", "?")).strip()
             player_url = str(ch.get("url", "")).strip()
             image = str(ch.get("image", "")).strip()
-            group = str(ch.get("code", "GENEL")).strip().upper()
+            group = str(ch.get("group", "GENEL")).strip().upper()
 
             if not player_url:
                 async with lock:
@@ -410,7 +390,7 @@ async def process_all(channels: list) -> tuple:
                         "group": group,
                     })
                 else:
-                    print(f"  ❌ {prefix} {name} (Kanal kapalı / Token alınamadı)")
+                    print(f"  ❌ {prefix} {name} (Başarısız / Token Alınamadı)")
                     failed.append({
                         "name": name,
                         "player_url": player_url,
@@ -437,8 +417,7 @@ def write_m3u(items: list, output_path: str):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         f.write(f"# Son guncelleme : {now} (TR)\n")
-        f.write(f"# Kanal sayisi   : {len(items)}\n")
-        f.write(f"# Kaynak         : cdnlivetv.is\n\n")
+        f.write(f"# Kanal sayisi   : {len(items)}\n\n")
 
         for ch in items:
             name = ch["name"]
@@ -464,43 +443,37 @@ def print_report(channels: list, success: list, failed: list):
     print(f"\n{'═'*65}")
     print(f"📊 SONUÇ RAPORU")
     print(f"{'═'*65}")
-    print(f"  📺 Taranan kanal sayısı  : {len(channels)}")
-    print(f"  ✅ Geçerli akış (M3U)    : {len(success)}")
-    print(f"  ❌ Başarısız / Kapalı    : {len(failed)}")
-    print(f"  📁 M3U dosyası           : {OUTPUT_FILE}")
-    print(f"  🕐 Güncelleme            : {now}")
+    print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
+    print(f"  ✅ Başarıyla çözülen     : {len(success)}")
+    print(f"  ❌ Başarısız olan        : {len(failed)}")
+    print(f"  📁 Çıktı M3U dosyası     : {OUTPUT_FILE}")
+    print(f"  🕐 Güncelleme zamanı     : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — TEMİZ VE GÜVENİLİR M3U OLUŞTURUCU")
+    print("   📺 ÖZEL LİSTE — ÇOKLU KANAL STREAM AYIKLAYICI")
     print("═" * 65 + "\n")
 
-    try:
-        channels = load_channels()
-    except Exception as e:
-        print(f"❌ API okunamadı: {e}")
+    if not KANALLAR:
+        print("⚠️  Lütfen kodun başındaki 'KANALLAR' listesine en az bir link ekleyin.")
         Path(OUTPUT_FILE).write_text("#EXTM3U\n", encoding="utf-8")
         return
 
-    if not channels:
-        print("⚠️  İşlenecek kanal bulunamadı.")
-        Path(OUTPUT_FILE).write_text("#EXTM3U\n", encoding="utf-8")
-        return
+    print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
+    print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
+    print(f"🛡️  URL Doğrulayıcı       : Aktif\n")
 
-    print(f"⚡ Eşzamanlı Sekme : {MAX_CONCURRENT}")
-    print(f"🛡️  URL Doğrulayıcı : Aktif (Sadece gerçek .m3u8/.mpd linkleri alınır)\n")
-
-    success, failed = await process_all(channels)
+    success, failed = await process_all(KANALLAR)
 
     write_m3u(success, OUTPUT_FILE)
 
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    print_report(channels, success, failed)
-    print(f"✅ İşlem tamamlandı! Toplam {len(success)} geçerli kanal eklendi.\n")
+    print_report(KANALLAR, success, failed)
+    print(f"✅ İşlem tamamlandı! {OUTPUT_FILE} dosyası güncellendi.\n")
 
 
 if __name__ == "__main__":
