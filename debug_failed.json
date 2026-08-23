@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "name": "Show TV",
+    "player_url": "https://cdnlivetv.tv/player.php?id=showtv",
+    "image": "",
+    "group": "ULUSAL",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "TRT 1",
+    "player_url": "https://cdnlivetv.tv/player.php?id=trt1",
+    "image": "",
+    "group": "TRT",
+    "reason": "Geçerli stream URL bulunamadı"
+  }
+]
