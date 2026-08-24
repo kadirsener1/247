@@ -50,6 +50,24 @@ KANALLAR = [
         "image": "",
         "group": "uk"
     },
+    {
+        "name": "uktntsports2",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%202&code=gb&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "uk"
+    },
+    {
+        "name": "uktntsports3",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%203&code=gb&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "uk"
+    },
+    {
+        "name": "uktntsports4",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%204&code=gb&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "uk"
+    },
     # Yeni kanalları yukarıdaki şablona göre buraya ekleyebilirsiniz.
 ]
 
