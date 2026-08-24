@@ -45,8 +45,8 @@ KANALLAR = [
         "group": "uk"
     },
     {
-        "name": "ukDazn2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%202&code=gb&user=cdnlivetv&plan=free",
+        "name": "uktntsports1",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
         "image": "",
         "group": "uk"
     },
