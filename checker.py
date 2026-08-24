@@ -14,7 +14,7 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 
 # ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
 KANALLAR = [
-    [
+    
     {
         "name": "uktntsports1",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
@@ -720,7 +720,6 @@ KANALLAR = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=AD%20Sports%20Premium%201&code=ar&user=cdnlivetv&plan=free",
         "group": "ar"
     }
-]
     # Yeni kanalları yukarıdaki şablona göre buraya ekleyebilirsiniz.
 ]
 
