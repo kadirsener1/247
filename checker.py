@@ -37,7 +37,19 @@ KANALLAR = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
         "image": "",
         "group": "Turkey"
-    }
+    },
+    {
+        "name": "ukDazn1",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201&code=gb&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "uk"
+    },
+    {
+        "name": "ukDazn1",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%202&code=gb&user=cdnlivetv&plan=free",
+        "image": "",
+        "group": "uk"
+    },
     # Yeni kanalları yukarıdaki şablona göre buraya ekleyebilirsiniz.
 ]
 
