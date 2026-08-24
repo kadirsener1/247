@@ -171,6 +171,16 @@ KANALLAR = [
         "group": "tr"
     },
     {
+    "name": "trbeinsportsmax1",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%201&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr"
+  },
+    {
+    "name": "trbeinsportsmax1",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr"
+  },
+    {
         "name": "trbeinsportshaber",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20Haber&code=tr&user=cdnlivetv&plan=free",
         "group": "tr"
