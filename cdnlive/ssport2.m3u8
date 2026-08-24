@@ -1,4 +1,6 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=8000000
+#EXTVLCOPT:http-referer=https://www.7nyaler.com/
+#EXTINF:-1, group-title="Spor-Diğer",7 Nyaler
 https://7nyaler.streamhostingcdn.top/stream/52/index.m3u8
