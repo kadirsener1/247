@@ -15,25 +15,25 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 # ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
 KANALLAR = [
     {
-        "name": "Bein Sports 1",
+        "name": "BeinSports1",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
         "image": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1pt7gT.img",
         "group": "Turkey"
     },
     {
-        "name": "Bein Sports 2",
+        "name": "BeinSports2",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
         "image": "",
         "group": "Turkey"
     },
     {
-        "name": "Bein Sports 3",
+        "name": "BeinSports3",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
         "image": "",
         "group": "Turkey"
     },
     {
-        "name": "Bein Sports 4",
+        "name": "BeinSports4",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
         "image": "",
         "group": "Turkey"
