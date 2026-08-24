@@ -1,5 +1,5 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=8000000
-#EXTVLCOPT:http-referer=https://www.7nyaler.com/
+#EXTVLCOPT:http-origin=https://www.7nyaler.com/
 https://7nyaler.streamhostingcdn.top/stream/52/index.m3u8
