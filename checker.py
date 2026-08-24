@@ -176,7 +176,7 @@ KANALLAR = [
     "group": "tr"
   },
     {
-    "name": "trbeinsportsmax1",
+    "name": "trbeinsportsmax2",
     "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
     "group": "tr"
   },
