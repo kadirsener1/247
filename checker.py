@@ -396,13 +396,12 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
-def write_individual_m3u8(items: list, output_dir_name: str):
-    """Bulunan her kanal için cdnlive klasörü altında ayrı bir .m3u8 dosyası oluşturur."""
-    # Projenin çalıştığı ana dizini baz alarak mutlak (absolute) yol oluşturuyoruz.
+def write_individual_m3u8(items: list, output_dir_name: str, bandwidth: int = 8000000):
+    """Bulunan her kanal için cdnlive klasörü altında istenen formatta .m3u8 dosyası oluşturur."""
     base_path = Path(__file__).parent.resolve()
     target_dir = base_path / output_dir_name
     
-    # Klasörü kesin olarak oluştur
+    # Klasörü oluştur
     target_dir.mkdir(parents=True, exist_ok=True)
     
     print(f"\n📂 Yazma İşlemi Başlatıldı (Klasör: {target_dir})")
@@ -414,26 +413,22 @@ def write_individual_m3u8(items: list, output_dir_name: str):
     for ch in items:
         name = ch["name"]
         stream = ch["stream_url"]
-        logo = ch.get("image", "")
-        group = ch.get("group", "GENEL")
 
-        # Güvenli dosya adı
+        # Dosya adı için geçersiz karakterleri temizle
         safe_name = sanitize_filename(name)
         file_path = target_dir / f"{safe_name}.m3u8"
 
-        # M3U8 içeriğini oluşturup dosyaya kaydet
+        # İstenen formatta M3U8 dosyasını yaz:
+        # #EXTM3U
+        # #EXT-X-VERSION:3
+        # #EXT-X-STREAM-INF:BANDWIDTH=8000000
+        # Yayın linki
         try:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write("#EXTM3U\n")
-                extinf = f'#EXTINF:-1 tvg-name="{name}"'
-                if logo:
-                    extinf += f' tvg-logo="{logo}"'
-                if group:
-                    extinf += f' group-title="{group}"'
-                extinf += f',{name}\n'
-                
-                f.write(extinf)
-                f.write(stream + "\n")
+                f.write("#EXT-X-VERSION:3\n")
+                f.write(f"#EXT-X-STREAM-INF:BANDWIDTH={bandwidth}\n")
+                f.write(f"{stream}\n")
             print(f"   💾 Yazıldı: {file_path.name}")
         except Exception as e:
             print(f"   ❌ Dosya yazma hatası ({name}): {e}")
