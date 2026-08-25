@@ -37,6 +37,7 @@ KANALLAR = [
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
 OUTPUT_FILE = "cdnlive.m3u"
+REMOTE_M3U_URL = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
 DEBUG_FILE = "debug_failed.json"
 
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
@@ -409,31 +410,129 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
-def write_m3u(items: list, output_path: str):
+def write_m3u(success_items: list, output_path: str):
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
-    items = sorted(items, key=lambda x: x["name"].lower())
+    
+    remote_channels = []
+    
+    # 1. Uzak M3U dosyasını indir ve ayrıştır
+    try:
+        print(f"⏳ Uzak M3U listesi indiriliyor: {REMOTE_M3U_URL}")
+        r = requests.get(REMOTE_M3U_URL, timeout=15)
+        r.encoding = "utf-8"
+        if r.status_code == 200:
+            content = r.text
+            lines = content.splitlines()
+            current_extinf = None
+            
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                # Başlıkları ve yorum satırlarını atla
+                if line.startswith("#EXTM3U") or line.startswith("# Son guncelleme") or line.startswith("# Kanal sayisi"):
+                    continue
+                
+                if line.startswith("#EXTINF:"):
+                    current_extinf = line
+                elif not line.startswith("#") and current_extinf:
+                    # Grup adını tespit et (Büyük/küçük harf duyarsız arıyoruz)
+                    group_match = re.search(r'group-title="([^"]*)"', current_extinf, re.IGNORECASE)
+                    group = group_match.group(1).strip() if group_match else "GENEL"
+                    
+                    # Kanal adını tespit et
+                    name = ""
+                    tvg_name_match = re.search(r'tvg-name="([^"]*)"', current_extinf, re.IGNORECASE)
+                    if tvg_name_match:
+                        name = tvg_name_match.group(1).strip()
+                    else:
+                        comma_idx = current_extinf.rfind(",")
+                        if comma_idx != -1:
+                            name = current_extinf[comma_idx+1:].strip()
+                    
+                    remote_channels.append({
+                        "name": name,
+                        "group": group,
+                        "extinf": current_extinf,
+                        "stream_url": line
+                    })
+                    current_extinf = None
+            print(f"💾 Uzak listeden {len(remote_channels)} adet kanal başarıyla okundu.")
+        else:
+            print(f"⚠️ Uzak M3U indirilemedi (HTTP {r.status_code}). Sadece yeni kanallar yazılacak.")
+    except Exception as e:
+        print(f"⚠️ Uzak M3U indirilirken hata oluştu: {e}. Sadece yeni kanallar yazılacak.")
 
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write("#EXTM3U\n")
-        f.write(f"# Son guncelleme : {now} (TR)\n")
-        f.write(f"# Kanal sayisi   : {len(items)}\n\n")
+    # 2. Listeleri Birleştir (Hem kanal adına hem de grup adına göre eşleştir)
+    final_channels = []
+    
+    # Başarı tablosu için benzersiz key oluşturuyoruz: (kanal_adı.lower(), grup_adı.lower())
+    success_lookup = {}
+    for sc in success_items:
+        key = (sc["name"].lower().strip(), sc.get("group", "GENEL").lower().strip())
+        success_lookup[key] = sc
+        
+    processed_keys = set()
 
-        for ch in items:
-            name = ch["name"]
-            logo = ch.get("image", "")
-            group = ch.get("group", "GENEL")
-            stream = ch["stream_url"]
+    # Mevcut listedekileri güncelle veya olduğu gibi koru
+    for rc in remote_channels:
+        rc_key = (rc["name"].lower().strip(), rc["group"].lower().strip())
+        
+        if rc_key in success_lookup:
+            # Eşleşme var! (Hem isim hem grup aynı). Kodda bulduğumuz güncel link ve bilgilerle güncelliyoruz.
+            sc = success_lookup[rc_key]
+            logo = sc.get("image", "")
+            group = sc.get("group", "GENEL")
 
-            extinf = f'#EXTINF:-1 tvg-name="{name}"'
+            extinf = f'#EXTINF:-1 tvg-name="{sc["name"]}"'
             if logo:
                 extinf += f' tvg-logo="{logo}"'
             if group:
                 extinf += f' group-title="{group}"'
-            extinf += f',{name}'
+            extinf += f',{sc["name"]}'
 
-            f.write(extinf + "\n")
-            f.write(stream + "\n\n")
+            final_channels.append({
+                "extinf": extinf,
+                "stream_url": sc["stream_url"]
+            })
+            processed_keys.add(rc_key)
+        else:
+            # Eşleşme yok, uzak sunucudan gelen diğer yabancı grupları/kanalları hiç bozmadan aynen ekle
+            final_channels.append({
+                "extinf": rc["extinf"],
+                "stream_url": rc["stream_url"]
+            })
+
+    # Kodda başarıyla taranan ama uzak listede bu (isim + grup) kombinasyonuyla bulunmayan yeni kanalları sonuna ekle
+    for sc in success_items:
+        sc_key = (sc["name"].lower().strip(), sc.get("group", "GENEL").lower().strip())
+        if sc_key not in processed_keys:
+            logo = sc.get("image", "")
+            group = sc.get("group", "GENEL")
+
+            extinf = f'#EXTINF:-1 tvg-name="{sc["name"]}"'
+            if logo:
+                extinf += f' tvg-logo="{logo}"'
+            if group:
+                extinf += f' group-title="{group}"'
+            extinf += f',{sc["name"]}'
+
+            final_channels.append({
+                "extinf": extinf,
+                "stream_url": sc["stream_url"]
+            })
+            processed_keys.add(sc_key)
+
+    # 3. Nihai Birleşik M3U Dosyasını Yaz
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write("#EXTM3U\n")
+        f.write(f"# Son guncelleme : {now} (TR)\n")
+        f.write(f"# Kanal sayisi   : {len(final_channels)}\n\n")
+
+        for ch in final_channels:
+            f.write(ch["extinf"] + "\n")
+            f.write(ch["stream_url"] + "\n\n")
 
 
 def print_report(channels: list, success: list, failed: list):
@@ -443,7 +542,7 @@ def print_report(channels: list, success: list, failed: list):
     print(f"\n{'═'*65}")
     print(f"📊 SONUÇ RAPORU")
     print(f"{'═'*65}")
-    print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
+    print(f"  📺 Taranan kanal sayısı  : {len(channels)}")
     print(f"  ✅ Başarıyla çözülen     : {len(success)}")
     print(f"  ❌ Başarısız olan        : {len(failed)}")
     print(f"  📁 Çıktı M3U dosyası     : {OUTPUT_FILE}")
