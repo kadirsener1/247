@@ -37,7 +37,7 @@ KANALLAR = [
 
 # ─── GITHUB AYARLARI ──────────────────────────────────────────────────────────
 # Yeni oluşturduğunuz Token'ı buraya yazın:
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = "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"
 
 GITHUB_REPO = "kadirsener1/avva"
 GITHUB_PATH = "playlist.m3u"
