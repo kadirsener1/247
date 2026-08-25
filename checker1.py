@@ -4,6 +4,7 @@
 import json
 import os
 import re
+import base64
 import asyncio
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
@@ -35,11 +36,18 @@ KANALLAR = [
     # Yeni kanalları yukarıdaki şablona göre virgülle ayırarak ekleyebilirsiniz.
 ]
 
+# ─── GITHUB OTOMATİK YÜKLEME AYARLARI ──────────────────────────────────────────
+# GitHub'a doğrudan yazabilmek için buraya Token'ınızı yapıştırın.
+# (Eğer GitHub Actions ile çalıştırıyorsanız burayı boş bırakıp secrets.GITHUB_TOKEN kullanabilirsiniz)
+GITHUB_TOKEN = "BURAYA_GITHUB_TOKENINIZI_YAZIN"
+
+GITHUB_REPO = "kadirsener1/avva"
+GITHUB_PATH = "playlist.m3u"
+GITHUB_BRANCH = "main"
+
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-# Çıktı dosyası doğrudan playlist.m3u olarak ayarlandı.
 OUTPUT_FILE = "playlist.m3u"
-# Eğer yerelde bu dosya yoksa şablon olarak indirilecek uzak M3U adresi:
-REMOTE_M3U_URL = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
+REMOTE_M3U_URL = f"https://raw.githubusercontent.com/{GITHUB_REPO}/refs/heads/{GITHUB_BRANCH}/{GITHUB_PATH}"
 DEBUG_FILE = "debug_failed.json"
 
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
@@ -412,6 +420,54 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
+def upload_to_github(content: str):
+    """Oluşturulan M3U dosyasını doğrudan GitHub API'yi kullanarak depoya yazar (Push eder)."""
+    token = os.environ.get("GITHUB_TOKEN") or GITHUB_TOKEN
+    
+    if not token or token == "BURAYA_GITHUB_TOKENINIZI_YAZIN":
+        print("\nℹ️ GitHub Token tespit edilemedi. Değişiklikler sadece yerel 'playlist.m3u' dosyasına kaydedildi.")
+        print("ℹ️ GitHub deposuna otomatik yükleme yapmak istiyorsanız koddaki GITHUB_TOKEN alanını doldurmalısınız.\n")
+        return
+
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_PATH}"
+
+    # 1. GitHub'daki dosyanın SHA değerini ve mevcut durumunu çek
+    sha = ""
+    try:
+        r = requests.get(url + f"?ref={GITHUB_BRANCH}", headers=headers, timeout=10)
+        if r.status_code == 200:
+            sha = r.json().get("sha", "")
+    except Exception as e:
+        print(f"⚠️ Dosyanın mevcut SHA değeri alınamadı: {e}")
+
+    # 2. İçeriği Base64 formatına çevir (GitHub API zorunluluğu)
+    content_bytes = content.encode("utf-8")
+    content_b64 = base64.b64encode(content_bytes).decode("utf-8")
+
+    payload = {
+        "message": f"Playlist güncellendi - {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+        "content": content_b64,
+        "branch": GITHUB_BRANCH
+    }
+    if sha:
+        payload["sha"] = sha
+
+    # 3. PUT isteği ile dosyayı depoya yazdır
+    try:
+        print("⏳ Güncel playlist GitHub deposuna gönderiliyor...")
+        r = requests.put(url, headers=headers, json=payload, timeout=15)
+        if r.status_code in [200, 201]:
+            print("🚀 BAŞARILI: M3U dosyası doğrudan GitHub deponuza yazıldı!")
+        else:
+            print(f"❌ HATA: GitHub'a dosya yazılamadı. Hata Kodu: {r.status_code}, Yanıt: {r.text}")
+    except Exception as e:
+        print(f"❌ GitHub API bağlantı hatası: {e}")
+
+
 def write_m3u(success_items: list, output_path: str):
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
@@ -419,29 +475,20 @@ def write_m3u(success_items: list, output_path: str):
     remote_channels = []
     content = ""
     
-    # 1. M3U İçeriğini oku (Önce yerel dosyaya bakar, yoksa GitHub'dan çeker)
-    if os.path.exists(output_path):
-        try:
-            print(f"💾 Yerel '{output_path}' dosyası bulundu. Mevcut liste üzerinden birleştirme yapılacak.")
-            with open(output_path, "r", encoding="utf-8") as f:
-                content = f.read()
-        except Exception as e:
-            print(f"⚠️ Yerel dosya okunurken hata oluştu: {e}")
+    # 1. Uzak GitHub dosyasını oku (Preserve/Koruma için)
+    try:
+        print(f"⏳ Uzak GitHub M3U listesi indiriliyor: {REMOTE_M3U_URL}")
+        r = requests.get(REMOTE_M3U_URL, timeout=15)
+        r.encoding = "utf-8"
+        if r.status_code == 200:
+            content = r.text
+            print(f"💾 Uzak liste başarıyla indirildi. Analiz ediliyor...")
+        else:
+            print(f"⚠️ Uzak M3U indirilemedi (HTTP {r.status_code}). Sıfırdan yeni liste oluşturulacak.")
+    except Exception as e:
+        print(f"⚠️ Uzak M3U indirilirken hata oluştu: {e}. Sıfırdan yeni liste oluşturulacak.")
 
-    if not content:
-        try:
-            print(f"⏳ Yerel dosya bulunamadı. Uzak M3U listesi indiriliyor: {REMOTE_M3U_URL}")
-            r = requests.get(REMOTE_M3U_URL, timeout=15)
-            r.encoding = "utf-8"
-            if r.status_code == 200:
-                content = r.text
-                print(f"💾 Uzak liste başarıyla indirildi.")
-            else:
-                print(f"⚠️ Uzak M3U indirilemedi (HTTP {r.status_code}). Sıfırdan yeni liste oluşturulacak.")
-        except Exception as e:
-            print(f"⚠️ Uzak M3U indirilirken hata oluştu: {e}. Sıfırdan yeni liste oluşturulacak.")
-
-    # 2. Mevcut Listeyi Ayrıştır (Parse et)
+    # 2. Uzak Listeyi Ayrıştır
     if content:
         lines = content.splitlines()
         current_extinf = None
@@ -450,14 +497,13 @@ def write_m3u(success_items: list, output_path: str):
             line = line.strip()
             if not line:
                 continue
-            # Başlıkları ve yorum satırlarını atla
             if line.startswith("#EXTM3U") or line.startswith("# Son guncelleme") or line.startswith("# Kanal sayisi"):
                 continue
             
             if line.startswith("#EXTINF:"):
                 current_extinf = line
             elif not line.startswith("#") and current_extinf:
-                # Grup adını tespit et (Büyük/küçük harf duyarsız arıyoruz)
+                # Grup adını tespit et
                 group_match = re.search(r'group-title="([^"]*)"', current_extinf, re.IGNORECASE)
                 group = group_match.group(1).strip() if group_match else "GENEL"
                 
@@ -480,10 +526,10 @@ def write_m3u(success_items: list, output_path: str):
                 current_extinf = None
         print(f"💾 Mevcut listeden {len(remote_channels)} adet kanal başarıyla analiz edildi.")
 
-    # 3. Listeleri Akıllıca Birleştir (Kanal adı + Grup adına göre)
+    # 3. Kanal İsmi + Grup İsmine Göre Listeleri Akıllıca Birleştir
     final_channels = []
     
-    # Başarı tablosu için benzersiz key oluşturuyoruz: (kanal_adı.lower(), grup_adı.lower())
+    # Başarı tablosu için benzersiz eşleştirme anahtarı: (kanal_adı.lower(), grup_adı.lower())
     success_lookup = {}
     for sc in success_items:
         key = (sc["name"].lower().strip(), sc.get("group", "GENEL").lower().strip())
@@ -491,12 +537,12 @@ def write_m3u(success_items: list, output_path: str):
         
     processed_keys = set()
 
-    # Mevcut listedekileri güncelle veya olduğu gibi koru (Bozulmaması istenen diğer kanallar)
+    # Mevcut listedekileri güncelle veya olduğu gibi koru
     for rc in remote_channels:
         rc_key = (rc["name"].lower().strip(), rc["group"].lower().strip())
         
         if rc_key in success_lookup:
-            # Eşleşme var! (Hem isim hem grup aynı). Kodda bulduğumuz güncel link ve bilgilerle güncelliyoruz.
+            # Eşleşme var! (İsim ve Grup aynı). Yeni linkle güncelleniyor.
             sc = success_lookup[rc_key]
             logo = sc.get("image", "")
             group = sc.get("group", "GENEL")
@@ -514,7 +560,7 @@ def write_m3u(success_items: list, output_path: str):
             })
             processed_keys.add(rc_key)
         else:
-            # Eşleşme yok, mevcut listedeki diğer yabancı kaynaklı kanalları bozmadan aynen ekle
+            # Eşleşme yok, listedeki diğer yabancı kanalları bozmadan aynen ekle
             final_channels.append({
                 "extinf": rc["extinf"],
                 "stream_url": rc["stream_url"]
@@ -540,15 +586,27 @@ def write_m3u(success_items: list, output_path: str):
             })
             processed_keys.add(sc_key)
 
-    # 4. Nihai Birleşik M3U Dosyasını Doğrudan 'playlist.m3u' Olarak Yaz
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write("#EXTM3U\n")
-        f.write(f"# Son guncelleme : {now} (TR)\n")
-        f.write(f"# Kanal sayisi   : {len(final_channels)}\n\n")
+    # 4. M3U İçeriğini Oluştur
+    output_lines = [
+        "#EXTM3U",
+        f"# Son guncelleme : {now} (TR)",
+        f"# Kanal sayisi   : {len(final_channels)}\n"
+    ]
+    for ch in final_channels:
+        output_lines.append(ch["extinf"])
+        output_lines.append(ch["stream_url"] + "\n")
+        
+    full_m3u_content = "\n".join(output_lines)
 
-        for ch in final_channels:
-            f.write(ch["extinf"] + "\n")
-            f.write(ch["stream_url"] + "\n\n")
+    # Yerel bir yedeğini de kaydet
+    try:
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(full_m3u_content)
+    except Exception as e:
+        print(f"⚠️ Yerel yedek yazılırken hata: {e}")
+
+    # 5. DOĞRUDAN GITHUB'A GÖNDER VE YAZ
+    upload_to_github(full_m3u_content)
 
 
 def print_report(channels: list, success: list, failed: list):
@@ -561,18 +619,18 @@ def print_report(channels: list, success: list, failed: list):
     print(f"  📺 Taranan kanal sayısı  : {len(channels)}")
     print(f"  ✅ Başarıyla çözülen     : {len(success)}")
     print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Güncellenen Dosya     : {OUTPUT_FILE}")
+    print(f"  📁 Çıktı Dosyası         : {OUTPUT_FILE}")
     print(f"  🕐 Güncelleme zamanı     : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 ÖZEL LİSTE — ÇOKLU KANAL STREAM AYIKLAYICI")
+    print("   📺 ÖZEL LİSTE — GITHUB ENTEGRASYONLU STREAM AYIKLAYICI")
     print("═" * 65 + "\n")
 
     if not KANALLAR:
-        print("⚠️  Lütfen kodun başındaki 'KANALLAR' listesine en az bir link ekleyin.")
+        print("⚠️ Lütfen kodun başındaki 'KANALLAR' listesine en az bir link ekleyin.")
         Path(OUTPUT_FILE).write_text("#EXTM3U\n", encoding="utf-8")
         return
 
