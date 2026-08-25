@@ -33,12 +33,10 @@ KANALLAR = [
         "image": "",
         "group": "TRT"
     }
-    # Yeni kanalları yukarıdaki şablona göre virgülle ayırarak ekleyebilirsiniz.
 ]
 
-# ─── GITHUB OTOMATİK YÜKLEME AYARLARI ──────────────────────────────────────────
-# GitHub'a doğrudan yazabilmek için buraya Token'ınızı yapıştırın.
-# (Eğer GitHub Actions ile çalıştırıyorsanız burayı boş bırakıp secrets.GITHUB_TOKEN kullanabilirsiniz)
+# ─── GITHUB AYARLARI ──────────────────────────────────────────────────────────
+# Yeni oluşturduğunuz Token'ı buraya yazın:
 GITHUB_TOKEN = "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"
 
 GITHUB_REPO = "kadirsener1/avva"
@@ -53,7 +51,7 @@ DEBUG_FILE = "debug_failed.json"
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
 FIRST_WAIT = 3.0                # İlk yüklemede akış bekleme süresi (sn)
 RELOAD_WAIT = 4.5               # Yenileme sonrası bekleme süresi (sn)
-MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı (Aynı anda kaç link taransın?)
+MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı
 
 HEADERS = {
     "User-Agent": (
@@ -83,24 +81,15 @@ BROWSER_ARGS = [
 
 BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 
-# ──────────────────────────────────────────────────────────────────────────────
-
 
 def is_valid_stream_url(url: str) -> bool:
-    """
-    URL'nin gerçekten geçerli bir medya akış adresi (.m3u8 / .mpd) olup olmadığını doğrular.
-    JS kodlarını ve çöp metinleri eler.
-    """
     if not url or not isinstance(url, str):
         return False
 
     url = url.strip()
-
-    # 1. Mutlaka http veya https ile başlamalı
     if not (url.startswith("http://") or url.startswith("https://")):
         return False
 
-    # 2. İçinde JS kod parçacıkları, parantezler, HTML karakterleri olamaz
     invalid_chars = [
         " ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
         "\\", "\n", "\r", "\t", "&&", "||", "import", "function"
@@ -108,13 +97,11 @@ def is_valid_stream_url(url: str) -> bool:
     if any(c in url for c in invalid_chars):
         return False
 
-    # 3. Kütüphane / JS bundle / web worker adları olamaz
     junk_keywords = ["parser", "bundle", "webpack", "chunk", "worker", "player.min"]
     url_lower = url.lower()
     if any(k in url_lower for k in junk_keywords):
         return False
 
-    # 4. Temiz path kısmında .m3u8 veya .mpd uzantısı bulunmalı
     base_path = url.split("?")[0].lower()
     if not (".m3u8" in base_path or ".mpd" in base_path):
         return False
@@ -123,13 +110,10 @@ def is_valid_stream_url(url: str) -> bool:
 
 
 def extract_from_html(html_text: str, base_url: str = "") -> str:
-    """HTML veya metin içinden sadece geçerli HTTP URL'lerini ayıklar."""
     if not html_text:
         return ""
 
     html_text = html_text.replace("\\/", "/").replace("\\u0026", "&")
-
-    # Sıkı regex filtresi
     pattern = r'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]+\.(?:m3u8|mpd)(?:\?[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]*)?'
 
     matches = re.findall(pattern, html_text, re.IGNORECASE)
@@ -141,11 +125,9 @@ def extract_from_html(html_text: str, base_url: str = "") -> str:
 
 
 async def extract_from_js(page) -> str:
-    """Sadece doğrudan video oynatıcı nesnelerinin src değerlerini kontrol eder."""
     try:
         val = await page.evaluate("""
             () => {
-                // 1. JWPlayer
                 try {
                     if (typeof jwplayer !== 'undefined' && jwplayer().getPlaylistItem) {
                         const f = jwplayer().getPlaylistItem()?.file;
@@ -153,7 +135,6 @@ async def extract_from_js(page) -> str:
                     }
                 } catch(e){}
 
-                // 2. VideoJS
                 try {
                     if (typeof videojs !== 'undefined') {
                         const players = videojs.getAllPlayers();
@@ -164,16 +145,13 @@ async def extract_from_js(page) -> str:
                     }
                 } catch(e){}
 
-                // 3. Hls.js
                 try {
                     if (typeof Hls !== 'undefined' && Hls.url && Hls.url.startsWith('http')) return Hls.url;
                 } catch(e){}
 
-                // 4. Standart HTML5 Video Elementi
                 const v = document.querySelector('video');
                 if (v && v.src && v.src.startsWith('http')) return v.src;
 
-                // 5. Source Elementi
                 const s = document.querySelector('video source');
                 if (s && s.src && s.src.startsWith('http')) return s.src;
 
@@ -189,7 +167,6 @@ async def extract_from_js(page) -> str:
 
 
 async def try_trigger_play(page):
-    """Oynatıcıyı ve token oluşturmayı tetiklemek için sayfaya tıklar."""
     try:
         await page.mouse.click(200, 200)
     except Exception:
@@ -250,7 +227,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
         await page.route("**/*", route_filter)
 
-        # ── Ağ İstek Dinleyicileri ──
         async def on_request(request):
             nonlocal stream_url
             url = request.url
@@ -269,7 +245,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
                 found_event.set()
                 return
 
-            # JS dosyaları hariç sadece JSON tipindeki yanıtları oku
             ct = response.headers.get("content-type", "").lower()
             if "application/json" in ct:
                 try:
@@ -285,7 +260,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         page.on("request", on_request)
         page.on("response", on_response)
 
-        # ── 1. İlk Yükleme ──
         try:
             await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
         except Exception:
@@ -296,7 +270,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         except asyncio.TimeoutError:
             pass
 
-        # ── 2. Bulunamadıysa Sayfa Yenileme (Refresh & Token Alımı) ──
         if not stream_url:
             await try_trigger_play(page)
             try:
@@ -306,11 +279,9 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
-        # ── 3. DOM & JS Taraması ──
         if not stream_url:
             stream_url = await extract_from_js(page)
 
-        # ── 4. HTML Kaynağından Tara ──
         if not stream_url:
             try:
                 content = await page.content()
@@ -320,7 +291,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 pass
 
-        # ── 5. Iframe'leri Tara ──
         if not stream_url:
             try:
                 for frame in page.frames:
@@ -421,51 +391,62 @@ async def process_all(channels: list) -> tuple:
 
 
 def upload_to_github(content: str):
-    """Oluşturulan M3U dosyasını doğrudan GitHub API'yi kullanarak depoya yazar (Push eder)."""
-    token = os.environ.get("GITHUB_TOKEN") or GITHUB_TOKEN
+    token = (os.environ.get("GITHUB_TOKEN") or GITHUB_TOKEN).strip()
     
-    if not token or token == "BURAYA_GITHUB_TOKENINIZI_YAZIN":
-        print("\nℹ️ GitHub Token tespit edilemedi. Değişiklikler sadece yerel 'playlist.m3u' dosyasına kaydedildi.")
-        print("ℹ️ GitHub deposuna otomatik yükleme yapmak istiyorsanız koddaki GITHUB_TOKEN alanını doldurmalısınız.\n")
+    if not token or token.startswith("BURAYA_"):
+        print("\n❌ GitHub Token tanımlı değil. Dosya yalnızca yerel diske kaydedildi.")
         return
 
+    # GitHub API User-Agent başlığını zorunlu tutar
     headers = {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json"
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "M3U-Auto-Updater"
     }
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_PATH}"
+    api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_PATH}"
 
-    # 1. GitHub'daki dosyanın SHA değerini ve mevcut durumunu çek
-    sha = ""
+    # 1. Dosyanın SHA bilgisini al
+    sha = None
     try:
-        r = requests.get(url + f"?ref={GITHUB_BRANCH}", headers=headers, timeout=10)
+        r = requests.get(f"{api_url}?ref={GITHUB_BRANCH}", headers=headers, timeout=15)
         if r.status_code == 200:
-            sha = r.json().get("sha", "")
+            sha = r.json().get("sha")
+        elif r.status_code == 404:
+            sha = None
+        else:
+            print(f"⚠️ Dosya SHA bilgisi alınamadı ({r.status_code}): {r.text}")
     except Exception as e:
-        print(f"⚠️ Dosyanın mevcut SHA değeri alınamadı: {e}")
+        print(f"⚠️ SHA alınırken hata oluştu: {e}")
 
-    # 2. İçeriği Base64 formatına çevir (GitHub API zorunluluğu)
-    content_bytes = content.encode("utf-8")
-    content_b64 = base64.b64encode(content_bytes).decode("utf-8")
+    # 2. Base64 kodlaması yap
+    content_b64 = base64.b64encode(content.encode("utf-8")).decode("utf-8")
 
     payload = {
-        "message": f"Playlist güncellendi - {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+        "message": f"Playlist güncelleme: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}",
         "content": content_b64,
         "branch": GITHUB_BRANCH
     }
     if sha:
         payload["sha"] = sha
 
-    # 3. PUT isteği ile dosyayı depoya yazdır
+    # 3. GitHub API üzerinden dosyayı güncelle / yaz
     try:
-        print("⏳ Güncel playlist GitHub deposuna gönderiliyor...")
-        r = requests.put(url, headers=headers, json=payload, timeout=15)
+        print("⏳ Dosya GitHub deponuza yükleniyor...")
+        r = requests.put(api_url, headers=headers, json=payload, timeout=20)
         if r.status_code in [200, 201]:
-            print("🚀 BAŞARILI: M3U dosyası doğrudan GitHub deponuza yazıldı!")
+            commit_url = r.json().get("commit", {}).get("html_url", "")
+            print("\n" + "═"*65)
+            print("🚀 BAŞARILI: M3U dosyası GitHub deponuza doğrudan yazıldı!")
+            print(f"🔗 Commit Detayı : {commit_url}")
+            print(f"🌐 GitHub Sayfası: https://github.com/{GITHUB_REPO}/blob/{GITHUB_BRANCH}/{GITHUB_PATH}")
+            print("💡 BİLGİ: 'raw.githubusercontent.com' bağlantısındaki önbellek (CDN cache)")
+            print("   sebebiyle değişikliklerin raw linkine yansıması 3-5 dakika sürebilir.")
+            print("═"*65 + "\n")
         else:
-            print(f"❌ HATA: GitHub'a dosya yazılamadı. Hata Kodu: {r.status_code}, Yanıt: {r.text}")
+            print(f"\n❌ GitHub API Yükleme Başarısız! (HTTP {r.status_code})")
+            print(f"🔍 Yanıt: {r.text}\n")
     except Exception as e:
-        print(f"❌ GitHub API bağlantı hatası: {e}")
+        print(f"❌ GitHub bağlantı hatası: {e}")
 
 
 def write_m3u(success_items: list, output_path: str):
@@ -475,18 +456,20 @@ def write_m3u(success_items: list, output_path: str):
     remote_channels = []
     content = ""
     
-    # 1. Uzak GitHub dosyasını oku (Preserve/Koruma için)
+    # 1. Uzak GitHub dosyasını indir
     try:
-        print(f"⏳ Uzak GitHub M3U listesi indiriliyor: {REMOTE_M3U_URL}")
-        r = requests.get(REMOTE_M3U_URL, timeout=15)
+        # Cache'i atlatmak için rastgele bir parametre ekliyoruz
+        fresh_url = f"{REMOTE_M3U_URL}?_nocache={int(datetime.now().timestamp())}"
+        print(f"⏳ Mevcut M3U listesi GitHub'dan çekiliyor...")
+        r = requests.get(fresh_url, timeout=15)
         r.encoding = "utf-8"
         if r.status_code == 200:
             content = r.text
-            print(f"💾 Uzak liste başarıyla indirildi. Analiz ediliyor...")
+            print("💾 Mevcut liste başarıyla indirildi. Kanallar analiz ediliyor...")
         else:
-            print(f"⚠️ Uzak M3U indirilemedi (HTTP {r.status_code}). Sıfırdan yeni liste oluşturulacak.")
+            print(f"⚠️ Uzak M3U indirilemedi (HTTP {r.status_code}).")
     except Exception as e:
-        print(f"⚠️ Uzak M3U indirilirken hata oluştu: {e}. Sıfırdan yeni liste oluşturulacak.")
+        print(f"⚠️ Uzak M3U indirilirken hata oluştu: {e}")
 
     # 2. Uzak Listeyi Ayrıştır
     if content:
@@ -503,11 +486,11 @@ def write_m3u(success_items: list, output_path: str):
             if line.startswith("#EXTINF:"):
                 current_extinf = line
             elif not line.startswith("#") and current_extinf:
-                # Grup adını tespit et
+                # Grup adı
                 group_match = re.search(r'group-title="([^"]*)"', current_extinf, re.IGNORECASE)
                 group = group_match.group(1).strip() if group_match else "GENEL"
                 
-                # Kanal adını tespit et
+                # Kanal adı
                 name = ""
                 tvg_name_match = re.search(r'tvg-name="([^"]*)"', current_extinf, re.IGNORECASE)
                 if tvg_name_match:
@@ -524,12 +507,12 @@ def write_m3u(success_items: list, output_path: str):
                     "stream_url": line
                 })
                 current_extinf = None
-        print(f"💾 Mevcut listeden {len(remote_channels)} adet kanal başarıyla analiz edildi.")
+        print(f"💾 Mevcut listeden {len(remote_channels)} kanal hafızaya alındı (bozulmayacak).")
 
-    # 3. Kanal İsmi + Grup İsmine Göre Listeleri Akıllıca Birleştir
+    # 3. İsim + Grup Eşleşmesine Göre Birleştir
     final_channels = []
     
-    # Başarı tablosu için benzersiz eşleştirme anahtarı: (kanal_adı.lower(), grup_adı.lower())
+    # Eşleştirme tablosu: (kanal_adı, grup_adı)
     success_lookup = {}
     for sc in success_items:
         key = (sc["name"].lower().strip(), sc.get("group", "GENEL").lower().strip())
@@ -537,12 +520,12 @@ def write_m3u(success_items: list, output_path: str):
         
     processed_keys = set()
 
-    # Mevcut listedekileri güncelle veya olduğu gibi koru
+    # Mevcut kanalları güncelle veya aynen koru
     for rc in remote_channels:
         rc_key = (rc["name"].lower().strip(), rc["group"].lower().strip())
         
         if rc_key in success_lookup:
-            # Eşleşme var! (İsim ve Grup aynı). Yeni linkle güncelleniyor.
+            # Eşleşti: Kodun bulduğu yeni linkle güncelle
             sc = success_lookup[rc_key]
             logo = sc.get("image", "")
             group = sc.get("group", "GENEL")
@@ -560,13 +543,13 @@ def write_m3u(success_items: list, output_path: str):
             })
             processed_keys.add(rc_key)
         else:
-            # Eşleşme yok, listedeki diğer yabancı kanalları bozmadan aynen ekle
+            # Eşleşmedi: Eski kanalı hiç bozmadan koru
             final_channels.append({
                 "extinf": rc["extinf"],
                 "stream_url": rc["stream_url"]
             })
 
-    # Kodda başarıyla taranan ama mevcut listede hiç olmayan yepyeni kanalları listenin sonuna ekle
+    # Listede hiç olmayan yeni taranmış kanalları listenin altına ekle
     for sc in success_items:
         sc_key = (sc["name"].lower().strip(), sc.get("group", "GENEL").lower().strip())
         if sc_key not in processed_keys:
@@ -598,14 +581,14 @@ def write_m3u(success_items: list, output_path: str):
         
     full_m3u_content = "\n".join(output_lines)
 
-    # Yerel bir yedeğini de kaydet
+    # Yerel dosyaya yaz
     try:
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(full_m3u_content)
     except Exception as e:
-        print(f"⚠️ Yerel yedek yazılırken hata: {e}")
+        print(f"⚠️ Yerel dosya yazılırken hata: {e}")
 
-    # 5. DOĞRUDAN GITHUB'A GÖNDER VE YAZ
+    # 5. DOĞRUDAN GITHUB REPOSUNA GÖNDER
     upload_to_github(full_m3u_content)
 
 
@@ -631,7 +614,6 @@ async def main():
 
     if not KANALLAR:
         print("⚠️ Lütfen kodun başındaki 'KANALLAR' listesine en az bir link ekleyin.")
-        Path(OUTPUT_FILE).write_text("#EXTM3U\n", encoding="utf-8")
         return
 
     print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
@@ -646,7 +628,6 @@ async def main():
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
     print_report(KANALLAR, success, failed)
-    print(f"✅ İşlem tamamlandı! {OUTPUT_FILE} dosyası güncellendi.\n")
 
 
 if __name__ == "__main__":
