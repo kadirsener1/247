@@ -387,17 +387,59 @@ KANALLAR = [
     },
     {
         "name": "frbeinsports1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%201%20FR&code=fr&user=cdnlivetv&plan=free",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%201&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
     {
         "name": "frbeinsports2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%202%20FR&code=fr&user=cdnlivetv&plan=free",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%202&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
     {
         "name": "frbeinsports3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203%20FR&code=fr&user=cdnlivetv&plan=free",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax4",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%204&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax5",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%205&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax6",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%206&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax7",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%207&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax8",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%208&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax9",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%209&code=fr&user=cdnlivetv&plan=free",
+        "group": "fr"
+    },
+    
+    {
+        "name": "frbeinsportsmax10",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%2010&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
     {
@@ -500,6 +542,12 @@ KANALLAR = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport1&code=de&user=cdnlivetv&plan=free",
         "group": "de"
     },
+    {
+        "name": "defussball",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=fussball&code=de&user=cdnlivetv&plan=free",
+        "group": "de"
+    },
+    
     {
         "name": "itskysportuno",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Uno&code=it&user=cdnlivetv&plan=free",
