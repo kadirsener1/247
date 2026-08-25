@@ -1,0 +1,10 @@
+#EXTM3U
+# Son guncelleme : 25.08.2026 03:58:27 (TR)
+# Kanal sayisi   : 2
+
+#EXTINF:-1 tvg-name="Bein 1" tvg-logo="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1pt7gT.img" group-title="ULUSAL",Bein 1
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccbfe/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYmZlOjE3ODc2MzM4OTk4MjE6Y2RubGl2ZXR2LnR2OjNjM2M2NjhlOTQ1ZWI2YmUuMzRiMTQyODA0MzFjNDkwY2RjYmEzNWFmZGZmYzNlZjYzMjhlMWE2YTZmOTNlNzI1NWI0OGRmMzkwNmVkZTBjNg
+
+#EXTINF:-1 tvg-name="bein 2" group-title="ULUSAL",bein 2
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccc04/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYzA0OjE3ODc2MzM4OTk4MTk6Y2RubGl2ZXR2LnR2Ojg2NjJhYjMwNzQ1M2UwNTguMmM5MTAyZWY4YzgwZTMxN2M1ODU4ZGQzZGZkZDIzZTQ0ODhlZjE3ZTEwMzUzNjkyMzFmNzU2NWYyN2ExYWI3YQ
+
