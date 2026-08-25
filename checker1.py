@@ -39,7 +39,7 @@ KANALLAR = [
 # ─── GITHUB OTOMATİK YÜKLEME AYARLARI ──────────────────────────────────────────
 # GitHub'a doğrudan yazabilmek için buraya Token'ınızı yapıştırın.
 # (Eğer GitHub Actions ile çalıştırıyorsanız burayı boş bırakıp secrets.GITHUB_TOKEN kullanabilirsiniz)
-GITHUB_TOKEN = "BURAYA_GITHUB_TOKENINIZI_YAZIN"
+GITHUB_TOKEN = "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"
 
 GITHUB_REPO = "kadirsener1/avva"
 GITHUB_PATH = "playlist.m3u"
