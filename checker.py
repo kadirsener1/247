@@ -14,11 +14,7 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 
 # ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
 KANALLAR = [
-{
-        "name": "beindeneme",
-    "url": "https://tvnow247.top/watch/bein-sports-1-turkey",
-  "group": "uk"
-    },
+
     {
         "name": "uktntsports1",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
