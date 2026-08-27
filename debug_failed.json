@@ -1,107 +1,62 @@
 [
   {
-    "name": "uscbs",
-    "player_url": "https://tvnow247.top/watch/cbs-usa/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "name": "usabc",
+    "page_url": "https://tvnow247.top/watch/abc-usa/"
   },
   {
-    "name": "usabc",
-    "player_url": "https://tvnow247.top/watch/abc-usa/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "name": "uscbs",
+    "page_url": "https://tvnow247.top/watch/cbs-usa/"
   },
   {
     "name": "usnbc",
-    "player_url": "https://tvnow247.top/watch/nbc-usa/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/nbc-usa/"
   },
   {
     "name": "usfox",
-    "player_url": "https://tvnow247.top/watch/fox-usa/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/fox-usa/"
   },
   {
     "name": "usespn2",
-    "player_url": "https://tvnow247.top/watch/espn-2/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/espn-2/"
   },
   {
     "name": "usespn",
-    "player_url": "https://tvnow247.top/watch/espn-usa/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "ususa",
-    "player_url": "https://tvnow247.top/watch/usa-network/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "usnbatv",
-    "player_url": "https://tvnow247.top/watch/nba-tv/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/espn-usa/"
   },
   {
     "name": "usnflnetwork",
-    "player_url": "https://tvnow247.top/watch/nfl-network/",
-    "image": "",
-    "group": "US",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/nfl-network/"
+  },
+  {
+    "name": "ususa",
+    "page_url": "https://tvnow247.top/watch/usa-network/"
+  },
+  {
+    "name": "usnbatv",
+    "page_url": "https://tvnow247.top/watch/nba-tv/"
   },
   {
     "name": "ukskysportsmainevent",
-    "player_url": "https://tvnow247.top/watch/sky-sports-main-event/",
-    "image": "",
-    "group": "UK",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "ukskysportspremierleague",
-    "player_url": "https://tvnow247.top/watch/sky-sports-premier-league/",
-    "image": "",
-    "group": "UK",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/sky-sports-main-event/"
   },
   {
     "name": "ukskysportsf1",
-    "player_url": "https://tvnow247.top/watch/sky-sports-f1/",
-    "image": "",
-    "group": "UK",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/sky-sports-f1/"
+  },
+  {
+    "name": "ukskysportspremierleague",
+    "page_url": "https://tvnow247.top/watch/sky-sports-premier-league/"
   },
   {
     "name": "uktntsports1",
-    "player_url": "https://tvnow247.top/watch/tnt-sports-1-uk/",
-    "image": "",
-    "group": "UK",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/tnt-sports-1-uk/"
   },
   {
     "name": "uktntsports2",
-    "player_url": "https://tvnow247.top/watch/tnt-sports-2-uk/",
-    "image": "",
-    "group": "UK",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/tnt-sports-2-uk/"
   },
   {
     "name": "trbeinsports1",
-    "player_url": "https://tvnow247.top/watch/bein-sports-1-turkey/",
-    "image": "",
-    "group": "TR",
-    "reason": "Geçerli stream URL bulunamadı"
+    "page_url": "https://tvnow247.top/watch/bein-sports-1-turkey/"
   }
 ]
