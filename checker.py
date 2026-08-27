@@ -16,7 +16,7 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 KANALLAR = [
 {
         "name": "beindeneme",
-    "https://tvnow247.top/watch/bein-sports-1-turkey",
+    "url": "https://tvnow247.top/watch/bein-sports-1-turkey",
   "group": "uk"
     },
     {
