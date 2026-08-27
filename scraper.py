@@ -7,99 +7,93 @@ import re
 import asyncio
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
+from playwright.async_api import async_playwright
 
-import requests
-from playwright.async_api import async_playwright, Error as PlaywrightError
-
-
-# ─── KULLANICI KANAL LİSTESİ (https://tvnow247.top/ UYUMLU) ───────────────────
+# ─── KANAL LİSTESİ (tvnow247.top) ─────────────────────────────────────────────
 KANALLAR = [
     {
         "name": "usabc",
         "url": "https://tvnow247.top/watch/abc-usa/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "uscbs",
         "url": "https://tvnow247.top/watch/cbs-usa/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "usnbc",
         "url": "https://tvnow247.top/watch/nbc-usa/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "usfox",
         "url": "https://tvnow247.top/watch/fox-usa/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "usespn",
         "url": "https://tvnow247.top/watch/espn-usa/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "usespn2",
         "url": "https://tvnow247.top/watch/espn-2/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "ususa",
         "url": "https://tvnow247.top/watch/usa-network/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "usnflnetwork",
         "url": "https://tvnow247.top/watch/nfl-network/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "usnbatv",
         "url": "https://tvnow247.top/watch/nba-tv/",
-        "group": "us"
+        "group": "US"
     },
     {
         "name": "ukskysportsmainevent",
         "url": "https://tvnow247.top/watch/sky-sports-main-event/",
-        "group": "uk"
+        "group": "UK"
     },
     {
         "name": "ukskysportspremierleague",
         "url": "https://tvnow247.top/watch/sky-sports-premier-league/",
-        "group": "uk"
+        "group": "UK"
     },
     {
         "name": "ukskysportsf1",
         "url": "https://tvnow247.top/watch/sky-sports-f1/",
-        "group": "uk"
+        "group": "UK"
     },
     {
         "name": "uktntsports1",
         "url": "https://tvnow247.top/watch/tnt-sports-1-uk/",
-        "group": "uk"
+        "group": "UK"
     },
     {
         "name": "uktntsports2",
         "url": "https://tvnow247.top/watch/tnt-sports-2-uk/",
-        "group": "uk"
+        "group": "UK"
     },
     {
         "name": "trbeinsports1",
         "url": "https://tvnow247.top/watch/bein-sports-1-turkey/",
-        "group": "tr"
+        "group": "TR"
     }
-    # Yeni kanalları sitenin link yapısına göre buraya ekleyebilirsiniz.
+    # Yeni kanalları buraya ekleyebilirsiniz.
 ]
 
-# ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_DIR_NAME = "tvnow247"    # Çıktı klasör adı
+# ─── AYARLAR ──────────────────────────────────────────────────────────────────
+OUTPUT_DIR_NAME = "tvnow247"    # Dosyaların kaydedileceği klasör
 DEBUG_FILE = "debug_failed.json"
-
-TIMEOUT = 20000                 # Sayfa yükleme zaman aşımı (20s) - Ağır siteler için artırıldı
-FIRST_WAIT = 5.0                # İlk yüklemede akış bekleme süresi (sn)
-RELOAD_WAIT = 6.0               # Yenileme sonrası bekleme süresi (sn)
-MAX_CONCURRENT = 3              # Eşzamanlı sekme sayısı (Sistem yükünü azaltmak için 3 yapıldı)
+MAX_CONCURRENT = 3              # Aynı anda taranacak sayfa sayısı
+WAIT_TIMEOUT = 12               # Bir kanal için maksimum bekleme süresi (saniye)
 
 HEADERS = {
     "User-Agent": (
@@ -109,290 +103,104 @@ HEADERS = {
     ),
     "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8",
     "Referer": "https://tvnow247.top/",
-    "Origin": "https://tvnow247.top",
 }
-
-BROWSER_ARGS = [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--mute-audio",
-    "--ignore-certificate-errors",
-    "--ignore-ssl-errors",
-    "--disable-extensions",
-    "--disable-background-networking",
-    "--hide-scrollbars",
-    "--autoplay-policy=no-user-gesture-required",
-    "--disable-blink-features=AutomationControlled",
-]
-
-# Reklam engelleyici için sadece resim ve fontlar engelleniyor (medya/video engellenmiyor)
-BLOCKED_RESOURCE_TYPES = {"image", "font"}
 
 # ──────────────────────────────────────────────────────────────────────────────
 
-
-def is_valid_stream_url(url: str) -> bool:
+def is_valid_m3u8(url: str) -> bool:
+    """Ağ trafiğinden yakalanan linkin geçerli bir m3u8 yayın linki olup olmadığını denetler."""
     if not url or not isinstance(url, str):
         return False
-
+    
     url = url.strip()
-
     if not (url.startswith("http://") or url.startswith("https://")):
         return False
-
-    invalid_chars = [
-        " ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
-        "\\", "\n", "\r", "\t", "&&", "||", "import", "function"
-    ]
-    if any(c in url for c in invalid_chars):
-        return False
-
-    # Reklam ve JS kütüphanelerini süzgeçten geçiriyoruz
-    junk_keywords = ["parser", "bundle", "webpack", "chunk", "worker", "player.min", "ads", "analytics", "telemetry"]
-    url_lower = url.lower()
-    if any(k in url_lower for k in junk_keywords):
-        return False
-
+        
     base_path = url.split("?")[0].lower()
-    if not (".m3u8" in base_path or ".mpd" in base_path):
+    
+    # Reklam ve analiz isteklerini ele
+    bad_words = ["ads", "doubleclick", "telemetry", "analytics", "banner"]
+    if any(b in url.lower() for b in bad_words):
         return False
 
-    return True
+    # Linkin m3u8 veya mpd dosyası olduğunu doğrula
+    if ".m3u8" in base_path or ".mpd" in base_path:
+        return True
+        
+    return False
 
 
 def sanitize_filename(name: str) -> str:
-    """Dosya adlarında hata yaratabilecek geçersiz karakterleri temizler."""
+    """Dosya adlarındaki geçersiz karakterleri temizler."""
     return re.sub(r'[\\/*?:"<>|]', "", name).strip()
 
 
-def extract_from_html(html_text: str, base_url: str = "") -> str:
-    if not html_text:
-        return ""
-
-    html_text = html_text.replace("\\/", "/").replace("\\u0026", "&")
-
-    pattern = r'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]+\.(?:m3u8|mpd)(?:\?[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]*)?'
-
-    matches = re.findall(pattern, html_text, re.IGNORECASE)
-    for m in matches:
-        if is_valid_stream_url(m):
-            return m
-
-    return ""
-
-
-async def extract_from_js(page) -> str:
-    try:
-        val = await page.evaluate("""
-            () => {
-                try {
-                    if (typeof jwplayer !== 'undefined' && jwplayer().getPlaylistItem) {
-                        const f = jwplayer().getPlaylistItem()?.file;
-                        if (f && typeof f === 'string' && f.startsWith('http')) return f;
-                    }
-                } catch(e){}
-
-                try {
-                    if (typeof videojs !== 'undefined') {
-                        const players = videojs.getAllPlayers();
-                        for (let p of players) {
-                            const src = p.currentSrc ? p.currentSrc() : (p.src ? p.src() : null);
-                            if (src && typeof src === 'string' && src.startsWith('http')) return src;
-                        }
-                    }
-                } catch(e){}
-
-                try {
-                    if (typeof Hls !== 'undefined' && Hls.url && Hls.url.startsWith('http')) return Hls.url;
-                } catch(e){}
-
-                const v = document.querySelector('video');
-                if (v && v.src && v.src.startsWith('http')) return v.src;
-
-                const s = document.querySelector('video source');
-                if (s && s.src && s.src.startsWith('http')) return s.src;
-
-                return null;
-            }
-        """)
-        if val and is_valid_stream_url(val):
-            return val
-    except Exception:
-        pass
-
-    return ""
-
-
-async def try_trigger_play(page):
-    try:
-        # Sayfada herhangi bir yere tıklayarak oynatıcıyı tetikle
-        await page.mouse.click(350, 250)
-    except Exception:
-        pass
-
-    try:
-        await page.evaluate("""
-            () => {
-                document.querySelectorAll('video').forEach(v => {
-                    try { v.muted = true; v.play(); } catch(e) {}
-                });
-                const btns = document.querySelectorAll(
-                    '.jw-icon-display, .vjs-big-play-button, button[aria-label*="play" i], .play-button, #play, .play-icon'
-                );
-                btns.forEach(b => { try { b.click(); } catch(e) {} });
-            }
-        """)
-    except Exception:
-        pass
-
-
-async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
+async def get_channel_stream(browser, page_url: str) -> str:
+    """Sayfayı açar ve arka planda oynatılan m3u8 linkini yakalar."""
     stream_url = ""
     found_event = asyncio.Event()
 
-    if not browser.is_connected():
-        return ""
+    context = await browser.new_context(
+        user_agent=HEADERS["User-Agent"],
+        extra_http_headers={"Referer": HEADERS["Referer"]},
+        bypass_csp=True,
+        ignore_https_errors=True,
+        viewport={"width": 1280, "height": 720}
+    )
 
-    context = None
-    page = None
+    page = await context.new_page()
+
+    # Sayfadaki reklam açılır pencerelerini (Pop-up) otomatik kapat
+    page.on("popup", lambda p: asyncio.create_task(p.close()))
+
+    # Ağ trafiğini (Network) dinle ve m3u8 isteğini yakala
+    async def handle_request(request):
+        nonlocal stream_url
+        if not stream_url and is_valid_m3u8(request.url):
+            stream_url = request.url
+            found_event.set()
+
+    page.on("request", handle_request)
 
     try:
-        context = await browser.new_context(
-            user_agent=HEADERS["User-Agent"],
-            extra_http_headers={
-                "Accept-Language": HEADERS["Accept-Language"],
-                "Referer": HEADERS["Referer"],
-            },
-            bypass_csp=True,
-            ignore_https_errors=True,
-            viewport={"width": 1280, "height": 720},
-        )
+        # Sayfaya git
+        await page.goto(page_url, timeout=20000, wait_until="domcontentloaded")
 
-        await context.add_init_script(
-            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
-        )
-
-        page = await context.new_page()
-
-        # 🚨 REKLAM ENGELLEME SİSTEMİ (Yeni sekmelerin açılmasını engeller)
-        page.on("popup", lambda popup: asyncio.create_task(popup.close()))
-
-        async def route_filter(route):
-            req = route.request
-            # Eğer istek m3u8 veya mpd ise direkt geçişine izin ver
-            if is_valid_stream_url(req.url):
-                await route.continue_()
-            # Gereksiz görselleri ve yazı tiplerini engelleyerek hızı artır
-            elif req.resource_type in BLOCKED_RESOURCE_TYPES:
-                await route.abort()
-            else:
-                await route.continue_()
-
-        await page.route("**/*", route_filter)
-
-        async def on_request(request):
-            nonlocal stream_url
-            url = request.url
-            if not stream_url and is_valid_stream_url(url):
-                stream_url = url
-                found_event.set()
-
-        async def on_response(response):
-            nonlocal stream_url
-            if stream_url:
-                return
-
-            url = response.url
-            if is_valid_stream_url(url):
-                stream_url = url
-                found_event.set()
-                return
-
-            ct = response.headers.get("content-type", "").lower()
-            if "application/json" in ct or "javascript" in ct:
-                try:
-                    text = await response.text()
-                    if ".m3u8" in text or ".mpd" in text:
-                        found = extract_from_html(text, url)
-                        if found and is_valid_stream_url(found):
-                            stream_url = found
-                            found_event.set()
-                except Exception:
-                    pass
-
-        page.on("request", on_request)
-        page.on("response", on_response)
-
+        # Oynatıcıyı tetiklemek için ekrana tıkla
         try:
-            # Sayfayı yükle
-            await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
+            await page.mouse.click(350, 250)
+            await page.evaluate("""() => {
+                const v = document.querySelector('video');
+                if (v) { v.muted = true; v.play().catch(()=>{}); }
+            }""")
         except Exception:
             pass
 
+        # Yayın linki yakalanana kadar bekle
         try:
-            await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
+            await asyncio.wait_for(found_event.wait(), timeout=WAIT_TIMEOUT)
         except asyncio.TimeoutError:
             pass
 
+        # Eğer istekten gelmediyse HTML içinden regex ile tara
         if not stream_url:
-            # Oynatmayı tetiklemeyi dene (reklamlar genelde ilk tıklamada tetiklenir)
-            await try_trigger_play(page)
-            try:
-                # Sayfayı yenileyerek temiz token üretilmesini sağla
-                await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
-                await try_trigger_play(page)
-                await asyncio.wait_for(found_event.wait(), timeout=RELOAD_WAIT)
-            except Exception:
-                pass
-
-        if not stream_url:
-            stream_url = await extract_from_js(page)
-
-        if not stream_url:
-            try:
-                content = await page.content()
-                found = extract_from_html(content, player_url)
-                if is_valid_stream_url(found):
-                    stream_url = found
-            except Exception:
-                pass
-
-        # iframe içindeki yayınları ara
-        if not stream_url:
-            try:
-                for frame in page.frames:
-                    if frame.url and frame.url != player_url:
-                        try:
-                            fc = await frame.content()
-                            found = extract_from_html(fc, frame.url)
-                            if is_valid_stream_url(found):
-                                stream_url = found
-                                break
-                        except Exception:
-                            pass
-            except Exception:
-                pass
+            html = await page.content()
+            matches = re.findall(r'https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*', html)
+            for m in matches:
+                if is_valid_m3u8(m):
+                    stream_url = m
+                    break
 
     except Exception:
         pass
     finally:
-        if page:
-            try:
-                await page.close()
-            except Exception:
-                pass
-        if context:
-            try:
-                await context.close()
-            except Exception:
-                pass
+        await page.close()
+        await context.close()
 
-    return stream_url if is_valid_stream_url(stream_url) else ""
+    return stream_url
 
 
-async def process_all(channels: list) -> tuple:
+async def process_all(channels: list):
     success = []
     failed = []
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
@@ -403,131 +211,79 @@ async def process_all(channels: list) -> tuple:
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(
             headless=True,
-            args=BROWSER_ARGS,
+            args=["--no-sandbox", "--disable-gpu", "--mute-audio"]
         )
 
         async def handle(ch):
             nonlocal done_count
-
-            name = str(ch.get("name", "?")).strip()
-            player_url = str(ch.get("url", "")).strip()
-            image = str(ch.get("image", "")).strip()
-            group = str(ch.get("group", "GENEL")).strip().upper()
-
-            if not player_url:
-                async with lock:
-                    done_count += 1
-                    failed.append({
-                        "name": name, "player_url": "", "image": image,
-                        "group": group, "reason": "URL yok"
-                    })
-                return
+            name = ch.get("name", "isimsiz")
+            url = ch.get("url", "")
 
             async with semaphore:
-                stream_url = await get_stream_url(browser, player_url, name)
+                stream_url = await get_channel_stream(browser, url)
 
             async with lock:
                 done_count += 1
-                prefix = f"[{done_count:03d}/{total}]"
+                prefix = f"[{done_count:02d}/{total}]"
 
-                if stream_url and is_valid_stream_url(stream_url):
-                    print(f"  ✅ {prefix} {name} → {stream_url[:65]}...")
-                    success.append({
-                        "name": name,
-                        "stream_url": stream_url,
-                        "player_url": player_url,
-                        "image": image,
-                        "group": group,
-                    })
+                if stream_url:
+                    print(f"  ✅ {prefix} {name} → {stream_url[:70]}...")
+                    success.append({"name": name, "stream_url": stream_url, "group": ch.get("group", "")})
                 else:
-                    print(f"  ❌ {prefix} {name} (Başarısız / Token Alınamadı)")
-                    failed.append({
-                        "name": name,
-                        "player_url": player_url,
-                        "image": image,
-                        "group": group,
-                        "reason": "Geçerli stream URL bulunamadı",
-                    })
+                    print(f"  ❌ {prefix} {name} → Yayın linki bulunamadı!")
+                    failed.append({"name": name, "page_url": url})
 
         await asyncio.gather(*[handle(ch) for ch in channels], return_exceptions=True)
-
-        try:
-            await browser.close()
-        except Exception:
-            pass
+        await browser.close()
 
     return success, failed
 
 
-def write_individual_m3u8(items: list, output_dir_name: str, bandwidth: int = 8000000):
-    """Bulunan her kanal için tvnow247 klasörü altında m3u8 dosyası oluşturur."""
+def write_to_m3u8_files(items: list, output_dir: str):
+    """Bulunan yayın linklerini tvnow247/kanal_adi.m3u8 formatında kaydeder."""
     base_path = Path(__file__).parent.resolve()
-    target_dir = base_path / output_dir_name
-    
+    target_dir = base_path / output_dir
     target_dir.mkdir(parents=True, exist_ok=True)
-    
-    print(f"\n📂 Yazma İşlemi Başlatıldı (Klasör: {target_dir})")
 
-    if not items:
-        print("   ⚠️ Yazılacak başarılı kanal bulunamadı.")
-        return
+    print(f"\n📂 Dosyalar Yazılıyor: {target_dir}")
 
     for ch in items:
-        name = ch["name"]
-        stream = ch["stream_url"]
-
-        safe_name = sanitize_filename(name)
+        safe_name = sanitize_filename(ch["name"])
         file_path = target_dir / f"{safe_name}.m3u8"
+        stream_link = ch["stream_url"]
 
         try:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write("#EXTM3U\n")
                 f.write("#EXT-X-VERSION:3\n")
-                f.write(f"#EXT-X-STREAM-INF:BANDWIDTH={bandwidth}\n")
-                f.write(f"{stream}\n")
-            print(f"   💾 Yazıldı: {file_path.name}")
+                f.write("#EXT-X-STREAM-INF:BANDWIDTH=8000000\n")
+                f.write(f"{stream_link}\n")
+            print(f"   💾 Kaydedildi: {file_path.name}")
         except Exception as e:
-            print(f"   ❌ Dosya yazma hatası ({name}): {e}")
-
-
-def print_report(channels: list, success: list, failed: list):
-    turkey_tz = timezone(timedelta(hours=3))
-    now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
-
-    print(f"\n{'═'*65}")
-    print(f"📊 SONUÇ RAPORU")
-    print(f"{'═'*65}")
-    print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
-    print(f"  ✅ Başarıyla çözülen     : {len(success)}")
-    print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Çıktı Klasör Yolu     : ./{OUTPUT_DIR_NAME}/")
-    print(f"  🕐 Güncelleme zamanı     : {now}")
-    print(f"{'═'*65}\n")
+            print(f"   ❌ Hata ({safe_name}): {e}")
 
 
 async def main():
-    print("═" * 65)
-    print("   📺 TVNOW247 LİSTE — ÇOKLU KANAL AYRI DOSYA KAYDEDİCİ")
-    print("═" * 65 + "\n")
-
-    if not KANALLAR:
-        print("⚠️  Lütfen 'KANALLAR' listesine en az bir kanal ekleyin.")
-        return
-
-    print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
-    print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
-    print(f"📁 Klasör Hedefi         : ./{OUTPUT_DIR_NAME}/\n")
+    print("=" * 60)
+    print("   📺 TVNOW247 - CANLI YAYIN LİNKİ ÇEKİCİ")
+    print("=" * 60 + "\n")
 
     success, failed = await process_all(KANALLAR)
 
-    # Kanalları ayrı dosyalar halinde yazdır
-    write_individual_m3u8(success, OUTPUT_DIR_NAME)
+    # Dosyaları ayrı .m3u8 olarak kaydet
+    write_to_m3u8_files(success, OUTPUT_DIR_NAME)
 
+    # Başarısızları logla
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    print_report(KANALLAR, success, failed)
-    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_DIR_NAME}/' klasörüne kaydedildi.\n")
+    print(f"\n{'=' * 60}")
+    print(f"📊 ÖZET:")
+    print(f"  Toplam Kanal : {len(KANALLAR)}")
+    print(f"  Başarılı     : {len(success)}")
+    print(f"  Başarısız    : {len(failed)}")
+    print(f"  Klasör       : ./{OUTPUT_DIR_NAME}/")
+    print(f"{'=' * 60}\n")
 
 
 if __name__ == "__main__":
