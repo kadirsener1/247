@@ -1,51 +1,15 @@
 [
   {
-    "name": "usabc",
-    "page_url": "https://tvnow247.top/watch/abc-usa/"
-  },
-  {
-    "name": "uscbs",
-    "page_url": "https://tvnow247.top/watch/cbs-usa/"
-  },
-  {
-    "name": "usnbc",
-    "page_url": "https://tvnow247.top/watch/nbc-usa/"
-  },
-  {
-    "name": "usfox",
-    "page_url": "https://tvnow247.top/watch/fox-usa/"
-  },
-  {
     "name": "usespn2",
     "page_url": "https://tvnow247.top/watch/espn-2/"
-  },
-  {
-    "name": "usespn",
-    "page_url": "https://tvnow247.top/watch/espn-usa/"
-  },
-  {
-    "name": "usnflnetwork",
-    "page_url": "https://tvnow247.top/watch/nfl-network/"
-  },
-  {
-    "name": "ususa",
-    "page_url": "https://tvnow247.top/watch/usa-network/"
   },
   {
     "name": "usnbatv",
     "page_url": "https://tvnow247.top/watch/nba-tv/"
   },
   {
-    "name": "ukskysportsmainevent",
-    "page_url": "https://tvnow247.top/watch/sky-sports-main-event/"
-  },
-  {
     "name": "ukskysportsf1",
     "page_url": "https://tvnow247.top/watch/sky-sports-f1/"
-  },
-  {
-    "name": "ukskysportspremierleague",
-    "page_url": "https://tvnow247.top/watch/sky-sports-premier-league/"
   },
   {
     "name": "uktntsports1",
@@ -54,9 +18,5 @@
   {
     "name": "uktntsports2",
     "page_url": "https://tvnow247.top/watch/tnt-sports-2-uk/"
-  },
-  {
-    "name": "trbeinsports1",
-    "page_url": "https://tvnow247.top/watch/bein-sports-1-turkey/"
   }
 ]
