@@ -15,8 +15,8 @@ BASE_URL = "https://tvnow247.top/watch/"
 OUTPUT_FILE = "tv247tr.m3u"
 CHANNELS_FILE = "channelstr.txt"
 
-# Token öncesindeki değişken API adresi (Sayfalardan dinamik olarak güncellenir)
-API_BASE_URL = "https://chunk.tv247.biz/api/proxy/playlist"
+# Dinamik olarak değişecek olan varsayılan Stream API adresi
+STREAM_BASE_URL = "https://chunk.tv247.biz/api/proxy/playlist"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
@@ -40,31 +40,21 @@ def log(msg):
 
 
 # ─────────────────────────────────────────────
-# DİNAMİK API BULUCU
+# BASE URL GÜNCELLEME VE TOKEN OLUŞTURMA
 # ─────────────────────────────────────────────
-def detect_and_update_api_base(html_content):
-    """
-    Sayfa içeriğinden güncel API base URL'sini bulur ve günceller.
-    Örn: https://farklidomain.com/api/proxy/playlist
-    """
-    global API_BASE_URL
-    # /api/proxy/playlist ile biten URL yapısını arar
-    api_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist)'
-    match = re.search(api_pattern, html_content)
-    if match:
-        detected_url = match.group(1)
-        if detected_url != API_BASE_URL:
-            log(f"  [!] Yeni API Base URL Tespit Edildi: {detected_url}")
-            API_BASE_URL = detected_url
-            return True
-    return False
+def update_stream_base_url(full_url):
+    """Bulunan token URL'sinden base API kısmını çıkarıp günceller"""
+    global STREAM_BASE_URL
+    if full_url:
+        # '?token=' kısmından öncesini al
+        base = full_url.split('?')[0]
+        if base and base != STREAM_BASE_URL:
+            STREAM_BASE_URL = base
+            log(f"  [!] Güncel Stream Base URL Tespit Edildi: {STREAM_BASE_URL}")
 
 
-# ─────────────────────────────────────────────
-# TOKEN OLUŞTUR
-# ─────────────────────────────────────────────
 def generate_playlist_url(channel_id):
-    """Channel ID ve dinamik API adresiyle playlist URL'si oluştur"""
+    """Channel ID'den güncel base URL ile playlist URL'si oluştur"""
     ts = int(time.time() * 1000)
     
     token_data = {
@@ -75,8 +65,18 @@ def generate_playlist_url(channel_id):
     token_json = json.dumps(token_data, separators=(',', ':'))
     token_b64 = base64.b64encode(token_json.encode()).decode()
     
-    # Dinamik olarak güncellenen API_BASE_URL kullanılır
-    return f"{API_BASE_URL}?token={token_b64}"
+    return f"{STREAM_BASE_URL}?token={token_b64}"
+
+
+# ─────────────────────────────────────────────
+# KANALDAN DOĞRUDAN BASE URL TESPİT ETME (Ön Bellekleme için)
+# ─────────────────────────────────────────────
+def discover_base_url(channel_slug):
+    """
+    İlk çalıştırmada güncel API base URL'sini bulmak için ilk kanalı tarar
+    """
+    log(f"Sistem başlangıcı: Güncel API sunucu adresi taranıyor ({channel_slug})...")
+    find_direct_token_url(channel_slug)
 
 
 # ─────────────────────────────────────────────
@@ -84,7 +84,7 @@ def generate_playlist_url(channel_id):
 # ─────────────────────────────────────────────
 def find_channel_id_from_page(channel_slug):
     """
-    Sayfa HTML'inden channel ID'yi çıkar ve API adresini günceller
+    Sayfa HTML'inden channel ID'yi çıkar
     """
     url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
@@ -95,9 +95,6 @@ def find_channel_id_from_page(channel_slug):
     try:
         resp = session.get(url, timeout=30)
         html = resp.text
-        
-        # Sayfa içeriğinden API adresini tespit etmeye çalış
-        detect_and_update_api_base(html)
         
         # 1. Doğrudan sayfada ID ara
         id_patterns = [
@@ -140,9 +137,6 @@ def find_channel_id_from_page(channel_slug):
                 )
                 iframe_html = resp2.text
                 
-                # iframe içeriğinden API adresini tespit etmeye çalış
-                detect_and_update_api_base(iframe_html)
-                
                 # iframe içinde ID ara
                 for pattern in id_patterns:
                     matches = re.findall(pattern, iframe_html, re.IGNORECASE)
@@ -171,9 +165,6 @@ def find_channel_id_from_page(channel_slug):
                             headers={**HEADERS, "Referer": iframe_url}
                         )
                         inner_html = resp3.text
-                        
-                        # İç iframe içeriğinden API adresini tespit etmeye çalış
-                        detect_and_update_api_base(inner_html)
                         
                         for pattern in id_patterns:
                             matches = re.findall(pattern, inner_html, re.IGNORECASE)
@@ -220,7 +211,7 @@ def find_channel_id_from_page(channel_slug):
 # ─────────────────────────────────────────────
 def find_direct_token_url(channel_slug):
     """
-    Sayfada hazır token URL'si ara ve API adresini kaydet
+    Sayfada hazır token URL'si ara ve Base URL'yi güncelle
     """
     url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
@@ -230,9 +221,6 @@ def find_direct_token_url(channel_slug):
         resp = session.get(url, timeout=30)
         html = resp.text
         
-        # Sayfa içeriğinden API adresini tespit etmeye çalış
-        detect_and_update_api_base(html)
-        
         # Hazır playlist URL'si var mı?
         token_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist\?token=[A-Za-z0-9+/=_-]+)'
         
@@ -240,6 +228,7 @@ def find_direct_token_url(channel_slug):
         matches = re.findall(token_pattern, html)
         if matches:
             log(f"  ✓ Doğrudan token URL bulundu!")
+            update_stream_base_url(matches[0])  # Dinamik API adresini güncelle
             return matches[0]
         
         # iframe'lerde ara
@@ -256,12 +245,10 @@ def find_direct_token_url(channel_slug):
                     headers={**HEADERS, "Referer": url}
                 )
                 
-                # iframe içeriğinden API adresini tespit etmeye çalış
-                detect_and_update_api_base(resp2.text)
-                
                 matches = re.findall(token_pattern, resp2.text)
                 if matches:
                     log(f"  ✓ iframe'de token URL bulundu!")
+                    update_stream_base_url(matches[0])  # Dinamik API adresini güncelle
                     return matches[0]
                 
                 # Daha derin iframe
@@ -276,12 +263,10 @@ def find_direct_token_url(channel_slug):
                             headers={**HEADERS, "Referer": iframe_url}
                         )
                         
-                        # İç iframe içeriğinden API adresini tespit etmeye çalış
-                        detect_and_update_api_base(resp3.text)
-                        
                         matches = re.findall(token_pattern, resp3.text)
                         if matches:
                             log(f"  ✓ iç iframe'de token URL bulundu!")
+                            update_stream_base_url(matches[0])  # Dinamik API adresini güncelle
                             return matches[0]
                             
                     except:
@@ -297,7 +282,7 @@ def find_direct_token_url(channel_slug):
 
 
 # ─────────────────────────────────────────────
-# ANA STREAM BULMA FONKSiyonu
+# ANA STREAM BULMA FONKSİYONU
 # ─────────────────────────────────────────────
 def find_stream_url(channel_slug):
     """
@@ -305,12 +290,7 @@ def find_stream_url(channel_slug):
     """
     log(f"Kanal: {channel_slug}")
     
-    # İlk olarak dinamik API adresini güncellemek için sayfayı bir kez tarayalım
-    # Bu sayede bilinen ID'leri kullanırken de güncel API adresini kullanmış oluruz.
-    log(f"  [0/3] Güncel API adresi kontrol ediliyor...")
-    find_direct_token_url(channel_slug)
-    
-    # 1. Bilinen ID varsa doğrudan kullan (güncel API adresiyle)
+    # 1. Bilinen ID varsa doğrudan kullan
     if channel_slug in CHANNEL_IDS and CHANNEL_IDS[channel_slug]:
         channel_id = CHANNEL_IDS[channel_slug]
         log(f"  Bilinen ID: {channel_id}")
@@ -429,6 +409,12 @@ def main():
     channels = load_channels()
     log(f"\n{len(channels)} kanal işlenecek\n")
     
+    # 1. Adım: Güncel sunucu API adresini öğrenmek için ön tarama yap
+    if channels:
+        discover_base_url(channels[0]['slug'])
+        log(f"Aktif API Adresi: {STREAM_BASE_URL}")
+        log("=" * 50)
+        
     results = []
     
     for i, ch in enumerate(channels):
@@ -458,9 +444,6 @@ def main():
     # Özet
     found = sum(1 for r in results if r.get('url'))
     log(f"\nSONUÇ: {found}/{len(results)} kanal bulundu")
-    
-    # Son güncel API URL bilgisini yazdır
-    log(f"\nSon kullanılan güncel API Base: {API_BASE_URL}")
     
     # Bulunan ID'leri göster
     log("\nBulunan Kanal ID'leri:")
