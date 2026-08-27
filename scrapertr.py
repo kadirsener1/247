@@ -9,15 +9,14 @@ from urllib.parse import urljoin
 from datetime import datetime
 
 # ─────────────────────────────────────────────
-# YAPILANDIRMA (ÖRNEK ŞABLON)
+# YAPILANDIRMA
 # ─────────────────────────────────────────────
-# Kendi sisteminize ait gerçek adresleri buraya tanımlayabilirsiniz.
 BASE_URL = "https://tvnow247.top/watch/"
 OUTPUT_FILE = "tv247tr.m3u"
 CHANNELS_FILE = "channelstr.txt"
 
-# Tarama başarısız olursa kullanılacak varsayılan API adresi
-DEFAULT_API_URL = "https://api.example.com/api/proxy/playlist"
+# Token öncesindeki değişken API adresi (Sayfalardan dinamik olarak güncellenir)
+API_BASE_URL = "https://chunk.tv247.biz/api/proxy/playlist"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
@@ -25,49 +24,47 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
     "Referer": "https://tvnow247.top/",
 }
+
 # Bilinen kanal ID'leri (yeni kanallar otomatik eklenir)
 CHANNEL_IDS = {
-   "bein-sports-1-turkey": "62",
-"bein-sports-2-turkey": "63",
-"bein-sports-3-turkey": "64",
-"bein-sports-4-turkey": "67",
-"bein-sports-5-turkey": "1010",
+    "bein-sports-1-turkey": "62",
+    "bein-sports-2-turkey": "63",
+    "bein-sports-3-turkey": "64",
+    "bein-sports-4-turkey": "67",
+    "bein-sports-5-turkey": "1010",
 }
 
-# Programın çalışma esnasında dinamik olarak güncelleyeceği durum bilgisi
-STATE = {
-    "current_api_url": DEFAULT_API_URL
-}
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 
 # ─────────────────────────────────────────────
-# DINAMIK API TESPİT YARDIMCISI
+# DİNAMİK API BULUCU
 # ─────────────────────────────────────────────
-def extract_base_api_url(html):
+def detect_and_update_api_base(html_content):
     """
-    HTML içeriğinden güncel API base adresini (token'sız kısmı) ayıklar.
-    Bulursa STATE sözlüğünü günceller.
+    Sayfa içeriğinden güncel API base URL'sini bulur ve günceller.
+    Örn: https://farklidomain.com/api/proxy/playlist
     """
-    # '/api/proxy/playlist' desenini içeren tüm URL'yi yakalar
-    pattern = r'(https?://[^/\s"\'<>]+/api/proxy/playlist)'
-    match = re.search(pattern, html)
+    global API_BASE_URL
+    # /api/proxy/playlist ile biten URL yapısını arar
+    api_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist)'
+    match = re.search(api_pattern, html_content)
     if match:
-        new_api = match.group(1)
-        if new_api != STATE["current_api_url"]:
-            STATE["current_api_url"] = new_api
-            log(f"  [+] Dinamik API Adresi Güncellendi: {new_api}")
-        return new_api
-    return STATE["current_api_url"]
+        detected_url = match.group(1)
+        if detected_url != API_BASE_URL:
+            log(f"  [!] Yeni API Base URL Tespit Edildi: {detected_url}")
+            API_BASE_URL = detected_url
+            return True
+    return False
 
 
 # ─────────────────────────────────────────────
 # TOKEN OLUŞTUR
 # ─────────────────────────────────────────────
 def generate_playlist_url(channel_id):
-    """En güncel API adresini ve Channel ID'yi kullanarak playlist URL'si oluşturur"""
+    """Channel ID ve dinamik API adresiyle playlist URL'si oluştur"""
     ts = int(time.time() * 1000)
     
     token_data = {
@@ -78,8 +75,8 @@ def generate_playlist_url(channel_id):
     token_json = json.dumps(token_data, separators=(',', ':'))
     token_b64 = base64.b64encode(token_json.encode()).decode()
     
-    # Güncel taranmış API adresini başına ekler
-    return f"{STATE['current_api_url']}?token={token_b64}"
+    # Dinamik olarak güncellenen API_BASE_URL kullanılır
+    return f"{API_BASE_URL}?token={token_b64}"
 
 
 # ─────────────────────────────────────────────
@@ -87,7 +84,7 @@ def generate_playlist_url(channel_id):
 # ─────────────────────────────────────────────
 def find_channel_id_from_page(channel_slug):
     """
-    Sayfa HTML'inden channel ID'yi çıkarır ve API adresini günceller
+    Sayfa HTML'inden channel ID'yi çıkar ve API adresini günceller
     """
     url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
@@ -99,8 +96,8 @@ def find_channel_id_from_page(channel_slug):
         resp = session.get(url, timeout=30)
         html = resp.text
         
-        # HTML çekildiği her an API adresini güncellemeye çalış
-        extract_base_api_url(html)
+        # Sayfa içeriğinden API adresini tespit etmeye çalış
+        detect_and_update_api_base(html)
         
         # 1. Doğrudan sayfada ID ara
         id_patterns = [
@@ -142,7 +139,9 @@ def find_channel_id_from_page(channel_slug):
                     headers={**HEADERS, "Referer": url}
                 )
                 iframe_html = resp2.text
-                extract_base_api_url(iframe_html)
+                
+                # iframe içeriğinden API adresini tespit etmeye çalış
+                detect_and_update_api_base(iframe_html)
                 
                 # iframe içinde ID ara
                 for pattern in id_patterns:
@@ -172,7 +171,9 @@ def find_channel_id_from_page(channel_slug):
                             headers={**HEADERS, "Referer": iframe_url}
                         )
                         inner_html = resp3.text
-                        extract_base_api_url(inner_html)
+                        
+                        # İç iframe içeriğinden API adresini tespit etmeye çalış
+                        detect_and_update_api_base(inner_html)
                         
                         for pattern in id_patterns:
                             matches = re.findall(pattern, inner_html, re.IGNORECASE)
@@ -219,7 +220,7 @@ def find_channel_id_from_page(channel_slug):
 # ─────────────────────────────────────────────
 def find_direct_token_url(channel_slug):
     """
-    Sayfada hazır token URL'si ararken aynı zamanda API adresini günceller
+    Sayfada hazır token URL'si ara ve API adresini kaydet
     """
     url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
@@ -228,17 +229,18 @@ def find_direct_token_url(channel_slug):
     try:
         resp = session.get(url, timeout=30)
         html = resp.text
-        extract_base_api_url(html)
+        
+        # Sayfa içeriğinden API adresini tespit etmeye çalış
+        detect_and_update_api_base(html)
         
         # Hazır playlist URL'si var mı?
-        token_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist)\?token=[A-Za-z0-9+/=_-]+'
+        token_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist\?token=[A-Za-z0-9+/=_-]+)'
         
         # Ana sayfada ara
         matches = re.findall(token_pattern, html)
         if matches:
             log(f"  ✓ Doğrudan token URL bulundu!")
-            STATE["current_api_url"] = matches[0] # Base URL'i doğrudan kaydet
-            return f"{matches[0]}?token={re.search(r'token=([A-Za-z0-9+/=_-]+)', html).group(1)}"
+            return matches[0]
         
         # iframe'lerde ara
         iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
@@ -253,14 +255,14 @@ def find_direct_token_url(channel_slug):
                     timeout=30,
                     headers={**HEADERS, "Referer": url}
                 )
-                extract_base_api_url(resp2.text)
+                
+                # iframe içeriğinden API adresini tespit etmeye çalış
+                detect_and_update_api_base(resp2.text)
                 
                 matches = re.findall(token_pattern, resp2.text)
                 if matches:
                     log(f"  ✓ iframe'de token URL bulundu!")
-                    STATE["current_api_url"] = matches[0]
-                    token_str = re.search(r'token=([A-Za-z0-9+/=_-]+)', resp2.text).group(1)
-                    return f"{matches[0]}?token={token_str}"
+                    return matches[0]
                 
                 # Daha derin iframe
                 inner_iframes = re.findall(iframe_pattern, resp2.text, re.IGNORECASE)
@@ -273,14 +275,14 @@ def find_direct_token_url(channel_slug):
                             timeout=30,
                             headers={**HEADERS, "Referer": iframe_url}
                         )
-                        extract_base_api_url(resp3.text)
+                        
+                        # İç iframe içeriğinden API adresini tespit etmeye çalış
+                        detect_and_update_api_base(resp3.text)
                         
                         matches = re.findall(token_pattern, resp3.text)
                         if matches:
                             log(f"  ✓ iç iframe'de token URL bulundu!")
-                            STATE["current_api_url"] = matches[0]
-                            token_str = re.search(r'token=([A-Za-z0-9+/=_-]+)', resp3.text).group(1)
-                            return f"{matches[0]}?token={token_str}"
+                            return matches[0]
                             
                     except:
                         pass
@@ -295,15 +297,20 @@ def find_direct_token_url(channel_slug):
 
 
 # ─────────────────────────────────────────────
-# ANA STREAM BULMA FONKSİYONU
+# ANA STREAM BULMA FONKSiyonu
 # ─────────────────────────────────────────────
 def find_stream_url(channel_slug):
     """
-    Kanal için stream URL'si bulur
+    Kanal için stream URL'si bul
     """
     log(f"Kanal: {channel_slug}")
     
-    # 1. Bilinen ID varsa doğrudan kullan
+    # İlk olarak dinamik API adresini güncellemek için sayfayı bir kez tarayalım
+    # Bu sayede bilinen ID'leri kullanırken de güncel API adresini kullanmış oluruz.
+    log(f"  [0/3] Güncel API adresi kontrol ediliyor...")
+    find_direct_token_url(channel_slug)
+    
+    # 1. Bilinen ID varsa doğrudan kullan (güncel API adresiyle)
     if channel_slug in CHANNEL_IDS and CHANNEL_IDS[channel_slug]:
         channel_id = CHANNEL_IDS[channel_slug]
         log(f"  Bilinen ID: {channel_id}")
@@ -328,9 +335,13 @@ def find_stream_url(channel_slug):
     
     # Bazı bilinen pattern'ler
     slug_guesses = {
-        "kanal-1": ["1", "101", "201"],
-        "kanal-2": ["2", "102", "202"],
-        "kanal-3": ["3", "103", "203"],
+        "atv": ["1", "101", "201"],
+        "star-tv": ["2", "102", "202"],
+        "show-tv": ["3", "103", "203"],
+        "kanal-d": ["4", "104", "204"],
+        "fox-tv": ["5", "105", "205"],
+        "tv8": ["6", "106", "206"],
+        "trt-1": ["10", "110", "210"],
     }
     
     for key, ids in slug_guesses.items():
@@ -376,7 +387,7 @@ def load_channels():
                 channels.append({'slug': slug, 'name': name})
     else:
         channels = [
-            {'slug': 'kanal-1', 'name': 'Kanal 1 Örnek'},
+            {'slug': 'bein-sports-1-turkey', 'name': 'beIN Sports 1'},
         ]
     
     return channels
@@ -393,7 +404,7 @@ def generate_m3u(results):
             lines.append(
                 f'#EXTINF:-1 tvg-id="{ch["slug"]}" '
                 f'tvg-name="{ch["name"]}" '
-                f'group-title="Dinamik-M3U",{ch["name"]}'
+                f'group-title="Bein-TV247",{ch["name"]}'
             )
             lines.append(ch['url'])
             lines.append('')
@@ -412,7 +423,7 @@ def generate_m3u(results):
 # ─────────────────────────────────────────────
 def main():
     log("=" * 50)
-    log("Dinamik M3U Generator")
+    log("TV247 M3U Generator")
     log("=" * 50)
     
     channels = load_channels()
@@ -448,8 +459,14 @@ def main():
     found = sum(1 for r in results if r.get('url'))
     log(f"\nSONUÇ: {found}/{len(results)} kanal bulundu")
     
-    # Son güncel API adresini logla
-    log(f"Kullanılan Son Aktif API: {STATE['current_api_url']}")
+    # Son güncel API URL bilgisini yazdır
+    log(f"\nSon kullanılan güncel API Base: {API_BASE_URL}")
+    
+    # Bulunan ID'leri göster
+    log("\nBulunan Kanal ID'leri:")
+    for slug, cid in CHANNEL_IDS.items():
+        if cid:
+            log(f"  {slug}: {cid}")
     
     return 0 if found > 0 else 1
 
