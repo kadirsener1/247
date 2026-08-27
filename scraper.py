@@ -9,8 +9,7 @@ from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from playwright.async_api import async_playwright
 
-# ─── KANAL LİSTESİ (SADECE PATH YAPILARI) ──────────────────────────────────────
-# Domain değişebileceği için sadece sayfa yollarını (path) tanımlıyoruz.
+# ─── KANAL LİSTESİ ────────────────────────────────────────────────────────────
 KANAL_SABLONLARI = [
     {"name": "usabc", "path": "/watch/abc-usa/", "group": "US"},
     {"name": "uscbs", "path": "/watch/cbs-usa/", "group": "US"},
@@ -29,7 +28,6 @@ KANAL_SABLONLARI = [
     {"name": "trbeinsports1", "path": "/watch/bein-sports-1-turkey/", "group": "TR"},
 ]
 
-# Başlangıç/Alternatif Domainler (Eğer ana site değişirse sırayla kontrol edilir)
 SEED_DOMAINS = [
     "https://tvnow247.top",
     "https://tvnow247.live",
@@ -37,23 +35,21 @@ SEED_DOMAINS = [
     "https://tvnow247.net"
 ]
 
-# ─── AYARLAR ──────────────────────────────────────────────────────────────────
+# ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
 OUTPUT_DIR_NAME = "tvnow247"
 DEBUG_FILE = "debug_failed.json"
-MAX_CONCURRENT = 3              # Engellemeler sayesinde 3 sekme kasmadan çalışır
-PAGE_TIMEOUT = 20000            # Maksimum sayfa yükleme süresi (20 saniye)
-SCAN_WAIT = 8                   # Yayın linkini yakalama sabır süresi (8 saniye)
+MAX_CONCURRENT = 2              # Stabilite için eşzamanlı kanal taraması 2 yapıldı
+PAGE_TIMEOUT = 25000            # Sayfa yükleme zaman aşımı (25 saniye)
+SERVER_WAIT_TIMEOUT = 7         # Her bir sunucu (Server) denemesi için bekleme süresi
 
-# Reklam engelleyici kara listesi (Bu kelimeleri içeren hiçbir istek yüklenmez - Hız kazandırır)
+# Reklam engelleyici (Medya yürütülmesini engellememek için optimize edildi)
 AD_BLOCK_LIST = [
     "google-analytics", "doubleclick", "adservice", "popads", "popcash",
     "histats", "adsterra", "exoclick", "onclickads", "propush", "monetag",
     "mgid", "yandex", "facebook", "twitter", "analytics", "adskeeper",
     "vidoomy", "ezodn", "witnessonmy", "adnxs", "jads", "banner"
 ]
-
-# Görsel, yazı tipi ve stil dosyalarını engelle (Yükleme hızını tavan yaptırır)
-BLOCKED_RESOURCES = {"image", "font", "stylesheet", "media"}
+BLOCKED_RESOURCES = {"image", "font"} # Sadece görsel ve fontları engelle (CSS engeli kaldırıldı)
 
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -62,25 +58,17 @@ def sanitize_filename(name: str) -> str:
 
 
 def is_valid_m3u8(url: str) -> bool:
-    """Gerçek yayın m3u8 adresi olup olmadığını doğrular."""
     if not url or not isinstance(url, str):
         return False
-    
     url_low = url.lower().split("?")[0]
-    
-    # Reklam videolarını ve alakasız m3u8'leri ele
     if any(ad in url_low for ad in AD_BLOCK_LIST):
         return False
-    
-    # Sadece canlı yayın HLS/DASH uzantılarına izin ver
     if url_low.endswith(".m3u8") or ".m3u8" in url_low or url_low.endswith(".mpd"):
         return True
-        
     return False
 
 
 async def discover_active_domain() -> str:
-    """Sitenin şu an aktif olan güncel adresini bulur."""
     print("🔍 Aktif alan adı (domain) sorgulanıyor...")
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=True)
@@ -90,10 +78,8 @@ async def discover_active_domain() -> str:
         active_domain = ""
         for seed in SEED_DOMAINS:
             try:
-                # Yönlendirmeleri takip etmesi için sayfayı açıyoruz
                 response = await page.goto(seed, timeout=12000, wait_until="commit")
                 if response and response.status < 400:
-                    # Yönlenilen son URL'yi al ve ana domaini çıkar
                     final_url = page.url
                     match = re.match(r'(https?://[^/]+)', final_url)
                     if match:
@@ -104,42 +90,95 @@ async def discover_active_domain() -> str:
                 continue
         
         await browser.close()
-        
-        # Eğer hiçbir siteye erişilemezse varsayılanı kullan
         if not active_domain:
             active_domain = SEED_DOMAINS[0]
-            print(f"⚠️  Aktif domain tespit edilemedi! Varsayılan kullanılıyor: {active_domain}")
-        
+            print(f"⚠️ Aktif domain tespit edilemedi! Varsayılan kullanılıyor: {active_domain}")
         return active_domain
 
 
-async def get_channel_stream(browser, page_url: str, active_domain: str) -> str:
-    """Sayfayı açar, reklamları filtreler ve doğrudan yayının .m3u8 linkini yakalar."""
+async def try_trigger_play(page):
+    """Sayfa genelindeki tüm oynatma mekanizmalarını tetikler."""
+    try:
+        await page.mouse.click(512, 384) # Merkeze tıkla
+    except Exception:
+        pass
+
+    for frame in page.frames:
+        try:
+            await frame.evaluate("""() => {
+                // Video elementlerini bul ve oynatmayı zorla
+                document.querySelectorAll('video').forEach(v => {
+                    v.muted = true;
+                    v.play().catch(()=>{});
+                });
+                // Bilinen tüm oynat butonlarına tıkla
+                const btns = document.querySelectorAll(
+                    '.vjs-big-play-button, .jw-display-icon-container, .play-icon, #player, button[class*="play" i]'
+                );
+                btns.forEach(btn => btn.click());
+            }""")
+        except Exception:
+            pass
+
+
+async def switch_server_on_page(page, server_number: int) -> bool:
+    """Sayfa veya iframe'lerdeki 'Server 1', 'Server 2' butonlarını arar ve tıklar."""
+    switched = False
+    
+    # Hem ana sayfada hem de alt iframe'lerde buton araması yapar
+    for frame in page.frames:
+        try:
+            success = await frame.evaluate("""(num) => {
+                const elements = Array.from(document.querySelectorAll('button, a, div, li, span'));
+                const rx = new RegExp('(server|source|stream|yayın|kaynak)\\\\s*' + num + '|^' + num + '$', 'i');
+                
+                // 1. Aşama: Metin eşleşmeli butonlar
+                for (let el of elements) {
+                    const text = (el.innerText || el.textContent || "").trim();
+                    if (rx.test(text) && el.offsetWidth > 0 && el.offsetHeight > 0) {
+                        el.click();
+                        return true;
+                    }
+                }
+                
+                // 2. Aşama: Sınıf isimlerinde server kelimesi geçenler
+                const potentialSelects = document.querySelectorAll('[class*="server" i], [class*="source" i], [class*="btn" i]');
+                for (let el of potentialSelects) {
+                    if (el.textContent.includes(String(num))) {
+                        el.click();
+                        return true;
+                    }
+                }
+                return false;
+            }""", server_number)
+            if success:
+                switched = True
+        except Exception:
+            pass
+            
+    return switched
+
+
+async def get_channel_stream(browser, page_url: str) -> str:
     stream_url = ""
     found_event = asyncio.Event()
 
     context = await browser.new_context(
         user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        viewport={"width": 1024, "height": 768},
+        viewport={"width": 1280, "height": 720},
         ignore_https_errors=True,
     )
 
     page = await context.new_page()
+    page.on("popup", lambda p: asyncio.create_task(p.close())) # Reklam popup engeli
 
-    # Otomatik açılan reklam pencerelerini anında imha et
-    page.on("popup", lambda p: asyncio.create_task(p.close()))
-
-    # ⚡ HIZLANDIRICI VE REKLAM ENGELLEYİCİ FİLTRE
+    # Ağ Filtreleyici (Performans ve reklam koruması)
     async def route_filter(route):
         req = route.request
         url_low = req.url.lower()
-
-        # Eğer yayın linkiyse asla engelleme
         if is_valid_m3u8(req.url):
             await route.continue_()
             return
-
-        # Reklam siteleri ve gereksiz kaynakları engelle (Hız kazandırır)
         if any(ad in url_low for ad in AD_BLOCK_LIST) or req.resource_type in BLOCKED_RESOURCES:
             await route.abort()
         else:
@@ -147,19 +186,17 @@ async def get_channel_stream(browser, page_url: str, active_domain: str) -> str:
 
     await page.route("**/*", route_filter)
 
-    # 🔍 AĞ TRAFİĞİNDEN YAYIN YAKALAYICI
+    # Ağ Trafiğini İzle
     async def handle_response(response):
         nonlocal stream_url
         if stream_url:
             return
-
         url = response.url
         if is_valid_m3u8(url):
             stream_url = url
             found_event.set()
             return
 
-        # Bazı gizlenmiş m3u8'leri içerik analizinden yakala
         content_type = response.headers.get("content-type", "").lower()
         if "mpegurl" in content_type or "application/x-mpegurl" in content_type:
             stream_url = url
@@ -169,42 +206,33 @@ async def get_channel_stream(browser, page_url: str, active_domain: str) -> str:
     page.on("response", handle_response)
 
     try:
-        # Sayfayı çok hızlı yükle
+        # 1. Sayfayı Yükle
         await page.goto(page_url, timeout=PAGE_TIMEOUT, wait_until="commit")
-        await asyncio.sleep(1.5)
+        await asyncio.sleep(2)
 
-        # Oynatıcıyı çalıştırmak ve reklam engellerini aşmak için akıllı tıklama
-        for _ in range(2):
-            if stream_url:
-                break
-            try:
-                # Ekranın ortasına tıkla (reklamı tetiklerse popup-killer anında kapatır)
-                await page.mouse.click(512, 384)
-            except Exception:
-                pass
-
-            # Iframe içindeki oynatıcıyı tetikle
-            for frame in page.frames:
-                try:
-                    await frame.evaluate("""() => {
-                        document.querySelectorAll('video').forEach(v => {
-                            v.muted = true;
-                            v.play().catch(()=>{});
-                        });
-                        const btn = document.querySelector('.vjs-big-play-button, .jw-display-icon-container, button');
-                        if (btn) btn.click();
-                    }""")
-                except Exception:
-                    pass
-            await asyncio.sleep(1.2)
-
-        # Yayın yakalanana kadar bekle
+        # 🚀 [AŞAMA 1] - Server 1 (Varsayılan Kaynak) Denemesi
+        await try_trigger_play(page)
         try:
-            await asyncio.wait_for(found_event.wait(), timeout=SCAN_WAIT)
+            await asyncio.wait_for(found_event.wait(), timeout=SERVER_WAIT_TIMEOUT)
         except asyncio.TimeoutError:
             pass
 
-        # Yedek Plan: Global JS değişkenlerini tara
+        # 🚀 [AŞAMA 2] - Eğer Server 1 Başarısız Olursa Server 2'ye Geçiş Yap
+        if not stream_url:
+            print(f"    🔄 {page_url.split('/')[-2]} -> Server 1 başarısız. Server 2 deneniyor...")
+            has_switched = await switch_server_on_page(page, 2)
+            
+            if has_switched:
+                await asyncio.sleep(2) # Yeni sunucu iframe yükleme payı
+                await try_trigger_play(page)
+                try:
+                    await asyncio.wait_for(found_event.wait(), timeout=SERVER_WAIT_TIMEOUT)
+                except asyncio.TimeoutError:
+                    pass
+            else:
+                print("    ⚠️  Server 2 butonu bulunamadı veya tıklanamadı.")
+
+        # 🚀 [AŞAMA 3] - Son Yedek Plan: Global JS Değişkenleri
         if not stream_url:
             for frame in page.frames:
                 try:
@@ -253,11 +281,10 @@ async def process_all(channels: list, active_domain: str) -> tuple:
         async def handle(ch):
             nonlocal done_count
             name = ch["name"]
-            # Dinamik olarak güncel domain ve sayfa yolunu birleştiriyoruz
             url = f"{active_domain}{ch['path']}"
 
             async with semaphore:
-                stream_url = await get_channel_stream(browser, url, active_domain)
+                stream_url = await get_channel_stream(browser, url)
 
             async with lock:
                 done_count += 1
@@ -301,17 +328,17 @@ def write_to_m3u8_files(items: list, output_dir: str):
 
 async def main():
     print("=" * 65)
-    print("   📺 TVNOW247 - OTOMATİK DOMAIN UYUMLU ULTRA HIZLI SCRAPER")
+    print("   📺 TVNOW247 - OTOMATİK ÇOKLU SUNUCU (MULTI-SERVER) DESTEKLİ BOT")
     print("=" * 65 + "\n")
 
-    # 1. Adım: Sitenin güncel aktif adresini bul
+    # 1. Güncel Domaini Tespit Et
     active_domain = await discover_active_domain()
-    print(f"🔗 Kullanılacak Yayın Kaynağı: {active_domain}\n")
+    print(f"🔗 Kullanılacak Aktif Yayın Kaynağı: {active_domain}\n")
 
-    # 2. Adım: Kanalları tara
+    # 2. Tüm Kanalları Çift Sunucu Destekli Tara
     success, failed = await process_all(KANAL_SABLONLARI, active_domain)
 
-    # 3. Adım: Dosyaları kaydet
+    # 3. Dosyaları Kaydet
     write_to_m3u8_files(success, OUTPUT_DIR_NAME)
 
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
