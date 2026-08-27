@@ -11,21 +11,8 @@ from playwright.async_api import async_playwright
 
 # ─── KANAL LİSTESİ ────────────────────────────────────────────────────────────
 KANALLAR = [
-    {"name": "usabc", "url": "https://tvnow247.top/watch/abc-usa/", "group": "US"},
-    {"name": "uscbs", "url": "https://tvnow247.top/watch/cbs-usa/", "group": "US"},
-    {"name": "usnbc", "url": "https://tvnow247.top/watch/nbc-usa/", "group": "US"},
-    {"name": "usfox", "url": "https://tvnow247.top/watch/fox-usa/", "group": "US"},
-    {"name": "usespn", "url": "https://tvnow247.top/watch/espn-usa/", "group": "US"},
-    {"name": "usespn2", "url": "https://tvnow247.top/watch/espn-2/", "group": "US"},
-    {"name": "ususa", "url": "https://tvnow247.top/watch/usa-network/", "group": "US"},
-    {"name": "usnflnetwork", "url": "https://tvnow247.top/watch/nfl-network/", "group": "US"},
-    {"name": "usnbatv", "url": "https://tvnow247.top/watch/nba-tv/", "group": "US"},
-    {"name": "ukskysportsmainevent", "url": "https://tvnow247.top/watch/sky-sports-main-event/", "group": "UK"},
-    {"name": "ukskysportspremierleague", "url": "https://tvnow247.top/watch/sky-sports-premier-league/", "group": "UK"},
-    {"name": "ukskysportsf1", "url": "https://tvnow247.top/watch/sky-sports-f1/", "group": "UK"},
-    {"name": "uktntsports1", "url": "https://tvnow247.top/watch/tnt-sports-1-uk/", "group": "UK"},
-    {"name": "uktntsports2", "url": "https://tvnow247.top/watch/tnt-sports-2-uk/", "group": "UK"},
-    {"name": "trbeinsports1", "url": "https://tvnow247.top/watch/bein-sports-1-turkey/", "group": "TR"},
+   
+    {"name": "trbeinsports1", "url": "https://tvnow247.top/watch/bein-sports-1-turkey", "group": "TR"},
 ]
 
 # ─── AYARLAR ──────────────────────────────────────────────────────────────────
