@@ -1,4 +1,4 @@
-name: CDN Live TV M3U8 lerini Güncelle
+name: CDN Live TV M3U Güncelle
 
 on:
   workflow_dispatch:
@@ -37,32 +37,34 @@ jobs:
         run: |
           python checker.py
 
-      - name: Klasör ve Dosyaları Artifact Olarak Yükle
+      - name: M3U ve Debug Dosyasını Artifact Olarak Yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cdnlive-klasor-ve-debug
+          name: cdn-m3u-ve-debug
           path: |
-            cdnlive/
+            cdn.m3u
             debug_failed.json
           if-no-files-found: ignore
 
-      - name: Commit ve push (Klasör Dahil)
+      - name: Commit ve push
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # ✅ Eski m3u dosyasını temizle (varsa) ve yeni cdnlive klasörünü git'e ekle
-          git rm -f cdnlive.m3u || true
-          git add cdnlive/ debug_failed.json || true
+          # ✅ Eski cdnlive klasörünü depodan tamamen temizle (artık tek dosya kullanıyoruz)
+          git rm -rf cdnlive || true
+          
+          # ✅ Yeni cdn.m3u ve hata raporunu git'e ekle
+          git add cdn.m3u debug_failed.json || true
 
           if git diff --cached --quiet; then
             echo "ℹ️ Değişiklik yok."
           else
-            # ✅ cdnlive klasöründeki toplam .m3u8 dosya sayısını hesapla
-            KANAL=$(find cdnlive -type f -name "*.m3u8" | wc -l || echo 0)
+            # ✅ cdn.m3u içerisindeki kanal sayısını bul (satır sayarak)
+            KANAL=$(grep -c "#EXTINF" cdn.m3u || echo 0)
             TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
-            git commit -m "📺 $KANAL kanal dosyası — $TARIH"
+            git commit -m "📺 $KANAL kanal güncellendi — $TARIH"
             git push
           fi
