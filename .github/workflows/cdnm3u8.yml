@@ -29,7 +29,7 @@ jobs:
         run: |
           python -m playwright install chromium --with-deps
 
-      - name: M3U ve Kanal Dosyalarını Oluştur
+      - name: M3U Dosyalarını Oluştur ve Senkronize Et
         env:
           DISPLAY: ""
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -37,13 +37,14 @@ jobs:
         run: |
           python checker.py
 
-      - name: M3U ve Debug Dosyasını Artifact Olarak Yükle
+      - name: Artifact Yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cdn-m3u-ve-debug
           path: |
             cdn.m3u
+            playlist.m3u
             debug_failed.json
           if-no-files-found: ignore
 
@@ -53,16 +54,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # ✅ Eski cdnlive klasörünü depodan tamamen temizle (artık tek dosya kullanıyoruz)
+          # ✅ Eski cdnlive klasörünü depodan tamamen temizle
           git rm -rf cdnlive || true
           
-          # ✅ Yeni cdn.m3u ve hata raporunu git'e ekle
-          git add cdn.m3u debug_failed.json || true
+          # ✅ Tüm güncellenen dosyaları git'e ekle
+          git add cdn.m3u playlist.m3u debug_failed.json || true
 
           if git diff --cached --quiet; then
             echo "ℹ️ Değişiklik yok."
           else
-            # ✅ cdn.m3u içerisindeki kanal sayısını bul (satır sayarak)
             KANAL=$(grep -c "#EXTINF" cdn.m3u || echo 0)
             TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
             git commit -m "📺 $KANAL kanal güncellendi — $TARIH"
