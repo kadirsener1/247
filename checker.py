@@ -12,7 +12,7 @@ import requests
 from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
-# ─── MASTER KANAL VERİ TABANI ─────────────────────────────────────────────────
+# ─── MASTER KANAL LİSTESİ ─────────────────────────────────────────────────────
 MASTER_CHANNELS = [
     {
         "name": "uktntsports1",
@@ -771,12 +771,9 @@ MASTER_CHANNELS = [
     }
 ]
 
-# ─── KULLANICI SEÇİM LİSTESİ ──────────────────────────────────────────────────
-KANALLAR = []
-
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_FILE_NAME = "cdn.m3u"          # Ana çıktı dosyası
-PLAYLIST_FILE_NAME = "playlist.m3u"   # Güncellenecek uzak playlist
+OUTPUT_FILE_NAME = "cdn.m3u"
+PLAYLIST_FILE_NAME = "playlist.m3u"
 PLAYLIST_URL = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
 DEBUG_FILE = "debug_failed.json"
 
@@ -1093,10 +1090,10 @@ async def process_all(channels: list) -> tuple:
 
 
 def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
-    """Tüm taranan başarılı kanalları doğrudan temiz linklerle cdn.m3u dosyasına yazar."""
+    """Tüm taranan başarılı kanalları cdn.m3u dosyasına yazar."""
     base_path = Path(__file__).parent.resolve()
     file_path = base_path / file_name
-    print(f"\n📂 Yazma İşlemi Başlatıldı (Dosya: {file_path})")
+    print(f"\n📂 cdn.m3u Yazılıyor (Dosya: {file_path})")
 
     try:
         with open(file_path, "w", encoding="utf-8") as f:
@@ -1108,7 +1105,7 @@ def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
                 image = ch.get("image", "")
 
                 f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
-                f.write(f"{stream}\n")  # Saf, temiz link
+                f.write(f"{stream}\n")
                 
         print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
     except Exception as e:
@@ -1117,43 +1114,65 @@ def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
 
 # ─── PLAYLIST OKUMA VE GÜNCELLEME ─────────────────────────────────────────────
 def get_playlist_identifiers(extinf_line: str) -> list:
-    """Playlist satırlarından kanal tanımlayıcılarını çeker."""
+    """EXTINF satırından tvg-id, tvg-name ve kanal adını çeker."""
     identifiers = []
+    
     id_match = re.search(r'tvg-id="([^"]+)"', extinf_line, re.IGNORECASE)
     if id_match:
         identifiers.append(id_match.group(1).strip())
+        
     name_match = re.search(r'tvg-name="([^"]+)"', extinf_line, re.IGNORECASE)
     if name_match:
         identifiers.append(name_match.group(1).strip())
+        
     if "," in extinf_line:
         display_name = extinf_line.rsplit(",", 1)[-1].strip()
         identifiers.append(display_name)
-    return list(set(identifiers))
+        
+    return identifiers
 
 
-def get_remote_playlist_content() -> str:
-    """Uzak playlist.m3u dosyasını indirmeyi dener."""
+def get_local_or_remote_playlist() -> str:
+    """Öncelikle çalışma dizinindeki lokal playlist.m3u'yu okur. Yoksa internetten çeker."""
+    local_file = Path(__file__).parent.resolve() / PLAYLIST_FILE_NAME
+    if local_file.exists():
+        try:
+            content = local_file.read_text(encoding="utf-8")
+            if content.strip():
+                print(f"   📂 Lokal '{PLAYLIST_FILE_NAME}' dosyası başarıyla okundu.")
+                return content
+        except Exception:
+            pass
+
+    print(f"   🌐 Lokal dosya bulunamadı, uzak adresten indiriliyor: {PLAYLIST_URL}")
     try:
         r = requests.get(PLAYLIST_URL, timeout=15)
         r.raise_for_status()
         return r.text
-    except Exception:
+    except Exception as e:
+        print(f"   ❌ Uzak playlist indirilemedi: {e}")
         return ""
 
 
-def update_playlist_m3u(success_channels: list, remote_content: str):
-    """Sırayı ve düzeni bozmadan playlist.m3u dosyasındaki eşleşen linkleri saf linkle günceller."""
-    if not remote_content:
-        print("   ⚠️ Uzak playlist içeriği boş veya indirilemediği için güncelleme yapılmadı.")
+def update_playlist_m3u(success_channels: list, content: str):
+    """playlist.m3u içeriğini satır satır inceler, düzeni bozmadan linkleri günceller."""
+    if not content:
+        print("   ⚠️ Güncellenecek playlist.m3u içeriği bulunamadı!")
         return
 
-    print(f"\n🔄 Uzak Playlist Senkronizasyonu Başlatıldı...")
-    channel_map = {ch["name"].strip(): ch["stream_url"] for ch in success_channels}
+    print(f"\n🔄 Playlist Senkronizasyonu Başlatıldı...")
+    
+    # Hızlı arama için harita oluştur
+    channel_map = {}
+    for ch in success_channels:
+        ch_name = ch["name"].strip()
+        channel_map[ch_name] = ch["stream_url"]
+        channel_map[ch_name.lower()] = ch["stream_url"]  # Küçük harf yedeği
 
-    lines = remote_content.splitlines()
+    lines = content.splitlines()
     new_lines = []
     updated_count = 0
-    total_channels_in_playlist = 0
+    total_channels = 0
     
     i = 0
     while i < len(lines):
@@ -1161,11 +1180,13 @@ def update_playlist_m3u(success_channels: list, remote_content: str):
         stripped = line.strip()
 
         if stripped.startswith("#EXTINF"):
-            total_channels_in_playlist += 1
+            total_channels += 1
             new_lines.append(line)
 
+            # Tanımlayıcıları al
             identifiers = get_playlist_identifiers(stripped)
 
+            # Sonraki satırdaki URL'yi bul
             j = i + 1
             url_line_index = -1
             while j < len(lines):
@@ -1175,32 +1196,39 @@ def update_playlist_m3u(success_channels: list, remote_content: str):
                     continue
                 if next_line.startswith("#EXTINF") or next_line.startswith("#EXTM3U"):
                     break
-                if next_line.startswith("#"):
-                    j += 1
-                    continue
-                if next_line.startswith("http"):
+                if next_line.startswith("http://") or next_line.startswith("https://"):
                     url_line_index = j
                     break
                 j += 1
 
+            # Eşleşme kontrolü
             matched_stream = None
-            for identifier in identifiers:
-                if identifier in channel_map:
-                    matched_stream = channel_map[identifier]
+            matched_id = ""
+            for ident in identifiers:
+                if ident in channel_map:
+                    matched_stream = channel_map[ident]
+                    matched_id = ident
+                    break
+                elif ident.lower() in channel_map:
+                    matched_stream = channel_map[ident.lower()]
+                    matched_id = ident
                     break
 
-            if matched_stream and url_line_index != -1:
-                # Eşleşti: Saf ve temiz tokenli linki ekle
+            if matched_stream:
+                # Eşleşti -> Sadece temiz linki yaz
                 new_lines.append(matched_stream)
                 updated_count += 1
-                i = url_line_index + 1
-            elif url_line_index != -1:
-                # Eşleşmedi: Eski satırları olduğu gibi koru
-                for k in range(i + 1, url_line_index + 1):
-                    new_lines.append(lines[k])
-                i = url_line_index + 1
+                print(f"   ✨ Eşleşti ve Güncellendi: {matched_id}")
+                # Eski url satırına kadar olan kısmı atla
+                i = (url_line_index + 1) if url_line_index != -1 else (i + 1)
             else:
-                i += 1
+                # Eşleşmedi -> Orijinal satırları aynen koru
+                if url_line_index != -1:
+                    for k in range(i + 1, url_line_index + 1):
+                        new_lines.append(lines[k])
+                    i = url_line_index + 1
+                else:
+                    i += 1
         else:
             new_lines.append(line)
             i += 1
@@ -1209,9 +1237,10 @@ def update_playlist_m3u(success_channels: list, remote_content: str):
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("\n".join(new_lines) + "\n")
-        print(f"   ✅ {PLAYLIST_FILE_NAME} başarıyla güncellendi. (Güncellenen: {updated_count}/{total_channels_in_playlist})")
+        print(f"\n   💾 {PLAYLIST_FILE_NAME} başarıyla kaydedildi!")
+        print(f"   📊 Toplam Kanal: {total_channels} | Güncellenen: {updated_count}")
     except Exception as e:
-        print(f"   ❌ playlist.m3u yazma hatası: {e}")
+        print(f"   ❌ playlist.m3u kaydedilemedi: {e}")
 
 
 def print_report(channels: list, success: list, failed: list):
@@ -1223,58 +1252,38 @@ def print_report(channels: list, success: list, failed: list):
     print(f"  📺 Taranan kanal sayısı  : {len(channels)}")
     print(f"  ✅ Başarıyla çözülen     : {len(success)}")
     print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Ana Dosya (cdn.m3u)   : Yazıldı ({len(success)} Kanal)")
+    print(f"  📁 cdn.m3u               : Güncellendi ({len(success)} kanal)")
+    print(f"  📁 playlist.m3u          : Senkronize Edildi")
     print(f"  🕐 Güncelleme zamanı     : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — AKILLI KANAL SENKRONİZASYON SİSTEMİ")
+    print("   📺 CDN LIVE TV — ÇOKLU LİSTE GÜNCELLEME SİSTEMİ")
     print("═" * 65 + "\n")
 
-    # 1. Uzak playlist'i indir
-    remote_content = get_remote_playlist_content()
+    # 1. Mevcut playlist.m3u içeriğini al
+    playlist_content = get_local_or_remote_playlist()
 
-    # 2. Hangi kanalların taranacağını belirle
-    scan_list = []
-    
-    if KANALLAR:
-        scan_list = KANALLAR
-        print("📋 Manuel kanal listesi kullanılıyor.")
-    elif remote_content:
-        print("🔍 playlist.m3u içindeki kanallar taranıyor...")
-        playlist_names = []
-        for line in remote_content.splitlines():
-            if line.strip().startswith("#EXTINF"):
-                playlist_names.extend(get_playlist_identifiers(line))
-        
-        playlist_names = set(playlist_names)
-        scan_list = [ch for ch in MASTER_CHANNELS if ch["name"] in playlist_names]
-        print(f"   👉 Playlist'te {len(scan_list)} adet taranabilir kanal bulundu.")
+    # 2. Tüm kanalları tara
+    print(f"🚀 Taranacak Kanal Sayısı : {len(MASTER_CHANNELS)}")
+    print(f"⚡ Eşzamanlı Sekme        : {MAX_CONCURRENT}\n")
 
-    if not scan_list:
-        print("⚠️  Tarama listesi boş! Sistem çökmesin ve cdn.m3u güncellensin diye tüm kanallar taranıyor...")
-        scan_list = MASTER_CHANNELS
+    success, failed = await process_all(MASTER_CHANNELS)
 
-    print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
-    print(f"🚀 Toplam Taranacak      : {len(scan_list)}\n")
-
-    # 3. Tarama işlemini başlat
-    success, failed = await process_all(scan_list)
-
-    # 4. Dosyaları kaydet
+    # 3. cdn.m3u dosyasını oluştur
     write_single_m3u(success, OUTPUT_FILE_NAME)
 
+    # 4. playlist.m3u dosyasını senkronize et
     if success:
-        update_playlist_m3u(success, remote_content)
+        update_playlist_m3u(success, playlist_content)
 
-    # Başarısızlık raporunu kaydet
+    # 5. Hata raporunu yaz
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    print_report(scan_list, success, failed)
-    print(f"✅ İşlem başarıyla tamamlandı!\n")
+    print_report(MASTER_CHANNELS, success, failed)
 
 
 if __name__ == "__main__":
