@@ -13,8 +13,6 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
 # ─── MASTER KANAL VERİ TABANI ─────────────────────────────────────────────────
-# playlist.m3u dosyasından otomatik eşleşme yapabilmek ve cdn.m3u'yu her durumda 
-# güncel tutabilmek için tüm kanal listeniz buradadır.
 MASTER_CHANNELS = [
     {
         "name": "uktntsports1",
@@ -774,12 +772,10 @@ MASTER_CHANNELS = [
 ]
 
 # ─── KULLANICI SEÇİM LİSTESİ ──────────────────────────────────────────────────
-# Taratmak istediğiniz özel bir liste varsa buraya yazın. Boş bırakırsanız sistem 
-# playlist.m3u içindeki kanalları otomatik bulur. O da boşsa hepsini tarar.
 KANALLAR = []
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_FILE_NAME = "cdn.m3u"          # Ana çıktı dosyası (Tüm çözülenler)
+OUTPUT_FILE_NAME = "cdn.m3u"          # Ana çıktı dosyası
 PLAYLIST_FILE_NAME = "playlist.m3u"   # Güncellenecek uzak playlist
 PLAYLIST_URL = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
 DEBUG_FILE = "debug_failed.json"
@@ -789,16 +785,11 @@ FIRST_WAIT = 3.0
 RELOAD_WAIT = 4.5
 MAX_CONCURRENT = 4
 
-# ⚡ TiviMate ve diğer oynatıcılar için HTTP Header koruması
-STREAM_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-STREAM_REFERER = "https://cdnlivetv.tv/"
-STREAM_ORIGIN = "https://cdnlivetv.tv"
-
 HEADERS = {
-    "User-Agent": STREAM_USER_AGENT,
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8",
-    "Referer": STREAM_REFERER,
-    "Origin": STREAM_ORIGIN,
+    "Referer": "https://cdnlivetv.tv/",
+    "Origin": "https://cdnlivetv.tv",
 }
 
 BROWSER_ARGS = [
@@ -1101,20 +1092,8 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
-def build_stream_block(stream_url: str) -> str:
-    """TiviMate, IPTV Smarters vb. oynatıcılarda 403 hatasını engellemek için Header ekler."""
-    lines = []
-    lines.append(f'#EXTVLCOPT:http-user-agent={STREAM_USER_AGENT}')
-    lines.append(f'#EXTVLCOPT:http-referrer={STREAM_REFERER}')
-    lines.append(f'#EXTVLCOPT:http-origin={STREAM_ORIGIN}')
-    lines.append(f'#KODIPROP:inputstream.adaptive.stream_headers=User-Agent={STREAM_USER_AGENT}&Referer={STREAM_REFERER}&Origin={STREAM_ORIGIN}')
-    stream_with_headers = f'{stream_url}|User-Agent={STREAM_USER_AGENT}&Referer={STREAM_REFERER}&Origin={STREAM_ORIGIN}'
-    lines.append(stream_with_headers)
-    return "\n".join(lines)
-
-
 def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
-    """Tüm taranan başarılı kanalları cdn.m3u dosyasına yazar."""
+    """Tüm taranan başarılı kanalları doğrudan temiz linklerle cdn.m3u dosyasına yazar."""
     base_path = Path(__file__).parent.resolve()
     file_path = base_path / file_name
     print(f"\n📂 Yazma İşlemi Başlatıldı (Dosya: {file_path})")
@@ -1129,7 +1108,7 @@ def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
                 image = ch.get("image", "")
 
                 f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
-                f.write(build_stream_block(stream) + "\n")
+                f.write(f"{stream}\n")  # Saf, temiz link
                 
         print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
     except Exception as e:
@@ -1163,7 +1142,7 @@ def get_remote_playlist_content() -> str:
 
 
 def update_playlist_m3u(success_channels: list, remote_content: str):
-    """Sırayı ve düzeni bozmadan playlist.m3u dosyasındaki eşleşen linkleri günceller."""
+    """Sırayı ve düzeni bozmadan playlist.m3u dosyasındaki eşleşen linkleri saf linkle günceller."""
     if not remote_content:
         print("   ⚠️ Uzak playlist içeriği boş veya indirilemediği için güncelleme yapılmadı.")
         return
@@ -1211,10 +1190,12 @@ def update_playlist_m3u(success_channels: list, remote_content: str):
                     break
 
             if matched_stream and url_line_index != -1:
-                new_lines.append(build_stream_block(matched_stream))
+                # Eşleşti: Saf ve temiz tokenli linki ekle
+                new_lines.append(matched_stream)
                 updated_count += 1
                 i = url_line_index + 1
             elif url_line_index != -1:
+                # Eşleşmedi: Eski satırları olduğu gibi koru
                 for k in range(i + 1, url_line_index + 1):
                     new_lines.append(lines[k])
                 i = url_line_index + 1
@@ -1255,14 +1236,12 @@ async def main():
     # 1. Uzak playlist'i indir
     remote_content = get_remote_playlist_content()
 
-    # 2. Hangi kanalların taranacağını akıllıca belirle
+    # 2. Hangi kanalların taranacağını belirle
     scan_list = []
     
-    # Kullanıcı KANALLAR listesini doldurmuşsa öncelik onundur
     if KANALLAR:
         scan_list = KANALLAR
         print("📋 Manuel kanal listesi kullanılıyor.")
-    # KANALLAR boşsa ama uzak playlist.m3u başarılı indirilmişse, içindeki kanalları tespit edip MASTER'dan ayıklar
     elif remote_content:
         print("🔍 playlist.m3u içindeki kanallar taranıyor...")
         playlist_names = []
@@ -1274,7 +1253,6 @@ async def main():
         scan_list = [ch for ch in MASTER_CHANNELS if ch["name"] in playlist_names]
         print(f"   👉 Playlist'te {len(scan_list)} adet taranabilir kanal bulundu.")
 
-    # playlist.m3u indirilememişse veya içinde taranacak kanal yoksa, cdn.m3u boş kalmasın diye hepsini tarar
     if not scan_list:
         print("⚠️  Tarama listesi boş! Sistem çökmesin ve cdn.m3u güncellensin diye tüm kanallar taranıyor...")
         scan_list = MASTER_CHANNELS
