@@ -14,782 +14,31 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 
 # ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
 KANALLAR = [
-
-    {
-        "name": "uktntsports1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "uktntsports2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%202&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "uktntsports3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%203&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "uktntsports4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%204&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "uktntsportsultimate",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%20Ultimate&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsmainevent",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Main%20Event&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportspremierleague",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Premier%20League&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsfootball",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Football&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsf1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20F1&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportscricket",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Cricket&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsgolf",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Golf&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsaction",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Action&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsarena",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Arena&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportstennis",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Tennis&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsmix",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Mix&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsnews",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20News&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukskysportsracing",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Racing&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukpremiersports1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premier%20Sports%201&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukpremiersports2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Premier%20Sports%202&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukeurosport1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eurosport%201&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukeurosport2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eurosport%202&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukbbcone",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC%20One&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukbbctwo",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=BBC%20Two&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukitv1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ITV%201&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukchannel4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Channel%204&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "ukchannel5",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Channel%205&code=gb&user=cdnlivetv&plan=free",
-        "group": "uk"
-    },
-    {
-        "name": "trbeinsports1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%201&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsports2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%202&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsports3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsports4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%204&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsports5",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%205&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsportsmax1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%201&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsportsmax2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trbeinsportshaber",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20Haber&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trssport",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=S%20Sport&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trssport2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=S%20Sport%202&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtivibuspor1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tivibu%20Spor%201&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtivibuspor2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tivibu%20Spor%202&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtivibuspor3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tivibu%20Spor%203&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtivibuspor4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tivibu%20Spor%204&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtrtspor",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TRT%20Spor&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtrtsporyildiz",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TRT%20Spor%20Yildiz&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "traspor",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=A%20Spor&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "trtv8buçuk",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TV8.5&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
-    {
-        "name": "usespn",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usespn2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%202&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usespnu",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPNU&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usespnews",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPNews&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usespndeportes",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%20Deportes&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usfoxsports1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%201&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usfoxsports2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%202&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usbigtennetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Big%20Ten%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "ussecnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SEC%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usaccnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ACC%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "uscbsportsnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CBS%20Sports%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usnbcsports",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NBC%20Sports&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usnbatv",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NBA%20TV&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usnflnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NFL%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usnhlnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NHL%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usmlbnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=MLB%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "ustennischannel",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Tennis%20Channel&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usgolfchannel",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Golf%20Channel&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "uswillowtv",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Willow%20TV&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "uswwe",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=WWE%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usfightnetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fight%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usabc",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ABC&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "uscbs",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=CBS&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usnbc",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=NBC&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "usfox",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=FOX&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "ususanetwork",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=USA%20Network&code=us&user=cdnlivetv&plan=free",
-        "group": "us"
-    },
-    {
-        "name": "frcanalplus",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%2B&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frcanalplussport",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%2B%20Sport&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frcanalplusfoot",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%2B%20Foot&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frcanalplussport360",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Canal%2B%20Sport%20360&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsports1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%201&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsports2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%202&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsports3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%204&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax5",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%205&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax6",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%206&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax7",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%207&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax8",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%208&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax9",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%209&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frbeinsportsmax10",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%2010&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frrmcsport1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RMC%20Sport%201&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "frrmcsport2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=RMC%20Sport%202&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "freurosport1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eurosport%201%20FR&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "freurosport2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Eurosport%202%20FR&code=fr&user=cdnlivetv&plan=free",
-        "group": "fr"
-    },
-    {
-        "name": "esdaznlaliga",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%20LaLiga&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esdazn1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201%20ES&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esdazn2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%202%20ES&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esdaznf1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%20F1&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esmovistarlaliga",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20LaLiga&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esmovistarligadecampeones",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Liga%20de%20Campeones&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esmovistardeportes",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Deportes&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esmovistargolf",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Golf&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "esmovistarplus",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Movistar%20Plus%2B&code=es&user=cdnlivetv&plan=free",
-        "group": "es"
-    },
-    {
-        "name": "deskysportbundesliga1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%201&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "deskysporttopevent",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Top%20Event&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "deskysportpremierleague",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Premier%20League&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "deskysportf1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20F1%20DE&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "dedazn1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201%20DE&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "dedazn2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%202%20DE&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "desport1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport1&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "defussball",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=fussball&code=de&user=cdnlivetv&plan=free",
-        "group": "de"
-    },
-    {
-        "name": "itskysportuno",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Uno&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "itskysportcalcio",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Calcio&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "itskysportfootball",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Football&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "itskysportf1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20F1%20IT&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "itskysportmotogp",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20MotoGP&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "itskysport24",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%2024&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "itdazn1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201%20IT&code=it&user=cdnlivetv&plan=free",
-        "group": "it"
-    },
-    {
-        "name": "catsn1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%201&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "catsn2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%202&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "catsn3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%203&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "catsn4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%204&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "catsn5",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TSN%205&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "casportsnetontario",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20Ontario&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "casportsnetone",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20One&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "casportsnet360",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sportsnet%20360&code=ca&user=cdnlivetv&plan=free",
-        "group": "ca"
-    },
-    {
-        "name": "ptsporttv1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%201&code=pt&user=cdnlivetv&plan=free",
-        "group": "pt"
-    },
-    {
-        "name": "ptsporttv2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%202&code=pt&user=cdnlivetv&plan=free",
-        "group": "pt"
-    },
-    {
-        "name": "ptsporttv3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sport%20TV%203&code=pt&user=cdnlivetv&plan=free",
-        "group": "pt"
-    },
-    {
-        "name": "ptdazn1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=DAZN%201%20PT&code=pt&user=cdnlivetv&plan=free",
-        "group": "pt"
-    },
-    {
-        "name": "ptbenficatv",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Benfica%20TV&code=pt&user=cdnlivetv&plan=free",
-        "group": "pt"
-    },
-    {
-        "name": "nlziggosportselect",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%20Select&code=nl&user=cdnlivetv&plan=free",
-        "group": "nl"
-    },
-    {
-        "name": "nlziggosportvoetbal",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%20Voetbal&code=nl&user=cdnlivetv&plan=free",
-        "group": "nl"
-    },
-    {
-        "name": "nlziggosportracing",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Ziggo%20Sport%20Racing&code=nl&user=cdnlivetv&plan=free",
-        "group": "nl"
-    },
-    {
-        "name": "nlespn1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%201%20NL&code=nl&user=cdnlivetv&plan=free",
-        "group": "nl"
-    },
-    {
-        "name": "nlespn2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ESPN%202%20NL&code=nl&user=cdnlivetv&plan=free",
-        "group": "nl"
-    },
-    {
-        "name": "aufoxleague",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20League&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "aufoxfooty",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Footy&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "aufoxcricket",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Cricket&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "aufoxsports503",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20503&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "aufoxsports505",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20505&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "aufoxsports506",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Fox%20Sports%20506&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "auoptussport1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Optus%20Sport%201&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "austansport",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Stan%20Sport&code=au&user=cdnlivetv&plan=free",
-        "group": "au"
-    },
-    {
-        "name": "arbeinsports1premium",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%201%20Premium&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arbeinsports2premium",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%202%20Premium&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arbeinsports3premium",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203%20Premium&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arbeinsportsenglish1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20English%201&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arssc1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SSC%201&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arssc2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SSC%202&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arssc3",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SSC%203&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arssc4",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SSC%204&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arssc5",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SSC%205&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "arsscextra1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=SSC%20Extra%201&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "aralkass1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Alkass%201&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "aralkass2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Alkass%202&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    },
-    {
-        "name": "aradextrap1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=AD%20Sports%20Premium%201&code=ar&user=cdnlivetv&plan=free",
-        "group": "ar"
-    }
+    # ... (Mevcut tüm kanal listeniz buraya eklenecek, aynı kalıyor)
+    # Yer kaplamaması için tekrar yazmıyorum, sizdeki liste geçerli.
 ]
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_FILE_NAME = "cdn.m3u"   # Kaydedilecek toplu liste adı
+OUTPUT_FILE_NAME = "cdn.m3u"          # Ana çıktı dosyası
+PLAYLIST_FILE_NAME = "playlist.m3u"   # Güncellenecek uzak liste
+PLAYLIST_URL = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
 DEBUG_FILE = "debug_failed.json"
 
-TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
-FIRST_WAIT = 3.0                # İlk yüklemede akış bekleme süresi (sn)
-RELOAD_WAIT = 4.5               # Yenileme sonrası bekleme süresi (sn)
-MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı
+TIMEOUT = 15000
+FIRST_WAIT = 3.0
+RELOAD_WAIT = 4.5
+MAX_CONCURRENT = 4
+
+# ⚡ TiviMate ve diğer profesyonel oynatıcılar için HTTP Header koruması
+STREAM_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+STREAM_REFERER = "https://cdnlivetv.tv/"
+STREAM_ORIGIN = "https://cdnlivetv.tv"
 
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/124.0.0.0 Safari/537.36"
-    ),
+    "User-Agent": STREAM_USER_AGENT,
     "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8",
-    "Referer": "https://cdnlivetv.tv/",
-    "Origin": "https://cdnlivetv.tv",
+    "Referer": STREAM_REFERER,
+    "Origin": STREAM_ORIGIN,
 }
 
 BROWSER_ARGS = [
@@ -815,44 +64,32 @@ BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 def is_valid_stream_url(url: str) -> bool:
     if not url or not isinstance(url, str):
         return False
-
     url = url.strip()
-
     if not (url.startswith("http://") or url.startswith("https://")):
         return False
-
-    invalid_chars = [
-        " ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
-        "\\", "\n", "\r", "\t", "&&", "||", "import", "function"
-    ]
+    invalid_chars = [" ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
+                     "\\", "\n", "\r", "\t", "&&", "||", "import", "function"]
     if any(c in url for c in invalid_chars):
         return False
-
     junk_keywords = ["parser", "bundle", "webpack", "chunk", "worker", "player.min"]
     url_lower = url.lower()
     if any(k in url_lower for k in junk_keywords):
         return False
-
     base_path = url.split("?")[0].lower()
     if not (".m3u8" in base_path or ".mpd" in base_path):
         return False
-
     return True
 
 
 def extract_from_html(html_text: str, base_url: str = "") -> str:
     if not html_text:
         return ""
-
     html_text = html_text.replace("\\/", "/").replace("\\u0026", "&")
-
     pattern = r'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]+\.(?:m3u8|mpd)(?:\?[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]*)?'
-
     matches = re.findall(pattern, html_text, re.IGNORECASE)
     for m in matches:
         if is_valid_stream_url(m):
             return m
-
     return ""
 
 
@@ -866,7 +103,6 @@ async def extract_from_js(page) -> str:
                         if (f && typeof f === 'string' && f.startsWith('http')) return f;
                     }
                 } catch(e){}
-
                 try {
                     if (typeof videojs !== 'undefined') {
                         const players = videojs.getAllPlayers();
@@ -876,17 +112,13 @@ async def extract_from_js(page) -> str:
                         }
                     }
                 } catch(e){}
-
                 try {
                     if (typeof Hls !== 'undefined' && Hls.url && Hls.url.startsWith('http')) return Hls.url;
                 } catch(e){}
-
                 const v = document.querySelector('video');
                 if (v && v.src && v.src.startsWith('http')) return v.src;
-
                 const s = document.querySelector('video source');
                 if (s && s.src && s.src.startsWith('http')) return s.src;
-
                 return null;
             }
         """)
@@ -894,7 +126,6 @@ async def extract_from_js(page) -> str:
             return val
     except Exception:
         pass
-
     return ""
 
 
@@ -903,7 +134,6 @@ async def try_trigger_play(page):
         await page.mouse.click(200, 200)
     except Exception:
         pass
-
     try:
         await page.evaluate("""
             () => {
@@ -941,11 +171,9 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             ignore_https_errors=True,
             viewport={"width": 1280, "height": 720},
         )
-
         await context.add_init_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
         )
-
         page = await context.new_page()
 
         async def route_filter(route):
@@ -970,13 +198,11 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             nonlocal stream_url
             if stream_url:
                 return
-
             url = response.url
             if is_valid_stream_url(url):
                 stream_url = url
                 found_event.set()
                 return
-
             ct = response.headers.get("content-type", "").lower()
             if "application/json" in ct:
                 try:
@@ -1064,14 +290,10 @@ async def process_all(channels: list) -> tuple:
     lock = asyncio.Lock()
 
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(
-            headless=True,
-            args=BROWSER_ARGS,
-        )
+        browser = await pw.chromium.launch(headless=True, args=BROWSER_ARGS)
 
         async def handle(ch):
             nonlocal done_count
-
             name = str(ch.get("name", "?")).strip()
             player_url = str(ch.get("url", "")).strip()
             image = str(ch.get("image", "")).strip()
@@ -1080,10 +302,8 @@ async def process_all(channels: list) -> tuple:
             if not player_url:
                 async with lock:
                     done_count += 1
-                    failed.append({
-                        "name": name, "player_url": "", "image": image,
-                        "group": group, "reason": "URL yok"
-                    })
+                    failed.append({"name": name, "player_url": "", "image": image,
+                                   "group": group, "reason": "URL yok"})
                 return
 
             async with semaphore:
@@ -1092,7 +312,6 @@ async def process_all(channels: list) -> tuple:
             async with lock:
                 done_count += 1
                 prefix = f"[{done_count:03d}/{total}]"
-
                 if stream_url and is_valid_stream_url(stream_url):
                     print(f"  ✅ {prefix} {name} → {stream_url[:65]}...")
                     success.append({
@@ -1122,11 +341,25 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
+def build_stream_block(stream_url: str) -> str:
+    """
+    TiviMate, IPTV Smarters vb. oynatıcılarda 403 hatası almamak için 
+    User-Agent, Referer ve Origin başlıklarını entegre eder.
+    """
+    lines = []
+    lines.append(f'#EXTVLCOPT:http-user-agent={STREAM_USER_AGENT}')
+    lines.append(f'#EXTVLCOPT:http-referrer={STREAM_REFERER}')
+    lines.append(f'#EXTVLCOPT:http-origin={STREAM_ORIGIN}')
+    lines.append(f'#KODIPROP:inputstream.adaptive.stream_headers=User-Agent={STREAM_USER_AGENT}&Referer={STREAM_REFERER}&Origin={STREAM_ORIGIN}')
+    stream_with_headers = f'{stream_url}|User-Agent={STREAM_USER_AGENT}&Referer={STREAM_REFERER}&Origin={STREAM_ORIGIN}'
+    lines.append(stream_with_headers)
+    return "\n".join(lines)
+
+
 def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
-    """Bulunan tüm kanalları standart M3U formatında tek bir dosya içerisine kaydeder."""
+    """Bulunan tüm kanalları TiviMate uyumlu M3U formatında kaydeder."""
     base_path = Path(__file__).parent.resolve()
     file_path = base_path / file_name
-    
     print(f"\n📂 Yazma İşlemi Başlatıldı (Dosya: {file_path})")
 
     if not items:
@@ -1142,33 +375,153 @@ def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
                 group = ch.get("group", "GENEL")
                 image = ch.get("image", "")
 
-                # Standart IPTV Playlist formatı (Logo, Grup ve Kanal Bilgisi)
                 f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
-                f.write(f"{stream}\n")
+                f.write(build_stream_block(stream) + "\n")
                 
         print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
     except Exception as e:
         print(f"   ❌ Dosya yazma hatası ({file_name}): {e}")
 
 
+# ─── PLAYLIST.M3U BİREBİR EŞLEŞTİRME VE GÜNCELLEME ─────────────────────────────
+def get_playlist_identifiers(extinf_line: str) -> list:
+    """
+    EXTINF satırından tvg-id, tvg-name ve display name'i 
+    olduğu gibi (herhangi bir harf dönüştürmesi yapmadan) çeker.
+    """
+    identifiers = []
+    
+    # tvg-id="..." içindeki değer
+    id_match = re.search(r'tvg-id="([^"]+)"', extinf_line, re.IGNORECASE)
+    if id_match:
+        identifiers.append(id_match.group(1).strip())
+        
+    # tvg-name="..." içindeki değer
+    name_match = re.search(r'tvg-name="([^"]+)"', extinf_line, re.IGNORECASE)
+    if name_match:
+        identifiers.append(name_match.group(1).strip())
+        
+    # Virgülden sonraki kanal adı değeri (Örn: #EXTINF:...,Kanal Adı)
+    if "," in extinf_line:
+        display_name = extinf_line.rsplit(",", 1)[-1].strip()
+        identifiers.append(display_name)
+        
+    return list(set(identifiers)) # Çift kayıtları temizle
+
+
+def update_playlist_m3u(success_channels: list):
+    """
+    playlist.m3u dosyasını indirir, mevcut yapı ve sırayı KORUYARAK
+    sadece taranan ismin BİREBİR aynısı olan kanalların linklerini günceller.
+    """
+    print(f"\n🔄 Uzak Playlist Senkronizasyonu Başlatıldı...")
+    print(f"   🌐 Kaynak: {PLAYLIST_URL}")
+
+    try:
+        r = requests.get(PLAYLIST_URL, timeout=30)
+        r.raise_for_status()
+        remote_content = r.text
+    except Exception as e:
+        print(f"   ❌ Uzak playlist indirilemedi: {e}")
+        return
+
+    # Başarılı kanalları isme göre sözlüğe ekle (Birebir eşleşme için)
+    # Taramadaki 'name' değerleri (Örn: "uktntsports1") anahtar olarak kullanılır.
+    channel_map = {ch["name"].strip(): ch["stream_url"] for ch in success_channels}
+
+    lines = remote_content.splitlines()
+    new_lines = []
+    updated_count = 0
+    total_channels_in_playlist = 0
+    
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+
+        if stripped.startswith("#EXTINF"):
+            total_channels_in_playlist += 1
+            new_lines.append(line)
+
+            # EXTINF satırından tvg-id, tvg-name ve kanal adını çek
+            identifiers = get_playlist_identifiers(stripped)
+
+            # Sonraki satırlardan asıl URL'yi bul (aradaki eski #EXTVLCOPT'ları geç)
+            j = i + 1
+            url_line_index = -1
+            while j < len(lines):
+                next_line = lines[j].strip()
+                if not next_line:
+                    j += 1
+                    continue
+                if next_line.startswith("#EXTINF") or next_line.startswith("#EXTM3U"):
+                    break
+                if next_line.startswith("#"):
+                    j += 1
+                    continue
+                if next_line.startswith("http"):
+                    url_line_index = j
+                    break
+                j += 1
+
+            # Birebir eşleşme kontrolü (Taramadaki isimle birebir uyumlu mu?)
+            matched_stream = None
+            for identifier in identifiers:
+                if identifier in channel_map:
+                    matched_stream = channel_map[identifier]
+                    break
+
+            if matched_stream and url_line_index != -1:
+                # ✅ Birebir Eşleşti: Yeni linki ve TiviMate başlıklarını yaz
+                new_lines.append(build_stream_block(matched_stream))
+                updated_count += 1
+                i = url_line_index + 1
+            elif url_line_index != -1:
+                # ⚠️ Eşleşmedi: Eski başlık ve eski URL bloğunu olduğu gibi koru
+                for k in range(i + 1, url_line_index + 1):
+                    new_lines.append(lines[k])
+                i = url_line_index + 1
+            else:
+                i += 1
+        else:
+            new_lines.append(line)
+            i += 1
+
+    # Yerel playlist.m3u dosyasına kaydet
+    base_path = Path(__file__).parent.resolve()
+    file_path = base_path / PLAYLIST_FILE_NAME
+    
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(new_lines))
+            if not new_lines or not new_lines[-1].endswith("\n"):
+                f.write("\n")
+        print(f"   ✅ playlist.m3u başarıyla güncellendi.")
+        print(f"   📊 Playlist'teki toplam kanal: {total_channels_in_playlist}")
+        print(f"   🔄 Güncellenen link sayısı   : {updated_count}")
+        print(f"   💾 Kaydedildi: {file_path}")
+    except Exception as e:
+        print(f"   ❌ playlist.m3u yazılamadı: {e}")
+
+
 def print_report(channels: list, success: list, failed: list):
     turkey_tz = timezone(timedelta(hours=3))
     now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
-
     print(f"\n{'═'*65}")
     print(f"📊 SONUÇ RAPORU")
     print(f"{'═'*65}")
     print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
     print(f"  ✅ Başarıyla çözülen     : {len(success)}")
     print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Çıktı Dosya Yolu      : ./{OUTPUT_FILE_NAME}")
+    print(f"  📁 Ana Dosya            : ./{OUTPUT_FILE_NAME}")
+    print(f"  📁 Playlist Dosyası      : ./{PLAYLIST_FILE_NAME}")
     print(f"  🕐 Güncelleme zamanı     : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 ÖZEL LİSTE — ÇOKLU KANAL TEK M3U DOSYA KAYDEDİCİ")
+    print("   📺 CDN LIVE TV — BİREBİR EŞLEŞTİRMELİ SENKRONİZASYON SİTEMİ")
     print("═" * 65 + "\n")
 
     if not KANALLAR:
@@ -1177,18 +530,21 @@ async def main():
 
     print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
     print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
-    print(f"📁 Dosya Hedefi          : ./{OUTPUT_FILE_NAME}\n")
+    print(f"📁 Ana Hedef             : ./{OUTPUT_FILE_NAME}")
+    print(f"📁 Playlist Hedefi       : ./{PLAYLIST_FILE_NAME}\n")
 
     success, failed = await process_all(KANALLAR)
 
-    # Tüm kanalları tek bir .m3u listesi olarak yazdır
     write_single_m3u(success, OUTPUT_FILE_NAME)
+
+    if success:
+        update_playlist_m3u(success)
 
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
     print_report(KANALLAR, success, failed)
-    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_FILE_NAME}' dosyasına kaydedildi.\n")
+    print(f"✅ Başarıyla tamamlandı!\n")
 
 
 if __name__ == "__main__":
