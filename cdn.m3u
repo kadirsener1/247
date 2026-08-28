@@ -1,127 +1,43 @@
 #EXTM3U
 #EXTINF:-1 tvg-id="ukskysportsf1" tvg-name="ukskysportsf1" tvg-logo="" group-title="UK",ukskysportsf1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc315/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzE1OjE3ODc5NjY1NzIyMDg6Y2RubGl2ZXR2LnR2OjMwMGM3NjYyZjMwNDg2MDcuMWVkMTQ3YjdmYTg3MzI0ZjUyMDBmOTdmN2I0MjBmMzJjN2M0OGRlNWE2ZTAyMzgyMmM4YzA2YjI0ZWVjNTYxNQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-#EXTINF:-1 tvg-id="ukskysportscricket" tvg-name="ukskysportscricket" tvg-logo="" group-title="UK",ukskysportscricket
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc31a/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzFhOjE3ODc5NjY1NzIyMDY6Y2RubGl2ZXR2LnR2OjdlNzI4ZWFmODc2YzY3Y2MuNmQ1NDk0ZTA2NDhmNGJmOTdiZmY1ZmQ3ZmRjMmZiZDc3NDFhZTQ2NjhmMzRiZjU5M2ZiMjUwMDM0ODczMjBhZQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-#EXTINF:-1 tvg-id="ukskysportsgolf" tvg-name="ukskysportsgolf" tvg-logo="" group-title="UK",ukskysportsgolf
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc31d/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzFkOjE3ODc5NjY1NzIyMDY6Y2RubGl2ZXR2LnR2OjJhNjhiMDQzNWU1NWYxNzMuMWNjMzJjM2YyNjJlMjUxMjQwYzkzMGI3ZDhmYzI4NzEzYTE3ZDZhNjYxMWUyNThhZGNjYzNlOWI0MDI0YTBiYg|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc315/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzE1OjE3ODc5NjczNjc2NTg6Y2RubGl2ZXR2LnR2OmVjNThiYjI0NGZkYTA4ZDYuZGQ4NWQyMzZjYzI5Njg2MzI4OWE5ZmY3YWNjMzY4N2FlZmIxMWQ3OTMzMWQyNTI1YjE0MzlkZmUyODRiZWE5NA
 #EXTINF:-1 tvg-id="ukskysportsfootball" tvg-name="ukskysportsfootball" tvg-logo="" group-title="UK",ukskysportsfootball
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc340/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzQwOjE3ODc5NjY1NzIyMDQ6Y2RubGl2ZXR2LnR2OjgyYWQ0NTQzNjU1YWQzN2MuNzU2YTU4MTk3NWI3ODVlZDc0OWU3ZjBkMmNkNmUxNDA4ZGMxN2EyYTcxZjVmNDZmYzRkZTUwMTVkMDdiNWRjZQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-#EXTINF:-1 tvg-id="ukskysportstennis" tvg-name="ukskysportstennis" tvg-logo="" group-title="UK",ukskysportstennis
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc320/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzIwOjE3ODc5NjY1NzMwOTA6Y2RubGl2ZXR2LnR2Ojg2MzkzOTEwZDI2ZjQ2NTAuMGVmMWY3YTU0NGY1MWM2MDg3ZjA0YTU0NDQ1M2ZhNjg1N2VlZGJmYWM4YTI0ODViNWUzZDI0NzA1MzBiMDExYw|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc340/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzQwOjE3ODc5NjczNjc2NTc6Y2RubGl2ZXR2LnR2OmYwNDVjNzk4MTMyNzM4ZjEuMmQyY2ZmMGMwMzQyYjNjMWMzNGMyZjk1Y2VhNTVlMGFlZWQ0OGIzYzFiMTI4MWJiY2U5Y2U2NWQwZjI5NTE2Mw
+#EXTINF:-1 tvg-id="ukskysportsgolf" tvg-name="ukskysportsgolf" tvg-logo="" group-title="UK",ukskysportsgolf
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc31d/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzFkOjE3ODc5NjczNjc2NTg6Y2RubGl2ZXR2LnR2OjM3NjYzNTU2YzAzODhhNTYuNTM4YzE3MTBiYjdkZTc4OGEyMTdkOTY5OWE0ZGE1NGE2MmJhNGQ4ZTJkNGJmYThlYjliOGU4YjZmMzJmNTdjMQ
+#EXTINF:-1 tvg-id="ukskysportscricket" tvg-name="ukskysportscricket" tvg-logo="" group-title="UK",ukskysportscricket
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc31a/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzFhOjE3ODc5NjczNjc2NTc6Y2RubGl2ZXR2LnR2OmQ0OTBhYjI4NjE4NDFiYzguOWY5OTY4ZTE1MTQ5YzNjOWQ4N2ZiMmY3OTE4ZGRjZTQ2ODA3MDEzN2QxZjI5ZmFhNjllMzA1ZjY0MzJmMzdkMA
 #EXTINF:-1 tvg-id="ukskysportsaction" tvg-name="ukskysportsaction" tvg-logo="" group-title="UK",ukskysportsaction
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc327/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzI3OjE3ODc5NjY1NzMwODc6Y2RubGl2ZXR2LnR2OjZjYTNkYzFjOGI5ZTRlZmEuNWM1YmMyMTA2YjcyYzZmZjU0M2MyYTE5NWFiYzU0NDJkMDRiODAxM2ZjZDAyOTQ4NThiZTE4Y2QxZmEzYTlkOA|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc327/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzI3OjE3ODc5NjczNjg3MDc6Y2RubGl2ZXR2LnR2OmU2MTJjNWU4ODFhY2NhNWEuMzEwM2YyOTZhMmM0Zjk0YjYxZWJkZmVjMmMwNDViY2YyZDg3MWZlMTk0YWVkNTZkMWUxNDkzYmM3YTRiNDkyZA
+#EXTINF:-1 tvg-id="ukskysportstennis" tvg-name="ukskysportstennis" tvg-logo="" group-title="UK",ukskysportstennis
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc320/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzIwOjE3ODc5NjczNjg3MzY6Y2RubGl2ZXR2LnR2OmExZmRkNTNiNWEwY2UwMmQuZDEyNDI3OWZhNGJhYWJjZDg3ZTdmNmM0MTliMmZhMDQ1NmFjNjQ4NzRmMDg5ZjRiNGFlZWJmMzlmZjM1Y2ZlNw
 #EXTINF:-1 tvg-id="ukskysportsnews" tvg-name="ukskysportsnews" tvg-logo="" group-title="UK",ukskysportsnews
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc334/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzM0OjE3ODc5NjY1NzMxMzk6Y2RubGl2ZXR2LnR2OjE1NmQ5ZTJkODM2ZDViM2UuMTJlNjNiOTIxYWIzOGVkMzIyNzUyMzc3M2UyOTNkMjYzNzM2NjQzNThjOWVkZDI4OWQ2ZjY2MDgwM2M1MDM0Mg|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc334/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzM0OjE3ODc5NjczNjg3OTM6Y2RubGl2ZXR2LnR2OjRmM2ViYjhlNDM1ZjM1ZTkuYzk0ZDBhYTNjMmQyOTgwYmU5MzliMzU1MDg4NjNiNmFlOTZkYmExYzE1YzAyYjVhZDc0MzdhZjU1ZmFjNmZiOA
 #EXTINF:-1 tvg-id="ukskysportsmix" tvg-name="ukskysportsmix" tvg-logo="" group-title="UK",ukskysportsmix
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc32d/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzJkOjE3ODc5NjY1NzMxMjI6Y2RubGl2ZXR2LnR2OjgwNWIwNjQ2ZGU4MGU3ZWUuZjc5MzU4MDc5Mjg1M2ZkZjk2MDI4MTcxNTA2OGI5ZmVkZDFiYWI3ZTZmYzI2YjMyMTQ5NzIzNmZmNzAzMjcxMg|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc32d/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzJkOjE3ODc5NjczNjg4MDM6Y2RubGl2ZXR2LnR2OmMxMDlhOWZmYWMxMGUwMTYuZTIxYjA0MmZmNjZlMDAxNWVlYmM0MTFlMmIwMjM5OTVhN2EzMzMzZjkyOTZjNjgyMDliY2U3NzM1ODEyNGEyYw
 #EXTINF:-1 tvg-id="ukskysportsracing" tvg-name="ukskysportsracing" tvg-logo="" group-title="UK",ukskysportsracing
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc333/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzMzOjE3ODc5NjY1NzM5MjE6Y2RubGl2ZXR2LnR2OjU5NWE1NzBiOThmNWY3NjkuN2FiZmI5YTI0MzljOTNiNGNmZmIwOTFlMzBiMWExZGVhZTQzYzJjZGM1MDUwZjNkMmZkYjc5Y2VkMmQ5ZDViMg|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc333/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzMzOjE3ODc5NjczNjk2MDk6Y2RubGl2ZXR2LnR2OjM3OGZhNGFmZjQ5YzU3NDUuODM1NmViMDI3ZGM0MTNiM2FhMjMyZjUzNDFlNzVlZWI0YjA0MzlkYzZmNmRkMWU5MDEwZjQxMzQyNzU2MjY0YQ
 #EXTINF:-1 tvg-id="ukpremiersports1" tvg-name="ukpremiersports1" tvg-logo="" group-title="UK",ukpremiersports1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc35e/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzVlOjE3ODc5NjY1NzM5NDU6Y2RubGl2ZXR2LnR2OjA3YTkxM2EwZWUyYzkwYzcuODJkMzBlMzlhNTFjMDA5NmI2MTYxNmZmNWQxYmI4NzU0OTE2MjY5ZTQ0ZGY2ZDEyZDFlYzVmNmY2NDQwNDE0Ng|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-#EXTINF:-1 tvg-id="ukeurosport1" tvg-name="ukeurosport1" tvg-logo="" group-title="UK",ukeurosport1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc35a/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzVhOjE3ODc5NjY1NzQwNDc6Y2RubGl2ZXR2LnR2OmY5MzUwMDA2YjJhOTVmNGMuMDk4ZDJhNjhlNWQ0OGEyZjJiNWIwNDc2YzhiMzdlYmIwNzI5OTU4MzI2NzdhODRhNWE4YjJiNmU5NGZhM2VkNw|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc35e/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzVlOjE3ODc5NjczNjk3Mzc6Y2RubGl2ZXR2LnR2OjUxZDFmYWQ1NjM4NWJmODAuYzQyNDdkNjEwOGIxYzBhYmMzMjExOTNmODBjZTE3NDlmM2M2OTI3MThiMzNhZjVmNzdjMjFhZDMyMGQ3NTI0Mw
 #EXTINF:-1 tvg-id="ukpremiersports2" tvg-name="ukpremiersports2" tvg-logo="" group-title="UK",ukpremiersports2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc361/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzYxOjE3ODc5NjY1NzQwMDA6Y2RubGl2ZXR2LnR2OjgwNDk4YzcwNzUwYWQwYTkuOGRkZjg3M2M5MTc5NDgyMTM5NWYzODJlMDNlNjhmMTg3ZGQ5ODM5MDM1MjY3YWViZWRmNjA1OGE0ZmNiYjM2Mg|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-#EXTINF:-1 tvg-id="ukitv1" tvg-name="ukitv1" tvg-logo="" group-title="UK",ukitv1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc387/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzg3OjE3ODc5NjY1NzQ3NDc6Y2RubGl2ZXR2LnR2OjgwZTI5MDIxNjBjYzQzYWUuY2FiOGI2NGE2ZWU4NjM4Zjc4MWVmYjAzMmFkZGY2MDEzMGM0YmVjMzY4ZjZkOTI0N2E5MjZiMjk5NDY3OTg4OQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc361/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzYxOjE3ODc5NjczNjk3Njc6Y2RubGl2ZXR2LnR2OmE2YTJkNzMzYzkzMDRhZmIuODFlZTlmOWVlYmZmMzNiMjQxZGJkZWNhOTU2ZGJlZjFiZWE4MDAwMGU0NzcyYTJiMzc3OWI3ZjI4YzJmMTg2OA
+#EXTINF:-1 tvg-id="ukeurosport1" tvg-name="ukeurosport1" tvg-logo="" group-title="UK",ukeurosport1
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc35a/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzVhOjE3ODc5NjczNjk3OTg6Y2RubGl2ZXR2LnR2Ojk2OTAwNjQzM2RiMzM3NDQuMWI5NjZmODU3MDQwYTQ4MmU2NDFkNmJjMzU3MzhmNjU4MjJhNWZlZGQxY2QyNjM3MjMyZDYwYzAyZDZmNmY4OA
 #EXTINF:-1 tvg-id="ukeurosport2" tvg-name="ukeurosport2" tvg-logo="" group-title="UK",ukeurosport2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc35b/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzViOjE3ODc5NjY1NzQ3NzE6Y2RubGl2ZXR2LnR2OjIxYTkxZjRmNDQ3ZDZlYzMuNmUxZjdiMzI0NjZkNTEwYTQ0Y2ZmMGQxMzkwZTU1MmYxOTE2YjIwZWViNjRhYmQ5MzE0NDZkMjJiY2JiZjQ0Nw|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc35b/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzViOjE3ODc5NjczNzA0MDc6Y2RubGl2ZXR2LnR2OjBjNDBlOTdjZDU0M2YzZDIuYTNjOTNiY2QzMGM3OTk1M2JmNTI1OGIwM2Q3YTYxZDRiNzZlMDA3NDhjZDMwZDc0NzY0YTViNTlhMThmZjFiYg
+#EXTINF:-1 tvg-id="ukitv1" tvg-name="ukitv1" tvg-logo="" group-title="UK",ukitv1
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc387/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzg3OjE3ODc5NjczNzA2NzU6Y2RubGl2ZXR2LnR2OjMyZTQ5MDkyYTE1YTNkN2QuZWM3YjA5NDA3OGJlMTBhNTVkOTU3NTViMDI1NmIyZWI4ZWJhMzAzMWZlMjg2M2NmZTJlMDIyNWEzYzhhNTUxYg
 #EXTINF:-1 tvg-id="ukchannel5" tvg-name="ukchannel5" tvg-logo="" group-title="UK",ukchannel5
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc383/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzgzOjE3ODc5NjY1NzQ4MjY6Y2RubGl2ZXR2LnR2OjFjZDY2YTM2NTk3MmU4ZTcuMzM0NjQyM2Y5M2E2NjUwOTk4ZmMxZmMxMThmNjJlNzI5MTgyYzlmNmZmMmI2ZWVmMzhlZjAzNjE2OGM2N2ZmYw|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc383/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzgzOjE3ODc5NjczNzA2OTA6Y2RubGl2ZXR2LnR2OmFiNjE3NWUyODg3ZGMyNjguYTA2NDMzOTY3MDc0NDNiYWNkZTUwY2I1NzEzYWVmYjUwMmEyOThjNmFhZTAyMDUxOWM0MzFhZDhlMTdjOWM0YQ
 #EXTINF:-1 tvg-id="ukchannel4" tvg-name="ukchannel4" tvg-logo="" group-title="UK",ukchannel4
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc380/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzgwOjE3ODc5NjY1NzQ4MjI6Y2RubGl2ZXR2LnR2OmU3NDM3ZjEyYWE0NjViY2IuMTlmMGJkNWM0OGMyMGI2YjQ0OGZmZTYyZjc0ZjdhYWViOTZmMzVhYjIxOWNjYTI4MWRmMTBhZDc0NmY2OWYyYQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc380/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzgwOjE3ODc5NjczNzA3MjE6Y2RubGl2ZXR2LnR2OmZkMDQ4YWEyZGZjZjI3MDEuNDQ3NmRhMTQxNWRmMGFhODgzMGYwYmE3NWZjY2UxMDA5ODcxZmFhYzQ4YTVkNzVhZjNhN2NlMzMyNmZkNjQxYQ
 #EXTINF:-1 tvg-id="trbeinsports1" tvg-name="trbeinsports1" tvg-logo="" group-title="TR",trbeinsports1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccbfe/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYmZlOjE3ODc5NjY1NzU1MTE6Y2RubGl2ZXR2LnR2OmUyNjc5NjQ3OGVhYmZkZDIuODgwODM4OWFhNzVmY2EzOTAzZTc0NmUzYmZjMTUyMjE5ZDFlNTc5YTBlOWM4NjM0YmZiZWQ2ODY5Yjg5MjUzNg|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccbfe/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYmZlOjE3ODc5NjczNzExMDY6Y2RubGl2ZXR2LnR2OmQ2ZTFkZGJkNWFmOTkwZjcuY2UwNTBhZThhODRmOGQwZWZiMWRlZWQ2NzdkZDk0OWUyMjhmMTc0MGYzMzBjNDdlNjQxZTc0YmFlMmRlM2RkZA
 #EXTINF:-1 tvg-id="deskysportbundesliga1" tvg-name="deskysportbundesliga1" tvg-logo="" group-title="DE",deskysportbundesliga1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccca9/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjY2E5OjE3ODc5NjY1NzU2MjU6Y2RubGl2ZXR2LnR2OjY1YzRlY2E3ODI5YzFlNTMuOGFhZWU5MDhjODFjNTRhOTI3ZmQxOGE2YjI2MDMxZDY2OTFjNzgwODA0NTM0ZTk0Yzc5ZmZmYmQyMmRhOTlkMA|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-#EXTINF:-1 tvg-id="deskysportpremierleague" tvg-name="deskysportpremierleague" tvg-logo="" group-title="DE",deskysportpremierleague
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccae4/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYWU0OjE3ODc5NjY1NzU2NzQ6Y2RubGl2ZXR2LnR2OjU4MTAwOGIxY2U0ZGJkNzUuNmIzNmQxYzI3OTRlZDJlNjM2MWRhYmI1ZWFjM2VhY2EyZGYzNTc5NzkyNjhjYTUyZDlkMGY2Mzg1NjA0NTM2OQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccca9/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjY2E5OjE3ODc5NjczNzE1Njk6Y2RubGl2ZXR2LnR2OjMwZmNhZTQxMmNjYzcxMDguZjBjM2MzNzQwOThlOWM2NmQyZGRkOTlkYmNkZTNlNzk5YTI3MGNmN2U3NTliNzAxMDg3YzY4NTEzZGIzMjMzNQ
 #EXTINF:-1 tvg-id="deskysporttopevent" tvg-name="deskysporttopevent" tvg-logo="" group-title="DE",deskysporttopevent
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccae6/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYWU2OjE3ODc5NjY1NzU2MjQ6Y2RubGl2ZXR2LnR2OjY3N2VjNzI1ZTU3YzNkNDYuMWM5N2ZjMTRiZTYwZTUwMDhlYjRiZTAwNjUxYTEwMTExZTc2Yjg1MjNkNWI4NDE0MDAxODFlYzQzNGNlY2RmMQ|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccae6/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYWU2OjE3ODc5NjczNzE2MDE6Y2RubGl2ZXR2LnR2OjE5ZmQ2NTA1N2M3Y2FkOGUuMzIyODZjYjM3YTMxMzI4MDZmODAyNzI1MDMzNjRmYjE5Y2FkMDc4YjdkMDI0YjhiYzg5OTdjYjE1NDc3N2U4OQ
+#EXTINF:-1 tvg-id="deskysportpremierleague" tvg-name="deskysportpremierleague" tvg-logo="" group-title="DE",deskysportpremierleague
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccae4/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYWU0OjE3ODc5NjczNzE1OTM6Y2RubGl2ZXR2LnR2OmU1NDA2MTViNzAxZjAwZGYuMTAxZTFmMGVlYzA5MDhlZjdmZWMzMGNlMTYyYjc0MGI4YmJmYTg3ZGMzOTQ4OGY1Mjk1Mzk4YTViNzUzNDZmMQ
 #EXTINF:-1 tvg-id="desport1" tvg-name="desport1" tvg-logo="" group-title="DE",desport1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
-#EXTVLCOPT:http-origin=https://cdnlivetv.tv
-#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
-https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccaf9/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYWY5OjE3ODc5NjY1NzYyNzI6Y2RubGl2ZXR2LnR2OjhmYzUyOWFjMjIyZDE1NmEuYmUwMzJkYzMwMTBmYjA4MWU0OWExMzdhMDYyOGU4YWFjMzIwMGNhZGQ5ZTNmOWY2N2YyMjAwZDY0ZmFjOGJlMw|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
+https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccaf9/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYWY5OjE3ODc5NjczNzE4NTg6Y2RubGl2ZXR2LnR2OjlmM2IzNzRhN2YyZjIyYjEuMTVhN2E2ZWNmMmY2ODRmZTYyMTA5NTY3Zjk5Y2JmYWFlZWQzZWU1MmFkODk1YjVjYjliYjY5YmUzZGE4ZDFhMA
