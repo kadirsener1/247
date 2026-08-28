@@ -171,15 +171,15 @@ KANALLAR = [
         "group": "tr"
     },
     {
-    "name": "trbeinsportsmax1",
-    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%201&code=tr&user=cdnlivetv&plan=free",
-    "group": "tr"
-  },
+        "name": "trbeinsportsmax1",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%201&code=tr&user=cdnlivetv&plan=free",
+        "group": "tr"
+    },
     {
-    "name": "trbeinsportsmax2",
-    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
-    "group": "tr"
-  },
+        "name": "trbeinsportsmax2",
+        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
+        "group": "tr"
+    },
     {
         "name": "trbeinsportshaber",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20Haber&code=tr&user=cdnlivetv&plan=free",
@@ -400,43 +400,36 @@ KANALLAR = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax4",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%204&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax5",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%205&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax6",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%206&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax7",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%207&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax8",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%208&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax9",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%209&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
-    
     {
         "name": "frbeinsportsmax10",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%2010&code=fr&user=cdnlivetv&plan=free",
@@ -547,7 +540,6 @@ KANALLAR = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=fussball&code=de&user=cdnlivetv&plan=free",
         "group": "de"
     },
-    
     {
         "name": "itskysportuno",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Uno&code=it&user=cdnlivetv&plan=free",
@@ -778,11 +770,10 @@ KANALLAR = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=AD%20Sports%20Premium%201&code=ar&user=cdnlivetv&plan=free",
         "group": "ar"
     }
-    # Yeni kanalları yukarıdaki şablona göre buraya ekleyebilirsiniz.
 ]
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_DIR_NAME = "cdnlive"     # Klasör adı
+OUTPUT_FILE_NAME = "cdn.m3u"   # Kaydedilecek toplu liste adı
 DEBUG_FILE = "debug_failed.json"
 
 TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
@@ -847,11 +838,6 @@ def is_valid_stream_url(url: str) -> bool:
         return False
 
     return True
-
-
-def sanitize_filename(name: str) -> str:
-    """Dosya adlarında hata yaratabilecek geçersiz karakterleri temizler."""
-    return re.sub(r'[\\/*?:"<>|]', "", name).strip()
 
 
 def extract_from_html(html_text: str, base_url: str = "") -> str:
@@ -1136,42 +1122,33 @@ async def process_all(channels: list) -> tuple:
     return success, failed
 
 
-def write_individual_m3u8(items: list, output_dir_name: str, bandwidth: int = 8000000):
-    """Bulunan her kanal için cdnlive klasörü altında istenen formatta .m3u8 dosyası oluşturur."""
+def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
+    """Bulunan tüm kanalları standart M3U formatında tek bir dosya içerisine kaydeder."""
     base_path = Path(__file__).parent.resolve()
-    target_dir = base_path / output_dir_name
+    file_path = base_path / file_name
     
-    # Klasörü oluştur
-    target_dir.mkdir(parents=True, exist_ok=True)
-    
-    print(f"\n📂 Yazma İşlemi Başlatıldı (Klasör: {target_dir})")
+    print(f"\n📂 Yazma İşlemi Başlatıldı (Dosya: {file_path})")
 
     if not items:
         print("   ⚠️ Yazılacak başarılı kanal bulunamadı.")
         return
 
-    for ch in items:
-        name = ch["name"]
-        stream = ch["stream_url"]
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("#EXTM3U\n")
+            for ch in items:
+                name = ch["name"]
+                stream = ch["stream_url"]
+                group = ch.get("group", "GENEL")
+                image = ch.get("image", "")
 
-        # Dosya adı için geçersiz karakterleri temizle
-        safe_name = sanitize_filename(name)
-        file_path = target_dir / f"{safe_name}.m3u8"
-
-        # İstenen formatta M3U8 dosyasını yaz:
-        # #EXTM3U
-        # #EXT-X-VERSION:3
-        # #EXT-X-STREAM-INF:BANDWIDTH=8000000
-        # Yayın linki
-        try:
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write("#EXTM3U\n")
-                f.write("#EXT-X-VERSION:3\n")
-                f.write(f"#EXT-X-STREAM-INF:BANDWIDTH={bandwidth}\n")
+                # Standart IPTV Playlist formatı (Logo, Grup ve Kanal Bilgisi)
+                f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
                 f.write(f"{stream}\n")
-            print(f"   💾 Yazıldı: {file_path.name}")
-        except Exception as e:
-            print(f"   ❌ Dosya yazma hatası ({name}): {e}")
+                
+        print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
+    except Exception as e:
+        print(f"   ❌ Dosya yazma hatası ({file_name}): {e}")
 
 
 def print_report(channels: list, success: list, failed: list):
@@ -1184,14 +1161,14 @@ def print_report(channels: list, success: list, failed: list):
     print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
     print(f"  ✅ Başarıyla çözülen     : {len(success)}")
     print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Çıktı Klasör Yolu     : ./{OUTPUT_DIR_NAME}/")
+    print(f"  📁 Çıktı Dosya Yolu      : ./{OUTPUT_FILE_NAME}")
     print(f"  🕐 Güncelleme zamanı     : {now}")
     print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 ÖZEL LİSTE — ÇOKLU KANAL AYRI DOSYA KAYDEDİCİ")
+    print("   📺 ÖZEL LİSTE — ÇOKLU KANAL TEK M3U DOSYA KAYDEDİCİ")
     print("═" * 65 + "\n")
 
     if not KANALLAR:
@@ -1200,18 +1177,18 @@ async def main():
 
     print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
     print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
-    print(f"📁 Klasör Hedefi         : ./{OUTPUT_DIR_NAME}/\n")
+    print(f"📁 Dosya Hedefi          : ./{OUTPUT_FILE_NAME}\n")
 
     success, failed = await process_all(KANALLAR)
 
-    # Kanalları ayrı dosyalar halinde yazdır
-    write_individual_m3u8(success, OUTPUT_DIR_NAME)
+    # Tüm kanalları tek bir .m3u listesi olarak yazdır
+    write_single_m3u(success, OUTPUT_FILE_NAME)
 
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
     print_report(KANALLAR, success, failed)
-    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_DIR_NAME}/' klasörüne kaydedildi.\n")
+    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_FILE_NAME}' dosyasına kaydedildi.\n")
 
 
 if __name__ == "__main__":
