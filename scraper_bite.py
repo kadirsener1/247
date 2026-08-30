@@ -22,7 +22,7 @@ except ImportError:
     import cloudscraper
 
 BASE_URL = "https://sportsbite.org"
-FALLBACK_STREAM_BASE = "https://channels.forestgump.space"
+FALLBACK_STREAM_BASE = "https://sportsbite.org/"
 OUTPUT_FILE = "tv247_bite.m3u"
 CHANNELS_FILE = "channels_bite.txt"
 
