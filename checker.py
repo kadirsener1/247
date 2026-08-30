@@ -772,14 +772,16 @@ MASTER_CHANNELS = [
 ]
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_FILE_NAME = "cdn.m3u"
+OUTPUT_FILE_NAME   = "cdn.m3u"
 PLAYLIST_FILE_NAME = "playlist.m3u"
-PLAYLIST_URL = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
-DEBUG_FILE = "debug_failed.json"
+PLAYLIST_URL       = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
+DEBUG_FILE         = "debug_failed.json"
 
-TIMEOUT = 15000
-FIRST_WAIT = 3.0
-RELOAD_WAIT = 4.5
+TIMEOUT      = 15000
+FIRST_WAIT   = 3.0   # İlk yüklemede bekleme (saniye)
+RELOAD_WAIT  = 3.5   # Her retry sonrası bekleme (saniye)
+MAX_RETRIES  = 20    # ✅ YENİ: Maksimum yenileme denemesi (eski kodda sadece 1'di)
+RETRY_WAIT   = 2.0   # ✅ YENİ: Denemeler arası ek bekleme (saniye)
 MAX_CONCURRENT = 4
 
 HEADERS = {
@@ -805,6 +807,14 @@ BROWSER_ARGS = [
 ]
 
 BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
+
+# Sitedeki hata mesajları — bu metinler varsa stream gelmemiş demektir
+STREAM_ERROR_TEXTS = [
+    "Stream loading failed",
+    "Stream Error",
+    "Please refresh",
+    "stream-error",
+]
 
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -839,6 +849,11 @@ def extract_from_html(html_text: str, base_url: str = "") -> str:
         if is_valid_stream_url(m):
             return m
     return ""
+
+
+def has_stream_error(content: str) -> bool:
+    """Sayfa içeriğinde stream hatası var mı kontrol et."""
+    return any(err in content for err in STREAM_ERROR_TEXTS)
 
 
 async def extract_from_js(page) -> str:
@@ -906,7 +921,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         return ""
 
     context = None
-    page = None
+    page    = None
 
     try:
         context = await browser.new_context(
@@ -963,40 +978,68 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
                 except Exception:
                     pass
 
-        page.on("request", on_request)
+        page.on("request",  on_request)
         page.on("response", on_response)
 
+        # ── İlk yükleme ──────────────────────────────────────────────────────
         try:
             await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
         except Exception:
             pass
+
+        await try_trigger_play(page)
 
         try:
             await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
         except asyncio.TimeoutError:
             pass
 
-        if not stream_url:
-            await try_trigger_play(page)
+        # ── Retry döngüsü ────────────────────────────────────────────────────
+        # Sitede "Stream Error" gelince sayfa yenilemek gerekiyor.
+        # Bazen 15+ deneme gerekebileceğinden MAX_RETRIES kadar deniyoruz.
+        for attempt in range(1, MAX_RETRIES + 1):
+
+            if stream_url and is_valid_stream_url(stream_url):
+                break  # URL bulundu, döngüden çık
+
+            # Sayfadaki içeriği kontrol et
+            page_has_error = False
+            try:
+                content = await page.content()
+
+                if has_stream_error(content):
+                    # Stream Error hâlâ var — yenilemeye devam
+                    page_has_error = True
+                else:
+                    # Hata yok → HTML'den URL çekmeyi dene
+                    found = extract_from_html(content, player_url)
+                    if is_valid_stream_url(found):
+                        stream_url = found
+                        break
+
+                    # JS'den dene
+                    js_url = await extract_from_js(page)
+                    if is_valid_stream_url(js_url):
+                        stream_url = js_url
+                        break
+            except Exception:
+                page_has_error = True
+
+            status = "Stream Error — yenileniyor" if page_has_error else "URL yok — yenileniyor"
+            print(f"    🔄 [{attempt:02d}/{MAX_RETRIES}] {channel_name}: {status}")
+
+            # Kısa bekleme + event sıfırla + yenile
+            await asyncio.sleep(RETRY_WAIT)
+            found_event.clear()
+
             try:
                 await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
                 await try_trigger_play(page)
                 await asyncio.wait_for(found_event.wait(), timeout=RELOAD_WAIT)
-            except Exception:
+            except (asyncio.TimeoutError, Exception):
                 pass
 
-        if not stream_url:
-            stream_url = await extract_from_js(page)
-
-        if not stream_url:
-            try:
-                content = await page.content()
-                found = extract_from_html(content, player_url)
-                if is_valid_stream_url(found):
-                    stream_url = found
-            except Exception:
-                pass
-
+        # ── Son çare: frame taraması ──────────────────────────────────────────
         if not stream_url:
             try:
                 for frame in page.frames:
@@ -1030,22 +1073,22 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
 
 
 async def process_all(channels: list) -> tuple:
-    success = []
-    failed = []
-    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
-    total = len(channels)
+    success    = []
+    failed     = []
+    semaphore  = asyncio.Semaphore(MAX_CONCURRENT)
+    total      = len(channels)
     done_count = 0
-    lock = asyncio.Lock()
+    lock       = asyncio.Lock()
 
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=True, args=BROWSER_ARGS)
 
         async def handle(ch):
             nonlocal done_count
-            name = str(ch.get("name", "?")).strip()
-            player_url = str(ch.get("url", "")).strip()
-            image = str(ch.get("image", "")).strip()
-            group = str(ch.get("group", "GENEL")).strip().upper()
+            name       = str(ch.get("name",  "?")).strip()
+            player_url = str(ch.get("url",   "")).strip()
+            image      = str(ch.get("image", "")).strip()
+            group      = str(ch.get("group", "GENEL")).strip().upper()
 
             if not player_url:
                 async with lock:
@@ -1063,20 +1106,20 @@ async def process_all(channels: list) -> tuple:
                 if stream_url and is_valid_stream_url(stream_url):
                     print(f"  ✅ {prefix} {name} → {stream_url[:65]}...")
                     success.append({
-                        "name": name,
+                        "name":       name,
                         "stream_url": stream_url,
                         "player_url": player_url,
-                        "image": image,
-                        "group": group,
+                        "image":      image,
+                        "group":      group,
                     })
                 else:
                     print(f"  ❌ {prefix} {name} (Başarısız / Token Alınamadı)")
                     failed.append({
-                        "name": name,
+                        "name":       name,
                         "player_url": player_url,
-                        "image": image,
-                        "group": group,
-                        "reason": "Geçerli stream URL bulunamadı",
+                        "image":      image,
+                        "group":      group,
+                        "reason":     "Geçerli stream URL bulunamadı",
                     })
 
         await asyncio.gather(*[handle(ch) for ch in channels], return_exceptions=True)
@@ -1090,50 +1133,39 @@ async def process_all(channels: list) -> tuple:
 
 
 def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
-    """Tüm taranan başarılı kanalları cdn.m3u dosyasına yazar."""
     base_path = Path(__file__).parent.resolve()
     file_path = base_path / file_name
     print(f"\n📂 cdn.m3u Yazılıyor (Dosya: {file_path})")
-
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("#EXTM3U\n")
             for ch in items:
-                name = ch["name"]
+                name   = ch["name"]
                 stream = ch["stream_url"]
-                group = ch.get("group", "GENEL")
-                image = ch.get("image", "")
-
+                group  = ch.get("group", "GENEL")
+                image  = ch.get("image", "")
                 f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
                 f.write(f"{stream}\n")
-                
         print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
     except Exception as e:
         print(f"   ❌ Dosya yazma hatası ({file_name}): {e}")
 
 
-# ─── PLAYLIST OKUMA VE GÜNCELLEME ─────────────────────────────────────────────
 def get_playlist_identifiers(extinf_line: str) -> list:
-    """EXTINF satırından tvg-id, tvg-name ve kanal adını çeker."""
     identifiers = []
-    
     id_match = re.search(r'tvg-id="([^"]+)"', extinf_line, re.IGNORECASE)
     if id_match:
         identifiers.append(id_match.group(1).strip())
-        
     name_match = re.search(r'tvg-name="([^"]+)"', extinf_line, re.IGNORECASE)
     if name_match:
         identifiers.append(name_match.group(1).strip())
-        
     if "," in extinf_line:
         display_name = extinf_line.rsplit(",", 1)[-1].strip()
         identifiers.append(display_name)
-        
     return identifiers
 
 
 def get_local_or_remote_playlist() -> str:
-    """Öncelikle çalışma dizinindeki lokal playlist.m3u'yu okur. Yoksa internetten çeker."""
     local_file = Path(__file__).parent.resolve() / PLAYLIST_FILE_NAME
     if local_file.exists():
         try:
@@ -1143,7 +1175,6 @@ def get_local_or_remote_playlist() -> str:
                 return content
         except Exception:
             pass
-
     print(f"   🌐 Lokal dosya bulunamadı, uzak adresten indiriliyor: {PLAYLIST_URL}")
     try:
         r = requests.get(PLAYLIST_URL, timeout=15)
@@ -1155,38 +1186,33 @@ def get_local_or_remote_playlist() -> str:
 
 
 def update_playlist_m3u(success_channels: list, content: str):
-    """playlist.m3u içeriğini satır satır inceler, düzeni bozmadan linkleri günceller."""
     if not content:
         print("   ⚠️ Güncellenecek playlist.m3u içeriği bulunamadı!")
         return
 
     print(f"\n🔄 Playlist Senkronizasyonu Başlatıldı...")
-    
-    # Hızlı arama için harita oluştur
+
     channel_map = {}
     for ch in success_channels:
         ch_name = ch["name"].strip()
-        channel_map[ch_name] = ch["stream_url"]
-        channel_map[ch_name.lower()] = ch["stream_url"]  # Küçük harf yedeği
+        channel_map[ch_name]            = ch["stream_url"]
+        channel_map[ch_name.lower()]    = ch["stream_url"]
 
-    lines = content.splitlines()
-    new_lines = []
+    lines         = content.splitlines()
+    new_lines     = []
     updated_count = 0
     total_channels = 0
-    
+
     i = 0
     while i < len(lines):
-        line = lines[i]
+        line    = lines[i]
         stripped = line.strip()
 
         if stripped.startswith("#EXTINF"):
             total_channels += 1
             new_lines.append(line)
-
-            # Tanımlayıcıları al
             identifiers = get_playlist_identifiers(stripped)
 
-            # Sonraki satırdaki URL'yi bul
             j = i + 1
             url_line_index = -1
             while j < len(lines):
@@ -1201,28 +1227,24 @@ def update_playlist_m3u(success_channels: list, content: str):
                     break
                 j += 1
 
-            # Eşleşme kontrolü
             matched_stream = None
-            matched_id = ""
+            matched_id     = ""
             for ident in identifiers:
                 if ident in channel_map:
                     matched_stream = channel_map[ident]
-                    matched_id = ident
+                    matched_id     = ident
                     break
                 elif ident.lower() in channel_map:
                     matched_stream = channel_map[ident.lower()]
-                    matched_id = ident
+                    matched_id     = ident
                     break
 
             if matched_stream:
-                # Eşleşti -> Sadece temiz linki yaz
                 new_lines.append(matched_stream)
                 updated_count += 1
                 print(f"   ✨ Eşleşti ve Güncellendi: {matched_id}")
-                # Eski url satırına kadar olan kısmı atla
                 i = (url_line_index + 1) if url_line_index != -1 else (i + 1)
             else:
-                # Eşleşmedi -> Orijinal satırları aynen koru
                 if url_line_index != -1:
                     for k in range(i + 1, url_line_index + 1):
                         new_lines.append(lines[k])
@@ -1263,23 +1285,19 @@ async def main():
     print("   📺 CDN LIVE TV — ÇOKLU LİSTE GÜNCELLEME SİSTEMİ")
     print("═" * 65 + "\n")
 
-    # 1. Mevcut playlist.m3u içeriğini al
     playlist_content = get_local_or_remote_playlist()
 
-    # 2. Tüm kanalları tara
     print(f"🚀 Taranacak Kanal Sayısı : {len(MASTER_CHANNELS)}")
-    print(f"⚡ Eşzamanlı Sekme        : {MAX_CONCURRENT}\n")
+    print(f"⚡ Eşzamanlı Sekme        : {MAX_CONCURRENT}")
+    print(f"🔁 Max Retry / Kanal      : {MAX_RETRIES}\n")
 
     success, failed = await process_all(MASTER_CHANNELS)
 
-    # 3. cdn.m3u dosyasını oluştur
     write_single_m3u(success, OUTPUT_FILE_NAME)
 
-    # 4. playlist.m3u dosyasını senkronize et
     if success:
         update_playlist_m3u(success, playlist_content)
 
-    # 5. Hata raporunu yaz
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
