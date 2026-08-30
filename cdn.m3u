@@ -4,8 +4,18 @@ https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc34a/playlist.m3u8?token=
 #EXTINF:-1 tvg-id="uktntsports2" tvg-name="uktntsports2" tvg-logo="" group-title="UK",uktntsports2
 https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc347/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzQ3OjE3ODgxMDg2NDAyODE6Y2RubGl2ZXR2LnR2OjRlMzUyY2E1MGRlZDRkZjcuMzRkZWE0ZjY4YTA5N2E4ZGZiMGEzOGY4OWZkYzE3ZTU3MGM4M2MzNzY3MGM0Mjg3MzkxMzFhMDhkNWZiNTI5MQ
 #EXTINF:-1 tvg-id="uktntsports4" tvg-name="uktntsports4" tvg-logo="" group-title="UK",uktntsports4
+#EXTINF:-1 tvg-id="trbeinsports1" tvg-name="trbeinsports1" tvg-logo="" group-title="TR",trbeinsports11
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
+#EXTVLCOPT:http-origin=https://cdnlivetv.tv
+#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
 https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc34e/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzRlOjE3ODgxMDg2NDAyOTI6Y2RubGl2ZXR2LnR2OjZhMzY5MWI1Mjc4OWJlYmUuYTM2NDUwOWVlYmUxYWM5ZDhkYzlkMDQ4NjhiNzRjNGNiNDhiZTNiMWI0MDdlNWNiMTI1Nzg2NjIyMGM1ZjFiYQ
 #EXTINF:-1 tvg-id="uktntsports1" tvg-name="uktntsports1" tvg-logo="" group-title="UK",uktntsports1
+#EXTINF:-1 tvg-id="trbeinsports1" tvg-name="trbeinsports1" tvg-logo="" group-title="TR",trbeinsports11
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
+#EXTVLCOPT:http-origin=https://cdnlivetv.tv
+#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
 https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc344/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzQ0OjE3ODgxMDg2NDAyODY6Y2RubGl2ZXR2LnR2OmRjN2JiNjE5YWFjOGFhNDUuYWQzN2ZiNDMxODEwNGNmYzlkMDMwMjc3N2VhNTYyM2JhOTAzY2FkODNhNmU5MzFjYWRkNzgyNWExN2FjMTdhMw
 #EXTINF:-1 tvg-id="ukskysportsmainevent" tvg-name="ukskysportsmainevent" tvg-logo="" group-title="UK",ukskysportsmainevent
 https://cdnlivetv.tv/secure/api/v1/6a288d2a81d8192bb76cc30f/playlist.m3u8?token=NmEyODhkMmE4MWQ4MTkyYmI3NmNjMzBmOjE3ODgxMDg2NDExNDc6Y2RubGl2ZXR2LnR2OjFkZTQ5ZWY2MzMyNGIyOWQuNTJhNmYxMzg5YTFlMjg3MGQwZTQyOTVmMzcxYTk3YjYwYjQzZmI5YTMwOGJjNTk4MWMxMTNkMTBlYjA1ZmYzZA
@@ -56,10 +66,20 @@ https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccc04/playlist.m3u8?token=
 #EXTINF:-1 tvg-id="trbeinsports1" tvg-name="trbeinsports1" tvg-logo="" group-title="TR",trbeinsports1
 https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccbfe/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYmZlOjE3ODgxMDg2NDUyNjg6Y2RubGl2ZXR2LnR2OjhjOTY4NmNmYmEwZWFjZjguMDY5ZjJhNzg0MWNhZjNlZmIzNDg4YWYxMWMzNDgwNzIyNmUyMmFkODhmNDMzYjFlMGM3YTQ4YWYxOTljYTBiMw
 #EXTINF:-1 tvg-id="trbeinsports3" tvg-name="trbeinsports3" tvg-logo="" group-title="TR",trbeinsports3
+#EXTINF:-1 tvg-id="trbeinsports1" tvg-name="trbeinsports1" tvg-logo="" group-title="TR",trbeinsports11
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
+#EXTVLCOPT:http-origin=https://cdnlivetv.tv
+#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
 https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccc08/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYzA4OjE3ODgxMDg2NDUzMDI6Y2RubGl2ZXR2LnR2OmU2MzFlNTY2NjBmY2E3YzMuZTBmMzhkYTUwMWM2MWJmMWQ5NTQ3OWNmYTE5YWM2MTdiMGQ4OTU2N2EzZjY1NzYwOTY1OTRmOTI0MzkwNjhhMg
 #EXTINF:-1 tvg-id="trbeinsports4" tvg-name="trbeinsports4" tvg-logo="" group-title="TR",trbeinsports4
+#EXTINF:-1 tvg-id="trbeinsports1" tvg-name="trbeinsports1" tvg-logo="" group-title="TR",trbeinsports11
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/
+#EXTVLCOPT:http-origin=https://cdnlivetv.tv
+#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36&Referer=https://cdnlivetv.tv/&Origin=https://cdnlivetv.tv
 https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccc0d/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYzBkOjE3ODgxMDg2NDU5NzI6Y2RubGl2ZXR2LnR2OjhiMTIzMDIzNTJiNzhlOWEuZTlmZWFlNjM0NjQxYzJlYWI3ZDBkODY1MjdkNTNjMmM0OTgyOGUxMjUwYzBmMTdhNTVhNjJmMjJhZjVlZGVjYw
-#EXTINF:-1 tvg-id="trbeinsports5" tvg-name="trbeinsports5" tvg-logo="" group-title="TR",trbeinsports5
+#EXTINF:-1 tvg-id="trbeinsports5" tvg-name="trbeinsports5" tvg-logo="" group-title="TR",trbeinsports55
 https://cdnlivetv.tv/secure/api/v1/6a288d2681d8192bb76ca991/playlist.m3u8?token=NmEyODhkMjY4MWQ4MTkyYmI3NmNhOTkxOjE3ODgxMDg2NDYxMjY6Y2RubGl2ZXR2LnR2OjFjZDZlMjkyOGQ0YzE4MDMuMzBkZGQ5MjdmNTczOGJmMTcxZGYyMDAyNTFjNDJmZWQ5M2IwNTc4NzAxODg4NmQzZjkwYzIwNDVmM2I2YjY2Yg
 #EXTINF:-1 tvg-id="trbeinsportsmax2" tvg-name="trbeinsportsmax2" tvg-logo="" group-title="TR",trbeinsportsmax2
 https://cdnlivetv.tv/secure/api/v1/6a288d2b81d8192bb76ccc13/playlist.m3u8?token=NmEyODhkMmI4MWQ4MTkyYmI3NmNjYzEzOjE3ODgxMDg2NDYxMzk6Y2RubGl2ZXR2LnR2OjgxMWUzNzUyNzIxZTA0YWUuNjE5ZDkxNjQ0ZDA0NzU1ZWRmYzA0NzRlYWE1MDdjNjQzNzE1MGNhOGM1OWRjMDBiZmZkZDc4NWY4NjMyYmQ0Zg
