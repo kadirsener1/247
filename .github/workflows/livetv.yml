@@ -1,46 +1,61 @@
-name: SportsBite Scraper live
+name: Update live tv Playlist
 
 on:
+  # Her 1 saatte bir çalışsın
   schedule:
-    - cron: '0 */6 * * *'
+      - cron: '0 */6 * * *'
+
+  # Manuel tetikleme
   workflow_dispatch:
+
+  # Kod değişikliğinde
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - 'livetv.py'
+    
+
+concurrency:
+  group: update-m3u
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
-  scrape:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+  update-playlist:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Bağımlılıkları yükle
+      - name: 📦 Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install requests beautifulsoup4 cloudscraper
-          python -c "import cloudscraper; print('OK')"
+          pip install requests
 
-      - name: Scraper çalıştır
+      - name: 🔍 Run scraper
         run: python livetv.py
+        env:
+          PYTHONUNBUFFERED: "1"
 
-      - name: Kanal sayısını göster
+      - name: 📤 Commit and push
         run: |
-          echo "Toplam kanal: $(grep -c '#EXTINF' livelive24.m3u)"
-          echo "m3u8 stream: $(grep -c '.m3u8' livelive24.m3u)"
-          head -30 livelive24.m3u
-
-      - name: Commit ve Push
-        run: |
-          git config user.email "bot@github.com"
-          git config user.name "bot"
-          git add -A
-          git diff --staged --quiet || git commit -m "M3U güncellendi - $(grep -c '#EXTINF' livelive24.m3u) kanal"
-          git push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f livelive24.m3u
+          if git diff --cached --quiet; then
+            echo "Değişiklik yok"
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "🔄 Update playlist | ${TIMESTAMP}"
+            git push
+          fi
