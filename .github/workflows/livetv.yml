@@ -38,9 +38,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 📦 Install dependencies
+        - name: 📦 Install dependencies
         run: |
-          pip install requests
+          pip install requests playwright
+          playwright install --with-deps
 
       - name: 🔍 Run scraper
         run: python livetv.py
