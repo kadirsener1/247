@@ -1233,7 +1233,7 @@ https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI1NjQiLCJ0cyI
 #EXTINF:-1 tvg-id="porto-canal" tvg-name="Porto Canal Portugal-PT" group-title="World",Porto Canal Portugal-PT
 https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI3MTgiLCJ0cyI6MTc4NzgxMzkxOTUzNH0=
 #EXTINF:-1 tvg-id="prosieben" tvg-name="ProSieben (PRO7) DE-DE" group-title="World",ProSieben (PRO7) DE-DE
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI3MzAiLCJ0cyI6MTc4NzgxMzkyMDUzNH0=
+https://pull.niues.live/live/stream-9912131_lsd.m3u8?auth_key=1788215281-0-0-eca59ad98182ba351a0a93ddffaf2ef5
 #EXTINF:-1 tvg-id="premier-sports-ireland-1" tvg-name="Premier Sports Ireland 1-IE" group-title="World",Premier Sports Ireland 1-IE
 https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI3NzEiLCJ0cyI6MTc4NzgxMzkyMTUzNH0=
 #EXTINF:-1 tvg-id="ptv-sports" tvg-name="PTV Sports-PK" group-title="World",PTV Sports-PK
@@ -1299,7 +1299,7 @@ https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI4NTgiLCJ0cyI
 #EXTINF:-1 tvg-id="real-madrid-tv" tvg-name="Real Madrid TV Spain-ES" group-title="World",Real Madrid TV Spain-ES
 https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI1MjMiLCJ0cyI6MTc4NzgxMzk1MjU0NH0=
 #EXTINF:-1 tvg-id="rtl" tvg-name="RTL DE-DE" group-title="World",RTL DE-DE
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI3NDAiLCJ0cyI6MTc4NzgxMzk1MzU0NH0=
+https://pull.niues.live/live/stream-9912131_lsd.m3u8?auth_key=1788215281-0-0-eca59ad98182ba351a0a93ddffaf2ef5
 #EXTINF:-1 tvg-id="rds-2" tvg-name="RDS CA-CA" group-title="World",RDS CA-CA
 https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI4MzkiLCJ0cyI6MTc4NzgxMzk1NDU0NH0=
 #EXTINF:-1 tvg-id="rds-2-alt1" tvg-name="RDS 2 CA-CA" group-title="World",RDS 2 CA-CA
