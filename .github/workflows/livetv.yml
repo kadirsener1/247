@@ -1,61 +1,46 @@
-name: LiveLive24 M3U Auto Updater
+name: SportsBite Scraper live
 
 on:
   schedule:
-    # Her 6 saatte bir otomatik çalışır (Saatleri dilediğiniz gibi ayarlayabilirsiniz)
     - cron: '0 */6 * * *'
   workflow_dispatch:
-    # GitHub paneli üzerinden manuel tetikleme butonu ekler
+  push:
+    branches: [main]
 
 permissions:
-  contents: write # Dosyaları repoya geri yazabilmesi için izin tanımlıyoruz
+  contents: write
 
 jobs:
-  update-m3u:
+  scrape:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-      # 1. Depodaki kodları çek
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Python Ortamını Kur
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-          cache: 'pip' # Pip cache kullanarak sonraki çalışmaları hızlandırır
+          python-version: '3.11'
 
-      # 3. Gerekli Kütüphaneleri Yükle
-      - name: Install Dependencies
+      - name: Bağımlılıkları yükle
         run: |
           python -m pip install --upgrade pip
-          pip install requests playwright
+          python -m pip install requests beautifulsoup4 cloudscraper
+          python -c "import cloudscraper; print('OK')"
 
-      # 4. Playwright Tarayıcısını ve Gerekli Sistem Bileşenlerini Kur
-      - name: Install Playwright Chromium
+      - name: Scraper çalıştır
+        run: python livetv.py
+
+      - name: Kanal sayısını göster
         run: |
-          playwright install chromium
-          playwright install-deps chromium
+          echo "Toplam kanal: $(grep -c '#EXTINF' livelive24.m3u)"
+          echo "m3u8 stream: $(grep -c '.m3u8' livelive24.m3u)"
+          head -30 livelive24.m3u
 
-      # 5. Python Betiğini Çalıştır
-      - name: Run Updater Script
-        run: python livetv.py # Python dosyanızın adı farklıysa burayı güncelleyin
-
-      # 6. Değişen Dosyaları GitHub Deposuna Geri Yükle (Push)
-      - name: Commit and Push Changes
+      - name: Commit ve Push
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
-          # Sadece değişen m3u ve log dosyalarını ekle
-          git add livelive24.m3u playlist.m3u debug_failed.json || true
-          
-          # Eğer değişiklik varsa commit yap ve pushla
-          if ! git diff --cached --quiet; then
-            git commit -m "Auto-Update: M3U Playlists [$(date -u +'%Y-%m-%d %H:%M:%S') UTC]"
-            git push
-            echo "✅ Playlist başarıyla güncellendi ve GitHub'a yüklendi."
-          else
-            echo "⏭️ Herhangi bir değişiklik tespit edilmedi, commit atlanıyor."
-          fi
+          git config user.email "bot@github.com"
+          git config user.name "bot"
+          git add -A
+          git diff --staged --quiet || git commit -m "M3U güncellendi - $(grep -c '#EXTINF' livelive24.m3u) kanal"
+          git push
