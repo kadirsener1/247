@@ -1,20 +1,19 @@
 name: Update live tv Playlist
 
 on:
-  # Her 1 saatte bir çalışsın
+  # Her 6 saatte bir çalışır (Her 1 saat için: '0 * * * *')
   schedule:
-      - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *'
 
   # Manuel tetikleme
   workflow_dispatch:
 
-  # Kod değişikliğinde
+  # Kod değişikliğinde tetikleme
   push:
     branches:
       - main
     paths:
       - 'livetv.py'
-    
 
 concurrency:
   group: update-m3u
@@ -28,7 +27,6 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
 
-
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -38,10 +36,10 @@ jobs:
         with:
           python-version: '3.11'
 
-        - name: 📦 Install dependencies
+      - name: 📦 Install dependencies
         run: |
           pip install requests playwright
-          playwright install --with-deps
+          playwright install --with-deps chromium
 
       - name: 🔍 Run scraper
         run: python livetv.py
