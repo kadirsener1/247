@@ -1,33 +1,17 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="3sat DE" tvg-name="3sat DE" tvg-logo="" group-title="DE",3sat DEm
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217861-0-0-6fa13c6915b4e1c38263a972aeba9746
 #EXTINF:-1 tvg-id="ARD Das Erste" tvg-name="ARD Das Erste" tvg-logo="" group-title="DE",ARD Das Erste
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217861-0-0-6fa13c6915b4e1c38263a972aeba9746
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
 #EXTINF:-1 tvg-id="ZDF HD" tvg-name="ZDF HD" tvg-logo="" group-title="DE",ZDF HD
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217861-0-0-6fa13c6915b4e1c38263a972aeba9746
-#EXTINF:-1 tvg-id="Sky Sport News" tvg-name="Sky Sport News" tvg-logo="" group-title="DE-SPORT",Sky Sport News
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217861-0-0-6fa13c6915b4e1c38263a972aeba9746
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
+#EXTINF:-1 tvg-id="3sat DE" tvg-name="3sat DE" tvg-logo="" group-title="DE",3sat DE
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
 #EXTINF:-1 tvg-id="RTL" tvg-name="RTL" tvg-logo="" group-title="DE",RTL
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217861-0-0-6fa13c6915b4e1c38263a972aeba9746
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
 #EXTINF:-1 tvg-id="ProSieben" tvg-name="ProSieben" tvg-logo="" group-title="DE",ProSieben
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217861-0-0-6fa13c6915b4e1c38263a972aeba9746
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
+#EXTINF:-1 tvg-id="Sky Sport News" tvg-name="Sky Sport News" tvg-logo="" group-title="DE-SPORT",Sky Sport News
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
 #EXTINF:-1 tvg-id="Sky Sport Bundesliga 1" tvg-name="Sky Sport Bundesliga 1" tvg-logo="" group-title="DE-SPORT",Sky Sport Bundesliga 1
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217921-0-0-774ecbc47ca8b41847eb52c3412b9602
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
 #EXTINF:-1 tvg-id="DAZN 1 DE" tvg-name="DAZN 1 DE" tvg-logo="" group-title="DE-SPORT",DAZN 1 DE
-#EXTVLCOPT:http-referrer=https://livelive24.com/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-https://pull.niues.live/live/stream-9912130_lsd.m3u8?auth_key=1788217921-0-0-774ecbc47ca8b41847eb52c3412b9602
+https://pull.niues.live/live/stream-9912112_lsd.m3u8?auth_key=1788235921-0-0-34087f2317d878e83ace82202a68acde
