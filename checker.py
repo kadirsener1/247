@@ -780,7 +780,7 @@ DEBUG_FILE         = "debug_failed.json"
 TIMEOUT      = 15000
 FIRST_WAIT   = 3.0   # İlk yüklemede bekleme (saniye)
 RELOAD_WAIT  = 3.5   # Her retry sonrası bekleme (saniye)
-MAX_RETRIES  = 20    # Maksimum yenileme denemesi
+MAX_RETRIES  = 2     # ✅ Maksimum yenileme denemesi 2'ye düşürüldü
 RETRY_WAIT   = 2.0   # Denemeler arası ek bekleme (saniye)
 MAX_CONCURRENT = 4
 
@@ -1132,7 +1132,6 @@ async def process_all(channels: list) -> tuple:
 
 
 def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
-    """Bulunan kanalları cdn.m3u listesine Header (Referer, UA) parametreleriyle birlikte kaydeder."""
     base_path = Path(__file__).parent.resolve()
     file_path = base_path / file_name
     print(f"\n📂 cdn.m3u Yazılıyor (Dosya: {file_path})")
@@ -1145,7 +1144,7 @@ def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
                 group  = ch.get("group", "GENEL")
                 image  = ch.get("image", "")
                 f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
-                f.write(f"{VLC_OPTS}\n")  # UA ve Referrer başlıkları ekleniyor
+                f.write(f"{VLC_OPTS}\n")
                 f.write(f"{stream}\n")
         print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
     except Exception as e:
@@ -1187,10 +1186,6 @@ def get_local_or_remote_playlist() -> str:
 
 
 def update_playlist_m3u(success_channels: list, content: str):
-    """
-    Kanal gruplarını, logolarını ve sıralamasını KESİNLİKLE DEĞİŞTİRMEDEN
-    sadece isim bazlı eşleşen yayın linklerini ve gerekli Header parametrelerini günceller.
-    """
     if not content:
         print("   ⚠️ Güncellenecek playlist.m3u içeriği bulunamadı!")
         return
@@ -1214,11 +1209,9 @@ def update_playlist_m3u(success_channels: list, content: str):
 
         if stripped.startswith("#EXTINF"):
             total_channels += 1
-            # Orijinal #EXTINF satırını aynen ekle (Böylece grup ismi, logo, sıra korunur)
             new_lines.append(line)
             identifiers = get_playlist_identifiers(stripped)
 
-            # Mevcut URL'nin satır indeksini bulmak için ileriye doğru tara
             j = i + 1
             url_line_index = -1
             while j < len(lines):
@@ -1233,7 +1226,6 @@ def update_playlist_m3u(success_channels: list, content: str):
                     break
                 j += 1
 
-            # Taranan listeyle eşleşen kanal var mı kontrol et
             matched_stream = None
             matched_id     = ""
             for ident in identifiers:
@@ -1243,19 +1235,16 @@ def update_playlist_m3u(success_channels: list, content: str):
                     break
 
             if matched_stream:
-                # Eşleşme bulundu: Sadece VLC Başlık parametrelerini ve yeni linki ekle
                 new_lines.append(VLC_OPTS)
                 new_lines.append(matched_stream)
                 updated_count += 1
                 print(f"   ✨ Eşleşti ve Güncellendi: {matched_id}")
                 
-                # Orijinal listedeki eski URL'yi (ve varsa eski opsiyonları) atla
                 if url_line_index != -1:
                     i = url_line_index + 1
                 else:
                     i += 1
             else:
-                # Eşleşmeyen kanalları orijinal dosyadan olduğu gibi koru
                 if url_line_index != -1:
                     for k in range(i + 1, url_line_index + 1):
                         new_lines.append(lines[k])
@@ -1263,7 +1252,6 @@ def update_playlist_m3u(success_channels: list, content: str):
                 else:
                     i += 1
         else:
-            # #EXTM3U ve diğer yapısal satırları aynen koru
             if stripped and not any(stripped.startswith(opt) for opt in ["#EXTVLCOPT:http-user-agent", "#EXTVLCOPT:http-referrer", "#EXTVLCOPT:http-origin"]):
                 new_lines.append(line)
             i += 1
