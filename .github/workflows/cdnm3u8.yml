@@ -1,9 +1,8 @@
-name: CDN Live TV M3U Güncelle son son
+name: CDN Live TV M3U Güncelle son
 
 on:
   workflow_dispatch:
   schedule:
-    # Her 3 saatte bir otomatik çalışır
     - cron: '0 */3 * * *'
 
 jobs:
@@ -32,47 +31,41 @@ jobs:
         run: |
           python -m playwright install chromium --with-deps
 
-      - name: M3U Dosyalarını Oluştur ve Senkronize Et
+      - name: playlist.m3u Dosyasını Güncelle
         env:
           DISPLAY: ""
           LIBGL_ALWAYS_SOFTWARE: "1"
           GALLIUM_DRIVER: "softpipe"
         run: |
-          # Python script dosyanızın adı 'checker.py' değilse burayı dosya adınızla değiştirin
           python checker.py
 
-      - name: Yedekleri Artifact Olarak Yükle
+      - name: Hata Günlüğünü Artifact Olarak Kaydet
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cdn-m3u-ve-debug
+          name: debug-failed-ve-playlist
           path: |
-            cdn.m3u
             playlist.m3u
             debug_failed.json
           if-no-files-found: ignore
 
-      - name: Değişiklikleri Kaydet ve Gönder (Commit & Push)
+      - name: Değişiklikleri Commit et ve Pushla
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Olası uzak sunucu değişikliklerini çek (çakışmaları önlemek için)
+          # Olası çakışmaları önlemek için uzak sunucu değişikliklerini rebase ile çek
           git pull --rebase origin main || true
 
-          # Varsa eski klasörü temizle
-          git rm -rf cdnlive 2>/dev/null || true
-          
-          # Güncellenen dosyaları git'e ekle
-          git add cdn.m3u playlist.m3u debug_failed.json || true
+          # Sadece değişen playlist.m3u ve hata günlüğünü git'e ekle
+          git add playlist.m3u debug_failed.json || true
 
           # Değişiklik kontrolü
           if git diff --cached --quiet; then
-            echo "ℹ️ Herhangi bir değişiklik tespit edilmedi, commit atlanıyor."
+            echo "ℹ️ Değişiklik yok. Commit atlanıyor."
           else
-            KANAL=$(grep -c "#EXTINF" cdn.m3u 2>/dev/null || echo 0)
             TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
-            git commit -m "📺 $KANAL kanal güncellendi — $TARIH"
+            git commit -m "📺 playlist.m3u kanalları güncellendi — $TARIH"
             git push origin main
           fi
