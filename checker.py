@@ -780,9 +780,16 @@ DEBUG_FILE         = "debug_failed.json"
 TIMEOUT      = 15000
 FIRST_WAIT   = 3.0   # İlk yüklemede bekleme (saniye)
 RELOAD_WAIT  = 3.5   # Her retry sonrası bekleme (saniye)
-MAX_RETRIES  = 20    # ✅ YENİ: Maksimum yenileme denemesi (eski kodda sadece 1'di)
-RETRY_WAIT   = 2.0   # ✅ YENİ: Denemeler arası ek bekleme (saniye)
+MAX_RETRIES  = 20    # Maksimum yenileme denemesi
+RETRY_WAIT   = 2.0   # Denemeler arası ek bekleme (saniye)
 MAX_CONCURRENT = 4
+
+# Kanalların başına eklenecek VLC Başlık Ayarları (User-Agent / Referrer / Origin)
+VLC_OPTS = (
+    "#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36\n"
+    "#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/\n"
+    "#EXTVLCOPT:http-origin=https://cdnlivetv.tv"
+)
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
@@ -995,29 +1002,23 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             pass
 
         # ── Retry döngüsü ────────────────────────────────────────────────────
-        # Sitede "Stream Error" gelince sayfa yenilemek gerekiyor.
-        # Bazen 15+ deneme gerekebileceğinden MAX_RETRIES kadar deniyoruz.
         for attempt in range(1, MAX_RETRIES + 1):
 
             if stream_url and is_valid_stream_url(stream_url):
-                break  # URL bulundu, döngüden çık
+                break
 
-            # Sayfadaki içeriği kontrol et
             page_has_error = False
             try:
                 content = await page.content()
 
                 if has_stream_error(content):
-                    # Stream Error hâlâ var — yenilemeye devam
                     page_has_error = True
                 else:
-                    # Hata yok → HTML'den URL çekmeyi dene
                     found = extract_from_html(content, player_url)
                     if is_valid_stream_url(found):
                         stream_url = found
                         break
 
-                    # JS'den dene
                     js_url = await extract_from_js(page)
                     if is_valid_stream_url(js_url):
                         stream_url = js_url
@@ -1028,7 +1029,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             status = "Stream Error — yenileniyor" if page_has_error else "URL yok — yenileniyor"
             print(f"    🔄 [{attempt:02d}/{MAX_RETRIES}] {channel_name}: {status}")
 
-            # Kısa bekleme + event sıfırla + yenile
             await asyncio.sleep(RETRY_WAIT)
             found_event.clear()
 
@@ -1039,7 +1039,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except (asyncio.TimeoutError, Exception):
                 pass
 
-        # ── Son çare: frame taraması ──────────────────────────────────────────
         if not stream_url:
             try:
                 for frame in page.frames:
@@ -1133,6 +1132,7 @@ async def process_all(channels: list) -> tuple:
 
 
 def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
+    """Bulunan kanalları cdn.m3u listesine Header (Referer, UA) parametreleriyle birlikte kaydeder."""
     base_path = Path(__file__).parent.resolve()
     file_path = base_path / file_name
     print(f"\n📂 cdn.m3u Yazılıyor (Dosya: {file_path})")
@@ -1145,6 +1145,7 @@ def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
                 group  = ch.get("group", "GENEL")
                 image  = ch.get("image", "")
                 f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
+                f.write(f"{VLC_OPTS}\n")  # UA ve Referrer başlıkları ekleniyor
                 f.write(f"{stream}\n")
         print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
     except Exception as e:
@@ -1186,6 +1187,10 @@ def get_local_or_remote_playlist() -> str:
 
 
 def update_playlist_m3u(success_channels: list, content: str):
+    """
+    Kanal gruplarını, logolarını ve sıralamasını KESİNLİKLE DEĞİŞTİRMEDEN
+    sadece isim bazlı eşleşen yayın linklerini ve gerekli Header parametrelerini günceller.
+    """
     if not content:
         print("   ⚠️ Güncellenecek playlist.m3u içeriği bulunamadı!")
         return
@@ -1195,8 +1200,7 @@ def update_playlist_m3u(success_channels: list, content: str):
     channel_map = {}
     for ch in success_channels:
         ch_name = ch["name"].strip()
-        channel_map[ch_name]            = ch["stream_url"]
-        channel_map[ch_name.lower()]    = ch["stream_url"]
+        channel_map[ch_name.lower()] = ch["stream_url"]
 
     lines         = content.splitlines()
     new_lines     = []
@@ -1205,14 +1209,16 @@ def update_playlist_m3u(success_channels: list, content: str):
 
     i = 0
     while i < len(lines):
-        line    = lines[i]
+        line = lines[i]
         stripped = line.strip()
 
         if stripped.startswith("#EXTINF"):
             total_channels += 1
+            # Orijinal #EXTINF satırını aynen ekle (Böylece grup ismi, logo, sıra korunur)
             new_lines.append(line)
             identifiers = get_playlist_identifiers(stripped)
 
+            # Mevcut URL'nin satır indeksini bulmak için ileriye doğru tara
             j = i + 1
             url_line_index = -1
             while j < len(lines):
@@ -1227,24 +1233,29 @@ def update_playlist_m3u(success_channels: list, content: str):
                     break
                 j += 1
 
+            # Taranan listeyle eşleşen kanal var mı kontrol et
             matched_stream = None
             matched_id     = ""
             for ident in identifiers:
-                if ident in channel_map:
-                    matched_stream = channel_map[ident]
-                    matched_id     = ident
-                    break
-                elif ident.lower() in channel_map:
+                if ident.lower() in channel_map:
                     matched_stream = channel_map[ident.lower()]
                     matched_id     = ident
                     break
 
             if matched_stream:
+                # Eşleşme bulundu: Sadece VLC Başlık parametrelerini ve yeni linki ekle
+                new_lines.append(VLC_OPTS)
                 new_lines.append(matched_stream)
                 updated_count += 1
                 print(f"   ✨ Eşleşti ve Güncellendi: {matched_id}")
-                i = (url_line_index + 1) if url_line_index != -1 else (i + 1)
+                
+                # Orijinal listedeki eski URL'yi (ve varsa eski opsiyonları) atla
+                if url_line_index != -1:
+                    i = url_line_index + 1
+                else:
+                    i += 1
             else:
+                # Eşleşmeyen kanalları orijinal dosyadan olduğu gibi koru
                 if url_line_index != -1:
                     for k in range(i + 1, url_line_index + 1):
                         new_lines.append(lines[k])
@@ -1252,7 +1263,9 @@ def update_playlist_m3u(success_channels: list, content: str):
                 else:
                     i += 1
         else:
-            new_lines.append(line)
+            # #EXTM3U ve diğer yapısal satırları aynen koru
+            if stripped and not any(stripped.startswith(opt) for opt in ["#EXTVLCOPT:http-user-agent", "#EXTVLCOPT:http-referrer", "#EXTVLCOPT:http-origin"]):
+                new_lines.append(line)
             i += 1
 
     file_path = Path(__file__).parent.resolve() / PLAYLIST_FILE_NAME
