@@ -12,8 +12,9 @@ import requests
 from playwright.async_api import async_playwright, Error as PlaywrightError
 
 
-# ─── MASTER KANAL LİSTESİ ─────────────────────────────────────────────────────
-MASTER_CHANNELS = [
+# ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
+KANALLAR = [
+    
     {
         "name": "uktntsports1",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=TNT%20Sports%201&code=gb&user=cdnlivetv&plan=free",
@@ -170,15 +171,15 @@ MASTER_CHANNELS = [
         "group": "tr"
     },
     {
-        "name": "trbeinsportsmax1",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%201&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
+    "name": "trbeinsportsmax1",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%201&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr"
+  },
     {
-        "name": "trbeinsportsmax2",
-        "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
-        "group": "tr"
-    },
+    "name": "trbeinsportsmax2",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20MAX%202&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr"
+  },
     {
         "name": "trbeinsportshaber",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%20Haber&code=tr&user=cdnlivetv&plan=free",
@@ -399,36 +400,43 @@ MASTER_CHANNELS = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20Sports%203&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax4",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%204&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax5",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%205&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax6",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%206&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax7",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%207&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax8",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%208&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax9",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%209&code=fr&user=cdnlivetv&plan=free",
         "group": "fr"
     },
+    
     {
         "name": "frbeinsportsmax10",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20MAX%2010&code=fr&user=cdnlivetv&plan=free",
@@ -539,6 +547,7 @@ MASTER_CHANNELS = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=fussball&code=de&user=cdnlivetv&plan=free",
         "group": "de"
     },
+    
     {
         "name": "itskysportuno",
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Uno&code=it&user=cdnlivetv&plan=free",
@@ -769,29 +778,24 @@ MASTER_CHANNELS = [
         "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=AD%20Sports%20Premium%201&code=ar&user=cdnlivetv&plan=free",
         "group": "ar"
     }
+    # Yeni kanalları yukarıdaki şablona göre buraya ekleyebilirsiniz.
 ]
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-PLAYLIST_FILE_NAME = "playlist.m3u"
-PLAYLIST_URL       = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
-DEBUG_FILE         = "debug_failed.json"
+OUTPUT_DIR_NAME = "cdnlive"     # Klasör adı
+DEBUG_FILE = "debug_failed.json"
 
-TIMEOUT      = 15000
-FIRST_WAIT   = 3.0   
-RELOAD_WAIT  = 3.5   
-MAX_RETRIES  = 2     # Yenileme deneme limiti
-RETRY_WAIT   = 2.0   
-MAX_CONCURRENT = 4
-
-# Kanalların başına eklenecek VLC Başlık Ayarları (User-Agent / Referrer / Origin)
-VLC_OPTS = [
-    "#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/",
-    "#EXTVLCOPT:http-origin=https://cdnlivetv.tv"
-]
+TIMEOUT = 15000                 # Sayfa yükleme zaman aşımı (15s)
+FIRST_WAIT = 3.0                # İlk yüklemede akış bekleme süresi (sn)
+RELOAD_WAIT = 4.5               # Yenileme sonrası bekleme süresi (sn)
+MAX_CONCURRENT = 4              # Eşzamanlı sekme sayısı
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
     "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8",
     "Referer": "https://cdnlivetv.tv/",
     "Origin": "https://cdnlivetv.tv",
@@ -814,50 +818,56 @@ BROWSER_ARGS = [
 
 BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 
-STREAM_ERROR_TEXTS = [
-    "Stream loading failed",
-    "Stream Error",
-    "Please refresh",
-    "stream-error",
-]
-
 # ──────────────────────────────────────────────────────────────────────────────
 
 
 def is_valid_stream_url(url: str) -> bool:
     if not url or not isinstance(url, str):
         return False
+
     url = url.strip()
+
     if not (url.startswith("http://") or url.startswith("https://")):
         return False
-    invalid_chars = [" ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
-                     "\\", "\n", "\r", "\t", "&&", "||", "import", "function"]
+
+    invalid_chars = [
+        " ", "{", "}", "<", ">", '"', "'", "`", ";", "(", ")",
+        "\\", "\n", "\r", "\t", "&&", "||", "import", "function"
+    ]
     if any(c in url for c in invalid_chars):
         return False
+
     junk_keywords = ["parser", "bundle", "webpack", "chunk", "worker", "player.min"]
     url_lower = url.lower()
     if any(k in url_lower for k in junk_keywords):
         return False
+
     base_path = url.split("?")[0].lower()
     if not (".m3u8" in base_path or ".mpd" in base_path):
         return False
+
     return True
+
+
+def sanitize_filename(name: str) -> str:
+    """Dosya adlarında hata yaratabilecek geçersiz karakterleri temizler."""
+    return re.sub(r'[\\/*?:"<>|]', "", name).strip()
 
 
 def extract_from_html(html_text: str, base_url: str = "") -> str:
     if not html_text:
         return ""
+
     html_text = html_text.replace("\\/", "/").replace("\\u0026", "&")
+
     pattern = r'https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]+\.(?:m3u8|mpd)(?:\?[a-zA-Z0-9\-._~:/?#\[\]@!$&*+,;=%]*)?'
+
     matches = re.findall(pattern, html_text, re.IGNORECASE)
     for m in matches:
         if is_valid_stream_url(m):
             return m
+
     return ""
-
-
-def has_stream_error(content: str) -> bool:
-    return any(err in content for err in STREAM_ERROR_TEXTS)
 
 
 async def extract_from_js(page) -> str:
@@ -870,6 +880,7 @@ async def extract_from_js(page) -> str:
                         if (f && typeof f === 'string' && f.startsWith('http')) return f;
                     }
                 } catch(e){}
+
                 try {
                     if (typeof videojs !== 'undefined') {
                         const players = videojs.getAllPlayers();
@@ -879,13 +890,17 @@ async def extract_from_js(page) -> str:
                         }
                     }
                 } catch(e){}
+
                 try {
                     if (typeof Hls !== 'undefined' && Hls.url && Hls.url.startsWith('http')) return Hls.url;
                 } catch(e){}
+
                 const v = document.querySelector('video');
                 if (v && v.src && v.src.startsWith('http')) return v.src;
+
                 const s = document.querySelector('video source');
                 if (s && s.src && s.src.startsWith('http')) return s.src;
+
                 return null;
             }
         """)
@@ -893,6 +908,7 @@ async def extract_from_js(page) -> str:
             return val
     except Exception:
         pass
+
     return ""
 
 
@@ -901,6 +917,7 @@ async def try_trigger_play(page):
         await page.mouse.click(200, 200)
     except Exception:
         pass
+
     try:
         await page.evaluate("""
             () => {
@@ -925,7 +942,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         return ""
 
     context = None
-    page    = None
+    page = None
 
     try:
         context = await browser.new_context(
@@ -938,9 +955,11 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             ignore_https_errors=True,
             viewport={"width": 1280, "height": 720},
         )
+
         await context.add_init_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
         )
+
         page = await context.new_page()
 
         async def route_filter(route):
@@ -965,11 +984,13 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             nonlocal stream_url
             if stream_url:
                 return
+
             url = response.url
             if is_valid_stream_url(url):
                 stream_url = url
                 found_event.set()
                 return
+
             ct = response.headers.get("content-type", "").lower()
             if "application/json" in ct:
                 try:
@@ -982,7 +1003,7 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
                 except Exception:
                     pass
 
-        page.on("request",  on_request)
+        page.on("request", on_request)
         page.on("response", on_response)
 
         try:
@@ -990,47 +1011,30 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         except Exception:
             pass
 
-        await try_trigger_play(page)
-
         try:
             await asyncio.wait_for(found_event.wait(), timeout=FIRST_WAIT)
         except asyncio.TimeoutError:
             pass
 
-        # ── Retry Döngüsü ──
-        for attempt in range(1, MAX_RETRIES + 1):
-            if stream_url and is_valid_stream_url(stream_url):
-                break
-
-            page_has_error = False
-            try:
-                content = await page.content()
-                if has_stream_error(content):
-                    page_has_error = True
-                else:
-                    found = extract_from_html(content, player_url)
-                    if is_valid_stream_url(found):
-                        stream_url = found
-                        break
-
-                    js_url = await extract_from_js(page)
-                    if is_valid_stream_url(js_url):
-                        stream_url = js_url
-                        break
-            except Exception:
-                page_has_error = True
-
-            status = "Stream Error" if page_has_error else "URL yok"
-            print(f"    🔄 [{attempt:02d}/{MAX_RETRIES}] {channel_name}: {status} — yenileniyor")
-
-            await asyncio.sleep(RETRY_WAIT)
-            found_event.clear()
-
+        if not stream_url:
+            await try_trigger_play(page)
             try:
                 await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
                 await try_trigger_play(page)
                 await asyncio.wait_for(found_event.wait(), timeout=RELOAD_WAIT)
-            except (asyncio.TimeoutError, Exception):
+            except Exception:
+                pass
+
+        if not stream_url:
+            stream_url = await extract_from_js(page)
+
+        if not stream_url:
+            try:
+                content = await page.content()
+                found = extract_from_html(content, player_url)
+                if is_valid_stream_url(found):
+                    stream_url = found
+            except Exception:
                 pass
 
         if not stream_url:
@@ -1052,37 +1056,48 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         pass
     finally:
         if page:
-            try: await page.close()
-            except Exception: pass
+            try:
+                await page.close()
+            except Exception:
+                pass
         if context:
-            try: await context.close()
-            except Exception: pass
+            try:
+                await context.close()
+            except Exception:
+                pass
 
     return stream_url if is_valid_stream_url(stream_url) else ""
 
 
 async def process_all(channels: list) -> tuple:
-    success    = []
-    failed     = []
-    semaphore  = asyncio.Semaphore(MAX_CONCURRENT)
-    total      = len(channels)
+    success = []
+    failed = []
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
+    total = len(channels)
     done_count = 0
-    lock       = asyncio.Lock()
+    lock = asyncio.Lock()
 
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=True, args=BROWSER_ARGS)
+        browser = await pw.chromium.launch(
+            headless=True,
+            args=BROWSER_ARGS,
+        )
 
         async def handle(ch):
             nonlocal done_count
-            name       = str(ch.get("name",  "?")).strip()
-            player_url = str(ch.get("url",   "")).strip()
-            image      = str(ch.get("image", "")).strip()
-            group      = str(ch.get("group", "GENEL")).strip().upper()
+
+            name = str(ch.get("name", "?")).strip()
+            player_url = str(ch.get("url", "")).strip()
+            image = str(ch.get("image", "")).strip()
+            group = str(ch.get("group", "GENEL")).strip().upper()
 
             if not player_url:
                 async with lock:
                     done_count += 1
-                    failed.append({"name": name, "player_url": "", "image": image, "group": group, "reason": "URL yok"})
+                    failed.append({
+                        "name": name, "player_url": "", "image": image,
+                        "group": group, "reason": "URL yok"
+                    })
                 return
 
             async with semaphore:
@@ -1091,194 +1106,112 @@ async def process_all(channels: list) -> tuple:
             async with lock:
                 done_count += 1
                 prefix = f"[{done_count:03d}/{total}]"
+
                 if stream_url and is_valid_stream_url(stream_url):
                     print(f"  ✅ {prefix} {name} → {stream_url[:65]}...")
-                    success.append({"name": name, "stream_url": stream_url})
+                    success.append({
+                        "name": name,
+                        "stream_url": stream_url,
+                        "player_url": player_url,
+                        "image": image,
+                        "group": group,
+                    })
                 else:
-                    print(f"  ❌ {prefix} {name} (Başarısız)")
-                    failed.append({"name": name, "player_url": player_url, "reason": "Stream URL bulunamadı"})
+                    print(f"  ❌ {prefix} {name} (Başarısız / Token Alınamadı)")
+                    failed.append({
+                        "name": name,
+                        "player_url": player_url,
+                        "image": image,
+                        "group": group,
+                        "reason": "Geçerli stream URL bulunamadı",
+                    })
 
         await asyncio.gather(*[handle(ch) for ch in channels], return_exceptions=True)
 
-        try: await browser.close()
-        except Exception: pass
+        try:
+            await browser.close()
+        except Exception:
+            pass
 
     return success, failed
 
 
-def get_playlist_identifiers(extinf_line: str) -> list:
-    identifiers = []
-    id_match = re.search(r'tvg-id="([^"]+)"', extinf_line, re.IGNORECASE)
-    if id_match:
-        identifiers.append(id_match.group(1).strip())
-    name_match = re.search(r'tvg-name="([^"]+)"', extinf_line, re.IGNORECASE)
-    if name_match:
-        identifiers.append(name_match.group(1).strip())
-    if "," in extinf_line:
-        display_name = extinf_line.rsplit(",", 1)[-1].strip()
-        identifiers.append(display_name)
-    return identifiers
+def write_individual_m3u8(items: list, output_dir_name: str, bandwidth: int = 8000000):
+    """Bulunan her kanal için cdnlive klasörü altında istenen formatta .m3u8 dosyası oluşturur."""
+    base_path = Path(__file__).parent.resolve()
+    target_dir = base_path / output_dir_name
+    
+    # Klasörü oluştur
+    target_dir.mkdir(parents=True, exist_ok=True)
+    
+    print(f"\n📂 Yazma İşlemi Başlatıldı (Klasör: {target_dir})")
 
-
-def get_local_or_remote_playlist() -> str:
-    local_file = Path(__file__).parent.resolve() / PLAYLIST_FILE_NAME
-    if local_file.exists():
-        try:
-            content = local_file.read_text(encoding="utf-8")
-            if content.strip():
-                print(f"   📂 Yerel '{PLAYLIST_FILE_NAME}' dosyası bulundu ve işlenecek.")
-                return content
-        except Exception:
-            pass
-    print(f"   🌐 Yerel dosya bulunamadı, uzak depodan indiriliyor: {PLAYLIST_URL}")
-    try:
-        r = requests.get(PLAYLIST_URL, timeout=15)
-        r.raise_for_status()
-        return r.text
-    except Exception as e:
-        print(f"   ❌ Uzak playlist indirilemedi: {e}")
-        return ""
-
-
-def update_playlist_in_place(success_channels: list, playlist_content: str):
-    """
-    Orijinal playlist dosyasını satır satır ayrıştırır. Kanal sırasını, grup başlıklarını, 
-    logoları ve diğer eşleşmeyen tüm kanalları KESİNLİKLE korur. Sadece eşleşenlerin URL'lerini 
-    ve VLC ayarlarını günceller.
-    """
-    if not playlist_content:
-        print("   ⚠️ Güncellenecek playlist içeriği boş!")
+    if not items:
+        print("   ⚠️ Yazılacak başarılı kanal bulunamadı.")
         return
 
-    print(f"\n🔄 playlist.m3u İçerik Güncellemesi Başlatıldı...")
+    for ch in items:
+        name = ch["name"]
+        stream = ch["stream_url"]
 
-    success_map = {ch["name"].lower(): ch["stream_url"] for ch in success_channels}
-    lines = playlist_content.splitlines()
-    parsed_entries = []
-    
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-        if line.strip().startswith("#EXTINF"):
-            extinf = line
-            opts = []
-            url = ""
-            
-            # Sonraki URL satırına kadar olan parametreleri oku
-            j = i + 1
-            while j < len(lines):
-                next_line = lines[j].strip()
-                if not next_line:
-                    j += 1
-                    continue
-                if next_line.startswith("#EXTINF") or next_line.startswith("#EXTM3U"):
-                    break
-                if next_line.startswith("#EXTVLCOPT"):
-                    # Eski VLC opsiyonlarını yakala (güncelleme sırasında temizlenecek)
-                    opts.append(lines[j])
-                    j += 1
-                elif "://" in next_line or next_line.startswith("http://") or next_line.startswith("https://"):
-                    url = lines[j]
-                    j += 1
-                    break
-                else:
-                    opts.append(lines[j])
-                    j += 1
-            
-            parsed_entries.append({
-                "type": "channel",
-                "extinf": extinf,
-                "opts": opts,
-                "url": url
-            })
-            i = j
-        else:
-            parsed_entries.append({
-                "type": "raw",
-                "line": line
-            })
-            i += 1
+        # Dosya adı için geçersiz karakterleri temizle
+        safe_name = sanitize_filename(name)
+        file_path = target_dir / f"{safe_name}.m3u8"
 
-    # Güncelleme ve Senkronizasyon Aşaması
-    updated_count = 0
-    total_channels = 0
-    output_lines = []
+        # İstenen formatta M3U8 dosyasını yaz:
+        # #EXTM3U
+        # #EXT-X-VERSION:3
+        # #EXT-X-STREAM-INF:BANDWIDTH=8000000
+        # Yayın linki
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write("#EXTM3U\n")
+                f.write("#EXT-X-VERSION:3\n")
+                f.write(f"#EXT-X-STREAM-INF:BANDWIDTH={bandwidth}\n")
+                f.write(f"{stream}\n")
+            print(f"   💾 Yazıldı: {file_path.name}")
+        except Exception as e:
+            print(f"   ❌ Dosya yazma hatası ({name}): {e}")
 
-    for entry in parsed_entries:
-        if entry["type"] == "raw":
-            output_lines.append(entry["line"])
-        elif entry["type"] == "channel":
-            total_channels += 1
-            identifiers = get_playlist_identifiers(entry["extinf"])
-            
-            matched_stream = None
-            matched_id = ""
-            for ident in identifiers:
-                if ident.lower() in success_map:
-                    matched_stream = success_map[ident.lower()]
-                    matched_id = ident
-                    break
-            
-            # #EXTINF satırını aynen ekle (Kanal adı, grup ismi, logo birebir korunur)
-            output_lines.append(entry["extinf"])
-            
-            if matched_stream:
-                # Eşleşen kanal: Yeni VLC Opt'larını ve yeni URL'yi ekle
-                for opt in VLC_OPTS:
-                    output_lines.append(opt)
-                output_lines.append(matched_stream)
-                updated_count += 1
-                print(f"   ✨ Güncellendi: {matched_id}")
-            else:
-                # Eşleşmeyen kanal: Eski parametreleri ve eski URL'yi aynen koru
-                for opt in entry["opts"]:
-                    output_lines.append(opt)
-                if entry["url"]:
-                    output_lines.append(entry["url"])
 
-    # Doğrudan mevcut playlist.m3u dosyasının üzerine yaz
-    file_path = Path(__file__).parent.resolve() / PLAYLIST_FILE_NAME
-    try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write("\n".join(output_lines) + "\n")
-        print(f"\n   💾 {PLAYLIST_FILE_NAME} başarıyla güncellendi!")
-        print(f"   📊 Toplam Kanal: {total_channels} | Başarıyla Güncellenen: {updated_count}")
-    except Exception as e:
-        print(f"   ❌ playlist.m3u dosyasına yazılamadı: {e}")
+def print_report(channels: list, success: list, failed: list):
+    turkey_tz = timezone(timedelta(hours=3))
+    now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
+
+    print(f"\n{'═'*65}")
+    print(f"📊 SONUÇ RAPORU")
+    print(f"{'═'*65}")
+    print(f"  📺 Girilen kanal sayısı  : {len(channels)}")
+    print(f"  ✅ Başarıyla çözülen     : {len(success)}")
+    print(f"  ❌ Başarısız olan        : {len(failed)}")
+    print(f"  📁 Çıktı Klasör Yolu     : ./{OUTPUT_DIR_NAME}/")
+    print(f"  🕐 Güncelleme zamanı     : {now}")
+    print(f"{'═'*65}\n")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — DOĞRUDAN PLAYLIST GÜNCELLEME SİSTEMİ")
+    print("   📺 ÖZEL LİSTE — ÇOKLU KANAL AYRI DOSYA KAYDEDİCİ")
     print("═" * 65 + "\n")
 
-    playlist_content = get_local_or_remote_playlist()
+    if not KANALLAR:
+        print("⚠️  Lütfen 'KANALLAR' listesine en az bir kanal ekleyin.")
+        return
 
-    print(f"🚀 Taranacak Kanal Sayısı : {len(MASTER_CHANNELS)}")
-    print(f"⚡ Eşzamanlı Sekme        : {MAX_CONCURRENT}")
-    print(f"🔁 Max Retry / Kanal      : {MAX_RETRIES}\n")
+    print(f"📋 İşlenecek kanal sayısı: {len(KANALLAR)}")
+    print(f"⚡ Eşzamanlı Sekme       : {MAX_CONCURRENT}")
+    print(f"📁 Klasör Hedefi         : ./{OUTPUT_DIR_NAME}/\n")
 
-    success, failed = await process_all(MASTER_CHANNELS)
+    success, failed = await process_all(KANALLAR)
 
-    if success:
-        update_playlist_in_place(success, playlist_content)
+    # Kanalları ayrı dosyalar halinde yazdır
+    write_individual_m3u8(success, OUTPUT_DIR_NAME)
 
-    # Başarısızlık debug kaydı
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    # Özet Raporu
-    turkey_tz = timezone(timedelta(hours=3))
-    now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
-    print(f"\n{'═'*65}")
-    print(f"📊 SONUÇ RAPORU")
-    print(f"{'═'*65}")
-    print(f"  📺 Taranan kanal sayısı  : {len(MASTER_CHANNELS)}")
-    print(f"  ✅ Başarıyla çözülen     : {len(success)}")
-    print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 Güncellenen Liste     : playlist.m3u (Doğrudan Üzerine Yazıldı)")
-    print(f"  🕐 Güncelleme zamanı     : {now}")
-    print(f"{'═'*65}\n")
+    print_report(KANALLAR, success, failed)
+    print(f"✅ Başarıyla tamamlandı! Çalışan kanallar './{OUTPUT_DIR_NAME}/' klasörüne kaydedildi.\n")
 
 
 if __name__ == "__main__":
