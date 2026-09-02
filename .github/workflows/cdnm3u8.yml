@@ -1,8 +1,9 @@
-name: CDN Live TV M3U Güncelle son
+name: CDN Live TV M3U Güncelle son son
 
 on:
   workflow_dispatch:
   schedule:
+    # Her 3 saatte bir otomatik çalışır
     - cron: '0 */3 * * *'
 
 jobs:
@@ -12,20 +13,22 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
+      - name: Depoyu Klonla (Checkout)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Python kur
+      - name: Python 3.12 Kur
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Python paketleri yükle
+      - name: Gerekli Paketleri Yükle
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install requests urllib3 playwright
 
-      - name: Playwright Chromium kur
+      - name: Playwright Chromium Kurulumu
         run: |
           python -m playwright install chromium --with-deps
 
@@ -35,9 +38,10 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: "1"
           GALLIUM_DRIVER: "softpipe"
         run: |
+          # Python script dosyanızın adı 'checker.py' değilse burayı dosya adınızla değiştirin
           python checker.py
 
-      - name: Artifact Yükle
+      - name: Yedekleri Artifact Olarak Yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -48,23 +52,27 @@ jobs:
             debug_failed.json
           if-no-files-found: ignore
 
-      - name: Commit ve push
+      - name: Değişiklikleri Kaydet ve Gönder (Commit & Push)
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # ✅ Eski cdnlive klasörünü depodan tamamen temizle
-          git rm -rf cdnlive || true
+          # Olası uzak sunucu değişikliklerini çek (çakışmaları önlemek için)
+          git pull --rebase origin main || true
+
+          # Varsa eski klasörü temizle
+          git rm -rf cdnlive 2>/dev/null || true
           
-          # ✅ Tüm güncellenen dosyaları git'e ekle
+          # Güncellenen dosyaları git'e ekle
           git add cdn.m3u playlist.m3u debug_failed.json || true
 
+          # Değişiklik kontrolü
           if git diff --cached --quiet; then
-            echo "ℹ️ Değişiklik yok."
+            echo "ℹ️ Herhangi bir değişiklik tespit edilmedi, commit atlanıyor."
           else
-            KANAL=$(grep -c "#EXTINF" cdn.m3u || echo 0)
+            KANAL=$(grep -c "#EXTINF" cdn.m3u 2>/dev/null || echo 0)
             TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
             git commit -m "📺 $KANAL kanal güncellendi — $TARIH"
-            git push
+            git push origin main
           fi
