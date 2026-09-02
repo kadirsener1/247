@@ -772,24 +772,23 @@ MASTER_CHANNELS = [
 ]
 
 # ─── SİSTEM AYARLARI ──────────────────────────────────────────────────────────
-OUTPUT_FILE_NAME   = "cdn.m3u"
 PLAYLIST_FILE_NAME = "playlist.m3u"
 PLAYLIST_URL       = "https://raw.githubusercontent.com/kadirsener1/avva/refs/heads/main/playlist.m3u"
 DEBUG_FILE         = "debug_failed.json"
 
 TIMEOUT      = 15000
-FIRST_WAIT   = 3.0   # İlk yüklemede bekleme (saniye)
-RELOAD_WAIT  = 3.5   # Her retry sonrası bekleme (saniye)
-MAX_RETRIES  = 2     # ✅ Maksimum yenileme denemesi 2'ye düşürüldü
-RETRY_WAIT   = 2.0   # Denemeler arası ek bekleme (saniye)
+FIRST_WAIT   = 3.0   
+RELOAD_WAIT  = 3.5   
+MAX_RETRIES  = 2     # Yenileme deneme limiti
+RETRY_WAIT   = 2.0   
 MAX_CONCURRENT = 4
 
 # Kanalların başına eklenecek VLC Başlık Ayarları (User-Agent / Referrer / Origin)
-VLC_OPTS = (
-    "#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36\n"
-    "#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/\n"
+VLC_OPTS = [
+    "#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "#EXTVLCOPT:http-referrer=https://cdnlivetv.tv/",
     "#EXTVLCOPT:http-origin=https://cdnlivetv.tv"
-)
+]
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
@@ -815,7 +814,6 @@ BROWSER_ARGS = [
 
 BLOCKED_RESOURCE_TYPES = {"image", "media", "font"}
 
-# Sitedeki hata mesajları — bu metinler varsa stream gelmemiş demektir
 STREAM_ERROR_TEXTS = [
     "Stream loading failed",
     "Stream Error",
@@ -859,7 +857,6 @@ def extract_from_html(html_text: str, base_url: str = "") -> str:
 
 
 def has_stream_error(content: str) -> bool:
-    """Sayfa içeriğinde stream hatası var mı kontrol et."""
     return any(err in content for err in STREAM_ERROR_TEXTS)
 
 
@@ -988,7 +985,6 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         page.on("request",  on_request)
         page.on("response", on_response)
 
-        # ── İlk yükleme ──────────────────────────────────────────────────────
         try:
             await page.goto(player_url, timeout=TIMEOUT, wait_until="domcontentloaded")
         except Exception:
@@ -1001,16 +997,14 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         except asyncio.TimeoutError:
             pass
 
-        # ── Retry döngüsü ────────────────────────────────────────────────────
+        # ── Retry Döngüsü ──
         for attempt in range(1, MAX_RETRIES + 1):
-
             if stream_url and is_valid_stream_url(stream_url):
                 break
 
             page_has_error = False
             try:
                 content = await page.content()
-
                 if has_stream_error(content):
                     page_has_error = True
                 else:
@@ -1026,8 +1020,8 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
             except Exception:
                 page_has_error = True
 
-            status = "Stream Error — yenileniyor" if page_has_error else "URL yok — yenileniyor"
-            print(f"    🔄 [{attempt:02d}/{MAX_RETRIES}] {channel_name}: {status}")
+            status = "Stream Error" if page_has_error else "URL yok"
+            print(f"    🔄 [{attempt:02d}/{MAX_RETRIES}] {channel_name}: {status} — yenileniyor")
 
             await asyncio.sleep(RETRY_WAIT)
             found_event.clear()
@@ -1058,15 +1052,11 @@ async def get_stream_url(browser, player_url: str, channel_name: str) -> str:
         pass
     finally:
         if page:
-            try:
-                await page.close()
-            except Exception:
-                pass
+            try: await page.close()
+            except Exception: pass
         if context:
-            try:
-                await context.close()
-            except Exception:
-                pass
+            try: await context.close()
+            except Exception: pass
 
     return stream_url if is_valid_stream_url(stream_url) else ""
 
@@ -1092,8 +1082,7 @@ async def process_all(channels: list) -> tuple:
             if not player_url:
                 async with lock:
                     done_count += 1
-                    failed.append({"name": name, "player_url": "", "image": image,
-                                   "group": group, "reason": "URL yok"})
+                    failed.append({"name": name, "player_url": "", "image": image, "group": group, "reason": "URL yok"})
                 return
 
             async with semaphore:
@@ -1104,51 +1093,17 @@ async def process_all(channels: list) -> tuple:
                 prefix = f"[{done_count:03d}/{total}]"
                 if stream_url and is_valid_stream_url(stream_url):
                     print(f"  ✅ {prefix} {name} → {stream_url[:65]}...")
-                    success.append({
-                        "name":       name,
-                        "stream_url": stream_url,
-                        "player_url": player_url,
-                        "image":      image,
-                        "group":      group,
-                    })
+                    success.append({"name": name, "stream_url": stream_url})
                 else:
-                    print(f"  ❌ {prefix} {name} (Başarısız / Token Alınamadı)")
-                    failed.append({
-                        "name":       name,
-                        "player_url": player_url,
-                        "image":      image,
-                        "group":      group,
-                        "reason":     "Geçerli stream URL bulunamadı",
-                    })
+                    print(f"  ❌ {prefix} {name} (Başarısız)")
+                    failed.append({"name": name, "player_url": player_url, "reason": "Stream URL bulunamadı"})
 
         await asyncio.gather(*[handle(ch) for ch in channels], return_exceptions=True)
 
-        try:
-            await browser.close()
-        except Exception:
-            pass
+        try: await browser.close()
+        except Exception: pass
 
     return success, failed
-
-
-def write_single_m3u(items: list, file_name: str = "cdn.m3u"):
-    base_path = Path(__file__).parent.resolve()
-    file_path = base_path / file_name
-    print(f"\n📂 cdn.m3u Yazılıyor (Dosya: {file_path})")
-    try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write("#EXTM3U\n")
-            for ch in items:
-                name   = ch["name"]
-                stream = ch["stream_url"]
-                group  = ch.get("group", "GENEL")
-                image  = ch.get("image", "")
-                f.write(f'#EXTINF:-1 tvg-id="{name}" tvg-name="{name}" tvg-logo="{image}" group-title="{group}",{name}\n')
-                f.write(f"{VLC_OPTS}\n")
-                f.write(f"{stream}\n")
-        print(f"   💾 Başarıyla Yazıldı: {file_name} ({len(items)} Kanal)")
-    except Exception as e:
-        print(f"   ❌ Dosya yazma hatası ({file_name}): {e}")
 
 
 def get_playlist_identifiers(extinf_line: str) -> list:
@@ -1171,11 +1126,11 @@ def get_local_or_remote_playlist() -> str:
         try:
             content = local_file.read_text(encoding="utf-8")
             if content.strip():
-                print(f"   📂 Lokal '{PLAYLIST_FILE_NAME}' dosyası başarıyla okundu.")
+                print(f"   📂 Yerel '{PLAYLIST_FILE_NAME}' dosyası bulundu ve işlenecek.")
                 return content
         except Exception:
             pass
-    print(f"   🌐 Lokal dosya bulunamadı, uzak adresten indiriliyor: {PLAYLIST_URL}")
+    print(f"   🌐 Yerel dosya bulunamadı, uzak depodan indiriliyor: {PLAYLIST_URL}")
     try:
         r = requests.get(PLAYLIST_URL, timeout=15)
         r.raise_for_status()
@@ -1185,35 +1140,32 @@ def get_local_or_remote_playlist() -> str:
         return ""
 
 
-def update_playlist_m3u(success_channels: list, content: str):
-    if not content:
-        print("   ⚠️ Güncellenecek playlist.m3u içeriği bulunamadı!")
+def update_playlist_in_place(success_channels: list, playlist_content: str):
+    """
+    Orijinal playlist dosyasını satır satır ayrıştırır. Kanal sırasını, grup başlıklarını, 
+    logoları ve diğer eşleşmeyen tüm kanalları KESİNLİKLE korur. Sadece eşleşenlerin URL'lerini 
+    ve VLC ayarlarını günceller.
+    """
+    if not playlist_content:
+        print("   ⚠️ Güncellenecek playlist içeriği boş!")
         return
 
-    print(f"\n🔄 Playlist Senkronizasyonu Başlatıldı...")
+    print(f"\n🔄 playlist.m3u İçerik Güncellemesi Başlatıldı...")
 
-    channel_map = {}
-    for ch in success_channels:
-        ch_name = ch["name"].strip()
-        channel_map[ch_name.lower()] = ch["stream_url"]
-
-    lines         = content.splitlines()
-    new_lines     = []
-    updated_count = 0
-    total_channels = 0
-
+    success_map = {ch["name"].lower(): ch["stream_url"] for ch in success_channels}
+    lines = playlist_content.splitlines()
+    parsed_entries = []
+    
     i = 0
     while i < len(lines):
         line = lines[i]
-        stripped = line.strip()
-
-        if stripped.startswith("#EXTINF"):
-            total_channels += 1
-            new_lines.append(line)
-            identifiers = get_playlist_identifiers(stripped)
-
+        if line.strip().startswith("#EXTINF"):
+            extinf = line
+            opts = []
+            url = ""
+            
+            # Sonraki URL satırına kadar olan parametreleri oku
             j = i + 1
-            url_line_index = -1
             while j < len(lines):
                 next_line = lines[j].strip()
                 if not next_line:
@@ -1221,69 +1173,83 @@ def update_playlist_m3u(success_channels: list, content: str):
                     continue
                 if next_line.startswith("#EXTINF") or next_line.startswith("#EXTM3U"):
                     break
-                if next_line.startswith("http://") or next_line.startswith("https://"):
-                    url_line_index = j
+                if next_line.startswith("#EXTVLCOPT"):
+                    # Eski VLC opsiyonlarını yakala (güncelleme sırasında temizlenecek)
+                    opts.append(lines[j])
+                    j += 1
+                elif "://" in next_line or next_line.startswith("http://") or next_line.startswith("https://"):
+                    url = lines[j]
+                    j += 1
                     break
-                j += 1
-
-            matched_stream = None
-            matched_id     = ""
-            for ident in identifiers:
-                if ident.lower() in channel_map:
-                    matched_stream = channel_map[ident.lower()]
-                    matched_id     = ident
-                    break
-
-            if matched_stream:
-                new_lines.append(VLC_OPTS)
-                new_lines.append(matched_stream)
-                updated_count += 1
-                print(f"   ✨ Eşleşti ve Güncellendi: {matched_id}")
-                
-                if url_line_index != -1:
-                    i = url_line_index + 1
                 else:
-                    i += 1
-            else:
-                if url_line_index != -1:
-                    for k in range(i + 1, url_line_index + 1):
-                        new_lines.append(lines[k])
-                    i = url_line_index + 1
-                else:
-                    i += 1
+                    opts.append(lines[j])
+                    j += 1
+            
+            parsed_entries.append({
+                "type": "channel",
+                "extinf": extinf,
+                "opts": opts,
+                "url": url
+            })
+            i = j
         else:
-            if stripped and not any(stripped.startswith(opt) for opt in ["#EXTVLCOPT:http-user-agent", "#EXTVLCOPT:http-referrer", "#EXTVLCOPT:http-origin"]):
-                new_lines.append(line)
+            parsed_entries.append({
+                "type": "raw",
+                "line": line
+            })
             i += 1
 
+    # Güncelleme ve Senkronizasyon Aşaması
+    updated_count = 0
+    total_channels = 0
+    output_lines = []
+
+    for entry in parsed_entries:
+        if entry["type"] == "raw":
+            output_lines.append(entry["line"])
+        elif entry["type"] == "channel":
+            total_channels += 1
+            identifiers = get_playlist_identifiers(entry["extinf"])
+            
+            matched_stream = None
+            matched_id = ""
+            for ident in identifiers:
+                if ident.lower() in success_map:
+                    matched_stream = success_map[ident.lower()]
+                    matched_id = ident
+                    break
+            
+            # #EXTINF satırını aynen ekle (Kanal adı, grup ismi, logo birebir korunur)
+            output_lines.append(entry["extinf"])
+            
+            if matched_stream:
+                # Eşleşen kanal: Yeni VLC Opt'larını ve yeni URL'yi ekle
+                for opt in VLC_OPTS:
+                    output_lines.append(opt)
+                output_lines.append(matched_stream)
+                updated_count += 1
+                print(f"   ✨ Güncellendi: {matched_id}")
+            else:
+                # Eşleşmeyen kanal: Eski parametreleri ve eski URL'yi aynen koru
+                for opt in entry["opts"]:
+                    output_lines.append(opt)
+                if entry["url"]:
+                    output_lines.append(entry["url"])
+
+    # Doğrudan mevcut playlist.m3u dosyasının üzerine yaz
     file_path = Path(__file__).parent.resolve() / PLAYLIST_FILE_NAME
     try:
         with open(file_path, "w", encoding="utf-8") as f:
-            f.write("\n".join(new_lines) + "\n")
-        print(f"\n   💾 {PLAYLIST_FILE_NAME} başarıyla kaydedildi!")
-        print(f"   📊 Toplam Kanal: {total_channels} | Güncellenen: {updated_count}")
+            f.write("\n".join(output_lines) + "\n")
+        print(f"\n   💾 {PLAYLIST_FILE_NAME} başarıyla güncellendi!")
+        print(f"   📊 Toplam Kanal: {total_channels} | Başarıyla Güncellenen: {updated_count}")
     except Exception as e:
-        print(f"   ❌ playlist.m3u kaydedilemedi: {e}")
-
-
-def print_report(channels: list, success: list, failed: list):
-    turkey_tz = timezone(timedelta(hours=3))
-    now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
-    print(f"\n{'═'*65}")
-    print(f"📊 SONUÇ RAPORU")
-    print(f"{'═'*65}")
-    print(f"  📺 Taranan kanal sayısı  : {len(channels)}")
-    print(f"  ✅ Başarıyla çözülen     : {len(success)}")
-    print(f"  ❌ Başarısız olan        : {len(failed)}")
-    print(f"  📁 cdn.m3u               : Güncellendi ({len(success)} kanal)")
-    print(f"  📁 playlist.m3u          : Senkronize Edildi")
-    print(f"  🕐 Güncelleme zamanı     : {now}")
-    print(f"{'═'*65}\n")
+        print(f"   ❌ playlist.m3u dosyasına yazılamadı: {e}")
 
 
 async def main():
     print("═" * 65)
-    print("   📺 CDN LIVE TV — ÇOKLU LİSTE GÜNCELLEME SİSTEMİ")
+    print("   📺 CDN LIVE TV — DOĞRUDAN PLAYLIST GÜNCELLEME SİSTEMİ")
     print("═" * 65 + "\n")
 
     playlist_content = get_local_or_remote_playlist()
@@ -1294,15 +1260,25 @@ async def main():
 
     success, failed = await process_all(MASTER_CHANNELS)
 
-    write_single_m3u(success, OUTPUT_FILE_NAME)
-
     if success:
-        update_playlist_m3u(success, playlist_content)
+        update_playlist_in_place(success, playlist_content)
 
+    # Başarısızlık debug kaydı
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(failed, f, ensure_ascii=False, indent=2)
 
-    print_report(MASTER_CHANNELS, success, failed)
+    # Özet Raporu
+    turkey_tz = timezone(timedelta(hours=3))
+    now = datetime.now(turkey_tz).strftime("%d.%m.%Y %H:%M:%S")
+    print(f"\n{'═'*65}")
+    print(f"📊 SONUÇ RAPORU")
+    print(f"{'═'*65}")
+    print(f"  📺 Taranan kanal sayısı  : {len(MASTER_CHANNELS)}")
+    print(f"  ✅ Başarıyla çözülen     : {len(success)}")
+    print(f"  ❌ Başarısız olan        : {len(failed)}")
+    print(f"  📁 Güncellenen Liste     : playlist.m3u (Doğrudan Üzerine Yazıldı)")
+    print(f"  🕐 Güncelleme zamanı     : {now}")
+    print(f"{'═'*65}\n")
 
 
 if __name__ == "__main__":
