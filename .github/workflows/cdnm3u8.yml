@@ -1,4 +1,4 @@
-name: CDN Live TV M3U Güncelle son
+name: CDN Live TV M3U8 lerini Güncelle
 
 on:
   workflow_dispatch:
@@ -12,26 +12,24 @@ jobs:
       contents: write
 
     steps:
-      - name: Depoyu Klonla (Checkout)
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Python 3.12 Kur
+      - name: Python kur
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Gerekli Paketleri Yükle
+      - name: Python paketleri yükle
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install requests urllib3 playwright
 
-      - name: Playwright Chromium Kurulumu
+      - name: Playwright Chromium kur
         run: |
           python -m playwright install chromium --with-deps
 
-      - name: playlist.m3u Dosyasını Güncelle
+      - name: M3U ve Kanal Dosyalarını Oluştur
         env:
           DISPLAY: ""
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -39,33 +37,32 @@ jobs:
         run: |
           python checker.py
 
-      - name: Hata Günlüğünü Artifact Olarak Kaydet
+      - name: Klasör ve Dosyaları Artifact Olarak Yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-failed-ve-playlist
+          name: cdnlive-klasor-ve-debug
           path: |
-            playlist.m3u
+            cdnlive/
             debug_failed.json
           if-no-files-found: ignore
 
-      - name: Değişiklikleri Commit et ve Pushla
+      - name: Commit ve push (Klasör Dahil)
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Olası çakışmaları önlemek için uzak sunucu değişikliklerini rebase ile çek
-          git pull --rebase origin main || true
+          # ✅ Eski m3u dosyasını temizle (varsa) ve yeni cdnlive klasörünü git'e ekle
+          git rm -f cdnlive.m3u || true
+          git add cdnlive/ debug_failed.json || true
 
-          # Sadece değişen playlist.m3u ve hata günlüğünü git'e ekle
-          git add playlist.m3u debug_failed.json || true
-
-          # Değişiklik kontrolü
           if git diff --cached --quiet; then
-            echo "ℹ️ Değişiklik yok. Commit atlanıyor."
+            echo "ℹ️ Değişiklik yok."
           else
+            # ✅ cdnlive klasöründeki toplam .m3u8 dosya sayısını hesapla
+            KANAL=$(find cdnlive -type f -name "*.m3u8" | wc -l || echo 0)
             TARIH=$(TZ='Europe/Istanbul' date '+%d.%m.%Y %H:%M')
-            git commit -m "📺 playlist.m3u kanalları güncellendi — $TARIH"
-            git push origin main
+            git commit -m "📺 $KANAL kanal dosyası — $TARIH"
+            git push
           fi
