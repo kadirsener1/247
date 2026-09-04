@@ -1,7 +1,7 @@
 name: Update tv247 world Playlist s1 s2
 
 on:
-  # Her 12 saatte bir çalışsın
+  # Her 2 saatte bir çalışsın
   schedule:
     - cron: '0 */2 * * *'
 
