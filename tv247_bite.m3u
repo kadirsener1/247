@@ -1,6 +1,6 @@
 #EXTM3U
 
-#EXTINF:-1 group-title="Turkey" tvg-name="beIN Sports 1",beIN Sports 1
+#EXTINF:-1 group-title="Other" tvg-name="beINsports1Tr",beINsports1Tr
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://sportsbite.org/247/bein-sports-1-turkey
@@ -20,7 +20,7 @@ https://sportsbite.org/247/antenna-tv-usa
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://sportsbite.org/247/a-e-usa
 
-#EXTINF:-1 group-title="USA" tvg-name="AMC",AMC
+#EXTINF:-1 group-title="Other" tvg-name="beINsports1Tr USA",beINsports1Tr USA
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://sportsbite.org/247/amc-usa
@@ -374,6 +374,11 @@ https://sportsbite.org/247/bein-sports-2-france
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 https://sportsbite.org/247/bein-sports-3-france
+
+#EXTINF:-1 group-title="Turkey" tvg-name="beIN Sports 1",beIN Sports 1
+#EXTVLCOPT:http-referrer=https://sportsbite.org/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+https://sportsbite.org/247/bein-sports-1-turkey
 
 #EXTINF:-1 group-title="Turkey" tvg-name="beIN Sports 2",beIN Sports 2
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
