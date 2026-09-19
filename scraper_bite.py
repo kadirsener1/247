@@ -21,7 +21,7 @@ except ImportError:
     install("cloudscraper")
     import cloudscraper
 
-BASE_URL = "https://sportsbite.org"
+BASE_URL = "https://sportsbite.org/"
 FALLBACK_STREAM_BASE = "https://sportsbite.org/"
 OUTPUT_FILE = "tv247_bite.m3u"
 CHANNELS_FILE = "channels_bite.txt"
@@ -577,7 +577,7 @@ def main():
 
     for slug in test_slugs:
         track_id = TRACK_IDS[slug]
-        track_url = f"{stream_base}/ch1/track/{track_id}"
+        track_url = f"{stream_base}/247/{track_id}"
         m3u8_url = extract_m3u8_from_track(scraper, track_url, stream_base)
         if m3u8_url:
             m3u8_found += 1
@@ -629,7 +629,7 @@ def main():
                 url = m3u8_cache[slug]
                 m3u8_count += 1
             else:
-                url = f"{stream_base}/ch1/track/{track_id}"
+                url = f"{stream_base}/247/{track_id}"
 
             f.write(f'#EXTINF:-1 group-title="{group}" tvg-name="{name}",{name}\n')
             f.write(f'#EXTVLCOPT:http-referrer={stream_base}/\n')
