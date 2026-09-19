@@ -21,8 +21,8 @@ except ImportError:
     install("cloudscraper")
     import cloudscraper
 
-BASE_URL = "https://sportsbite.org/"
-FALLBACK_STREAM_BASE = "https://sportsbite.org/"
+BASE_URL = "https://sportsbite.org"
+FALLBACK_STREAM_BASE = "https://sportsbite.org"
 OUTPUT_FILE = "tv247_bite.m3u"
 CHANNELS_FILE = "channels_bite.txt"
 
@@ -444,7 +444,7 @@ def find_stream_base(scraper):
         if candidates:
             print(f"  Adaylar: {candidates}")
             for candidate in candidates:
-                test_url = f"{candidate}/ch1/track/360"
+                test_url = f"{candidate}/247/360"
                 try:
                     test = scraper.head(test_url, timeout=5, allow_redirects=True)
                     if test.status_code == 200:
