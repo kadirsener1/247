@@ -28,7 +28,7 @@ CHANNELS_FILE = "channels_bite.txt"
 
 # Slug -> Track ID
 TRACK_IDS = {
-  "beinsports1tr": "bein-sports-1-turkey", "ahc-american-heroes-channel": "ahc-american-heroes-channel", "antenna-tv-usa": "antenna-tv-usa",
+  "watch/channel/bein-sports-1-turkey": "beinsports1tr", "ahc-american-heroes-channel": "ahc-american-heroes-channel", "antenna-tv-usa": "antenna-tv-usa",
     "a-e-usa": "a-e-usa", "beinsports1tr-usa": "amc-usa", "animal-planet": "animal-planet",
     "astro-supersport-1": "astro-supersport-1", "astro-supersport-2": "astro-supersport-2",
     "astro-supersport-3": "astro-supersport-3", "astro-supersport-4": "astro-supersport-4",
