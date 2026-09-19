@@ -21,14 +21,14 @@ except ImportError:
     install("cloudscraper")
     import cloudscraper
 
-BASE_URL = "https://sportsbite.org"
-FALLBACK_STREAM_BASE = "https://sportsbite.org"
+BASE_URL = "https://sportsbite.org/watch/channel/"
+FALLBACK_STREAM_BASE = "https://sportsbite.org/watch/channel/"
 OUTPUT_FILE = "tv247_bite.m3u"
 CHANNELS_FILE = "channels_bite.txt"
 
 # Slug -> Track ID
 TRACK_IDS = {
-  "watch/channel/bein-sports-1-turkey": "beinsports1tr", "ahc-american-heroes-channel": "ahc-american-heroes-channel", "antenna-tv-usa": "antenna-tv-usa",
+  "bein-sports-1-turkey": "beinsports1tr", "ahc-american-heroes-channel": "ahc-american-heroes-channel", "antenna-tv-usa": "antenna-tv-usa",
     "a-e-usa": "a-e-usa", "beinsports1tr-usa": "amc-usa", "animal-planet": "animal-planet",
     "astro-supersport-1": "astro-supersport-1", "astro-supersport-2": "astro-supersport-2",
     "astro-supersport-3": "astro-supersport-3", "astro-supersport-4": "astro-supersport-4",
