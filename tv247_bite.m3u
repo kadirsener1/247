@@ -1,9 +1,9 @@
 #EXTM3U
 
-#EXTINF:-1 group-title="Other" tvg-name="beINsports1Tr",beINsports1Tr
+#EXTINF:-1 group-title="Other" tvg-name="Watch/Channel/beIN Sports 1 Turkey",Watch/Channel/beIN Sports 1 Turkey
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
-https://sportsbite.org/247/bein-sports-1-turkey
+https://sportsbite.org/247/beinsports1tr
 
 #EXTINF:-1 group-title="USA" tvg-name="AHC American Heroes Channel",AHC American Heroes Channel
 #EXTVLCOPT:http-referrer=https://sportsbite.org/
