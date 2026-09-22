@@ -1,17 +1,17 @@
 #EXTM3U
 #EXTINF:-1 tvg-id="3sat DE" tvg-name="3sat DE" tvg-logo="" group-title="DE",3sat DE
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077743-0-0-89dbb1fa39c39d69a8c8cb0151664ce5
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
 #EXTINF:-1 tvg-id="RTL" tvg-name="RTL" tvg-logo="" group-title="DE",RTL
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
 #EXTINF:-1 tvg-id="ProSieben" tvg-name="ProSieben" tvg-logo="" group-title="DE",ProSieben
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
-#EXTINF:-1 tvg-id="Sky Sport News" tvg-name="Sky Sport News" tvg-logo="" group-title="DE-SPORT",Sky Sport News
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
-#EXTINF:-1 tvg-id="DAZN 1 DE" tvg-name="DAZN 1 DE" tvg-logo="" group-title="DE-SPORT",DAZN 1 DE
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
-#EXTINF:-1 tvg-id="Sky Sport Bundesliga 1" tvg-name="Sky Sport Bundesliga 1" tvg-logo="" group-title="DE-SPORT",Sky Sport Bundesliga 1
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
-#EXTINF:-1 tvg-id="ARD Das Erste" tvg-name="ARD Das Erste" tvg-logo="" group-title="DE",ARD Das Erste
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
 #EXTINF:-1 tvg-id="ZDF HD" tvg-name="ZDF HD" tvg-logo="" group-title="DE",ZDF HD
-https://pull.niues.live/live/stream-235232_lsd.m3u8?auth_key=1790077803-0-0-de5995cfcfe82424244d511d24b1e77b
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
+#EXTINF:-1 tvg-id="Sky Sport News" tvg-name="Sky Sport News" tvg-logo="" group-title="DE-SPORT",Sky Sport News
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
+#EXTINF:-1 tvg-id="Sky Sport Bundesliga 1" tvg-name="Sky Sport Bundesliga 1" tvg-logo="" group-title="DE-SPORT",Sky Sport Bundesliga 1
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
+#EXTINF:-1 tvg-id="ARD Das Erste" tvg-name="ARD Das Erste" tvg-logo="" group-title="DE",ARD Das Erste
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096883-0-0-0905f361cf665f89bcfb042ca6721f85
+#EXTINF:-1 tvg-id="DAZN 1 DE" tvg-name="DAZN 1 DE" tvg-logo="" group-title="DE-SPORT",DAZN 1 DE
+https://pull.niues.live/live/stream-380460_lsd.m3u8?auth_key=1790096943-0-0-48298662fbc8a932d09aca80dd5211d2
