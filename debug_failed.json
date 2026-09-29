@@ -1,19 +1,19 @@
 [
   {
-    "name": "usabc",
-    "page_url": "https://tvnow247.top/watch/abc-usa/"
-  },
-  {
     "name": "uscbs",
     "page_url": "https://tvnow247.top/watch/cbs-usa/"
   },
   {
-    "name": "usnbc",
-    "page_url": "https://tvnow247.top/watch/nbc-usa/"
+    "name": "usabc",
+    "page_url": "https://tvnow247.top/watch/abc-usa/"
   },
   {
     "name": "usfox",
     "page_url": "https://tvnow247.top/watch/fox-usa/"
+  },
+  {
+    "name": "usnbc",
+    "page_url": "https://tvnow247.top/watch/nbc-usa/"
   },
   {
     "name": "usespn2",
@@ -28,12 +28,12 @@
     "page_url": "https://tvnow247.top/watch/usa-network/"
   },
   {
-    "name": "usnflnetwork",
-    "page_url": "https://tvnow247.top/watch/nfl-network/"
-  },
-  {
     "name": "usnbatv",
     "page_url": "https://tvnow247.top/watch/nba-tv/"
+  },
+  {
+    "name": "usnflnetwork",
+    "page_url": "https://tvnow247.top/watch/nfl-network/"
   },
   {
     "name": "ukskysportsmainevent",
