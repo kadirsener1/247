@@ -1,17 +1,17 @@
 #EXTM3U
-# Updated: 2026-10-02 11:27:13 UTC
+# Updated: 2026-10-02 16:54:08 UTC
 
 #EXTINF:-1 tvg-id="bein-sports-1-turkey" tvg-name="beIN SPORTS 1 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 1 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MiIsInRzIjoxNzkwOTQwNDI4NDk3fQ==
+https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MiIsInRzIjoxNzkwOTYwMDQzNDcxfQ==
 
 #EXTINF:-1 tvg-id="bein-sports-2-turkey" tvg-name="beIN SPORTS 2 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 2 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MyIsInRzIjoxNzkwOTQwNDI5NDk4fQ==
+https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MyIsInRzIjoxNzkwOTYwMDQ0NDcyfQ==
 
 #EXTINF:-1 tvg-id="bein-sports-3-turkey" tvg-name="beIN SPORTS 3 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 3 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NCIsInRzIjoxNzkwOTQwNDMwNDk4fQ==
+https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NCIsInRzIjoxNzkwOTYwMDQ1NDcyfQ==
 
 #EXTINF:-1 tvg-id="bein-sports-4-turkey" tvg-name="beIN SPORTS 4 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 4 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NyIsInRzIjoxNzkwOTQwNDMxNDk4fQ==
+https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NyIsInRzIjoxNzkwOTYwMDQ2NDcyfQ==
 
 #EXTINF:-1 tvg-id="bein-sports-5-turkey" tvg-name="bein Sports 5 Turkey-TR" group-title="Bein-TV247",bein Sports 5 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMDEwIiwidHMiOjE3OTA5NDA0MzI0OTl9
+https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMDEwIiwidHMiOjE3OTA5NjAwNDc0NzN9
