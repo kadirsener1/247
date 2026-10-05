@@ -1,5 +1,21 @@
 [
   {
+    "name": "usabc",
+    "page_url": "https://tvnow247.top/watch/abc-usa/"
+  },
+  {
+    "name": "uscbs",
+    "page_url": "https://tvnow247.top/watch/cbs-usa/"
+  },
+  {
+    "name": "usnbc",
+    "page_url": "https://tvnow247.top/watch/nbc-usa/"
+  },
+  {
+    "name": "usfox",
+    "page_url": "https://tvnow247.top/watch/fox-usa/"
+  },
+  {
     "name": "usespn2",
     "page_url": "https://tvnow247.top/watch/espn-2/"
   },
@@ -10,6 +26,10 @@
   {
     "name": "ususa",
     "page_url": "https://tvnow247.top/watch/usa-network/"
+  },
+  {
+    "name": "usnflnetwork",
+    "page_url": "https://tvnow247.top/watch/nfl-network/"
   },
   {
     "name": "usnbatv",
