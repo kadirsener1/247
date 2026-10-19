@@ -1,28 +1,14 @@
 [
   {
-    "name": "atskysport6",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%206&code=at&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "AT",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "deskysportbundesliga1",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%201&code=de&user=cdnlivetv&plan=free",
+    "name": "deskysportbundesliga3",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%203&code=de&user=cdnlivetv&plan=free",
     "image": "",
     "group": "DE",
     "reason": "Geçerli stream URL bulunamadı"
   },
   {
-    "name": "deskysportbundesliga4",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%204&code=de&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "DE",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "deskysportbundesliga7",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%207&code=de&user=cdnlivetv&plan=free",
+    "name": "deskysportbundesliga5",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%205&code=de&user=cdnlivetv&plan=free",
     "image": "",
     "group": "DE",
     "reason": "Geçerli stream URL bulunamadı"
@@ -30,41 +16,6 @@
   {
     "name": "deskysportbundesliga8",
     "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%208&code=de&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "DE",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "deskysportbundesliga9",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Bundesliga%209&code=de&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "DE",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "itskysportgolf",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Golf&code=it&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "IT",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "itskysportmax",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Max&code=it&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "IT",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "deskysportmix",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Mix&code=de&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "DE",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "deskysportpremierleague",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Premier%20League&code=de&user=cdnlivetv&plan=free",
     "image": "",
     "group": "DE",
     "reason": "Geçerli stream URL bulunamadı"
@@ -88,13 +39,6 @@
     "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sport%20Top%20Event&code=de&user=cdnlivetv&plan=free",
     "image": "",
     "group": "DE",
-    "reason": "Geçerli stream URL bulunamadı"
-  },
-  {
-    "name": "ukskysportsaction",
-    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=Sky%20Sports%20Action&code=gb&user=cdnlivetv&plan=free",
-    "image": "",
-    "group": "UK",
     "reason": "Geçerli stream URL bulunamadı"
   },
   {
