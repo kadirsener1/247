@@ -15,6 +15,30 @@ from playwright.async_api import async_playwright, Error as PlaywrightError
 # ─── KULLANICI KANAL LİSTESİ ──────────────────────────────────────────────────
 KANALLAR = [
   {
+    "name": "trbeinsports1",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr",
+    "logo": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-1.webp"
+  },
+  {
+    "name": "trbeinsports2",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr",
+    "logo": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-2.webp"
+  },
+  {
+    "name": "trbeinsports3",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr",
+    "logo": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-3.webp"
+  },
+   {
+    "name": "trbeinsports4",
+    "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
+    "group": "tr",
+    "logo": "https://cdnlivetv.tv/api/v1/channels/images6318/turkey/bein-sports-4.webp"
+  },
+  {
     "name": "usabc",
     "url": "https://cdnlivetv.tv/api/v1/channels/player/?name=ABC&code=us&user=cdnlivetv&plan=free",
     "group": "us",
