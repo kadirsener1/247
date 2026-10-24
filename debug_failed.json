@@ -1,22 +1,93 @@
 [
   {
-    "name": "usespn2",
-    "page_url": "https://tvnow247.top/watch/espn-2/"
+    "name": "trbeinsports1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%201&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
   },
   {
-    "name": "usnbatv",
-    "page_url": "https://tvnow247.top/watch/nba-tv/"
+    "name": "trbeinsports2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
   },
   {
-    "name": "ukskysportsf1",
-    "page_url": "https://tvnow247.top/watch/sky-sports-f1/"
+    "name": "trbeinsports4",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%204&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
   },
   {
-    "name": "uktntsports1",
-    "page_url": "https://tvnow247.top/watch/tnt-sports-1-uk/"
+    "name": "trbeinsports3",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%203&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
   },
   {
-    "name": "uktntsports2",
-    "page_url": "https://tvnow247.top/watch/tnt-sports-2-uk/"
+    "name": "trbeinsportshaber",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20haber&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trbeinsportsmax1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20max%201&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trbeinsportsmax2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=beIN%20SPORTS%20max%202&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trssport",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=s%20SPORT&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trssport2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=s%20SPORT%202&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trtivibuspor1",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=tivibu%20SPOR%201&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trtivibuspor3",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=tivibu%20SPOR%203&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trtivibuspor2",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=tivibu%20SPOR%202&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
+  },
+  {
+    "name": "trtivibuspor4",
+    "player_url": "https://cdnlivetv.tv/api/v1/channels/player/?name=tivibu%20SPOR%204&code=tr&user=cdnlivetv&plan=free",
+    "image": "",
+    "group": "TR",
+    "reason": "Geçerli stream URL bulunamadı"
   }
 ]
