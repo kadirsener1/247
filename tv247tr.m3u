@@ -1,17 +1,17 @@
 #EXTM3U
-# Updated: 2026-11-10 09:00:01 UTC
+# Updated: 2026-11-10 09:18:55 UTC
 
-#EXTINF:-1 tvg-id="bein-sports-1-turkey" tvg-name="beIN SPORTS 1 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 1 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MiIsInRzIjoxNzk0MzAxMTk2OTQwfQ==
+#EXTINF:-1 tvg-id="bein-sports-1-turkey" tvg-name="beIN SPORTS 1 Turkey-TR" group-title="Bein-TV247-Server4",beIN SPORTS 1 Turkey-TR
+https://live.tvnow247.today/live/62/index.m3u8?src=r4
 
-#EXTINF:-1 tvg-id="bein-sports-2-turkey" tvg-name="beIN SPORTS 2 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 2 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2MyIsInRzIjoxNzk0MzAxMTk3OTQxfQ==
+#EXTINF:-1 tvg-id="bein-sports-2-turkey" tvg-name="beIN SPORTS 2 Turkey-TR" group-title="Bein-TV247-Server4",beIN SPORTS 2 Turkey-TR
+https://live.tvnow247.today/live/63/index.m3u8?src=r4
 
-#EXTINF:-1 tvg-id="bein-sports-3-turkey" tvg-name="beIN SPORTS 3 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 3 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NCIsInRzIjoxNzk0MzAxMTk4OTQxfQ==
+#EXTINF:-1 tvg-id="bein-sports-3-turkey" tvg-name="beIN SPORTS 3 Turkey-TR" group-title="Bein-TV247-Server4",beIN SPORTS 3 Turkey-TR
+https://live.tvnow247.today/live/64/index.m3u8?src=r4
 
-#EXTINF:-1 tvg-id="bein-sports-4-turkey" tvg-name="beIN SPORTS 4 Turkey-TR" group-title="Bein-TV247",beIN SPORTS 4 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiI2NyIsInRzIjoxNzk0MzAxMTk5OTQxfQ==
+#EXTINF:-1 tvg-id="bein-sports-4-turkey" tvg-name="beIN SPORTS 4 Turkey-TR" group-title="Bein-TV247-Server4",beIN SPORTS 4 Turkey-TR
+https://live.tvnow247.today/live/67/index.m3u8?src=r4
 
-#EXTINF:-1 tvg-id="bein-sports-5-turkey" tvg-name="bein Sports 5 Turkey-TR" group-title="Bein-TV247",bein Sports 5 Turkey-TR
-https://chunk.tv247.biz/api/proxy/playlist?token=eyJjaGFubmVsSWQiOiIxMDEwIiwidHMiOjE3OTQzMDEyMDA5NDJ9
+#EXTINF:-1 tvg-id="bein-sports-5-turkey" tvg-name="bein Sports 5 Turkey-TR" group-title="Bein-TV247-Server4",bein Sports 5 Turkey-TR
+https://live.tvnow247.today/live/1010/index.m3u8?src=r4
