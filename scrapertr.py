@@ -15,11 +15,8 @@ BASE_URL = "https://tvnow247.top/watch/"
 OUTPUT_FILE = "tv247tr.m3u"
 CHANNELS_FILE = "channelstr.txt"
 
-# Hangi sunucu kaynağından yayın alınacağı (1, 2, 3 veya 4)
-TARGET_SERVER = 4
-
-# Bu adres geçici bir varsayılandandır. Program başlar başlamaz siteden yenisiyle güncellenecektir.
-STREAM_BASE_URL = "https://chunk.tv247.biz/api/proxy/playlist"
+# Kesin olarak Server 4 kaynağını almak için hedef sunucu indexi (0 tabanlı: 0=Server1, 3=Server4)
+TARGET_SERVER_INDEX = 3  # Server 4
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
@@ -28,7 +25,6 @@ HEADERS = {
     "Referer": "https://tvnow247.top/",
 }
 
-# Bilinen kanal ID'leri (yeni kanallar otomatik eklenir)
 CHANNEL_IDS = {
     "bein-sports-1-turkey": "62",
     "bein-sports-2-turkey": "63",
@@ -42,96 +38,25 @@ def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 
-# ─────────────────────────────────────────────
-# DINAMIK STREAM ADRESI GÜNCELLEME VE TOKEN OLUŞTURMA
-# ─────────────────────────────────────────────
-def update_stream_base_url(full_url):
-    """Bulunan güncel url'den token öncesi değişen API kısmını dinamik olarak ayıklar"""
-    global STREAM_BASE_URL
-    if full_url:
-        base = full_url.split('?')[0]
-        if base and base != STREAM_BASE_URL:
-            STREAM_BASE_URL = base
-            log(f"  [!!!] GÜNCEL SUNUCU ADRESİ TESPİT EDİLDİ: {STREAM_BASE_URL}")
-
-
-def generate_playlist_url(channel_id):
-    """Bulunan Channel ID'yi dinamik olarak tespit edilmiş güncel base url ile birleştirir"""
+def generate_playlist_url(stream_base_url, channel_id):
+    """Dinamik olarak bulunan stream base URL'sini token ile birleştirir"""
     ts = int(time.time() * 1000)
-    
     token_data = {
         "channelId": str(channel_id),
         "ts": ts
     }
-    
     token_json = json.dumps(token_data, separators=(',', ':'))
     token_b64 = base64.b64encode(token_json.encode()).decode()
-    
-    return f"{STREAM_BASE_URL}?token={token_b64}"
+    return f"{stream_base_url}?token={token_b64}"
 
 
 # ─────────────────────────────────────────────
-# KANAL ID BUL (Sayfadan)
+# DOĞRUDAN TOKEN VE DİNAMİK BASE URL BUL (SERVER 4)
 # ─────────────────────────────────────────────
-def find_channel_id_from_page(channel_slug):
-    """Sayfa HTML'inden channel ID'yi çıkarır"""
-    url = f"{BASE_URL}{channel_slug}/"
-    session = requests.Session()
-    session.headers.update(HEADERS)
-    
-    log(f"  Sayfa taranıyor: {url}")
-    
-    try:
-        resp = session.get(url, timeout=30)
-        html = resp.text
-        
-        id_patterns = [
-            r'data-id=["\'](\d+)["\']',
-            r'channel[_-]?id["\']?\s*[:=]\s*["\']?(\d+)',
-            r'stream[_-]?id["\']?\s*[:=]\s*["\']?(\d+)',
-            r'/embed/(\d+)',
-            r'\?id=(\d+)',
-            r'&id=(\d+)',
-        ]
-        
-        for pattern in id_patterns:
-            matches = re.findall(pattern, html, re.IGNORECASE)
-            if matches:
-                channel_id = matches[0]
-                log(f"  ✓ Sayfada ID bulundu: {channel_id}")
-                return channel_id
-        
-        iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
-        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
-        
-        for iframe_src in iframes:
-            iframe_url = urljoin(url, iframe_src)
-            try:
-                resp2 = session.get(iframe_url, timeout=30, headers={**HEADERS, "Referer": url})
-                iframe_html = resp2.text
-                
-                for pattern in id_patterns:
-                    matches = re.findall(pattern, iframe_html, re.IGNORECASE)
-                    if matches:
-                        channel_id = matches[0]
-                        log(f"  ✓ iframe içinde ID bulundu: {channel_id}")
-                        return channel_id
-            except:
-                pass
-                
-    except Exception as e:
-        log(f"  Sayfa hatası: {e}")
-    
-    return None
-
-
-# ─────────────────────────────────────────────
-# DOĞRUDAN TOKEN URL BUL (HEDEF SUNUCU SEÇİMLİ)
-# ─────────────────────────────────────────────
-def find_direct_token_url(channel_slug):
+def find_stream_data_for_channel(channel_slug):
     """
-    Sayfada bulunan token URL'lerini listeler ve TARGET_SERVER değerine 
-    karşılık gelen sunucunun token adresini seçer.
+    Sayfadaki iframeleri tarayarak Server 4'e ait tam token URL'sini 
+    ve oradaki güncel sunucu (stream base url) adresini dinamik olarak çeker.
     """
     url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
@@ -142,115 +67,43 @@ def find_direct_token_url(channel_slug):
         html = resp.text
         
         token_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist\?token=[A-Za-z0-9+/=_-]+)'
-        
-        def select_target_match(matches):
-            if not matches:
-                return None
-            # Server numarasına göre index belirleme (Server 1 -> index 0, Server 4 -> index 3)
-            idx = TARGET_SERVER - 1
-            if idx < len(matches):
-                log(f"  ✓ Toplam {len(matches)} kaynak bulundu. İstediğiniz Server {TARGET_SERVER} seçildi.")
-                selected = matches[idx]
-            else:
-                log(f"  ⚠️ Server {TARGET_SERVER} bulunamadı, mevcut son kaynak seçiliyor (Server {len(matches)}).")
-                selected = matches[-1]
-            update_stream_base_url(selected)
-            return selected
-
-        # Ana sayfada ara
-        matches = re.findall(token_pattern, html)
-        if matches:
-            target_url = select_target_match(matches)
-            if target_url:
-                return target_url
-        
-        # iframe'lerde ara
         iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
-        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
         
-        for iframe_src in iframes:
-            iframe_url = urljoin(url, iframe_src)
+        # 1. Sayfadaki tüm iframeleri bul
+        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
+        log(f"  Sayfada toplam {len(iframes)} adet iframe bulundu.")
+        
+        # Hedef Server 4 (Index 3)
+        if len(iframes) > TARGET_SERVER_INDEX:
+            target_iframe_src = iframes[TARGET_SERVER_INDEX]
+            iframe_url = urljoin(url, target_iframe_src)
+            log(f"  ✓ Hedef Server 4 iframe adresi yakalandı: {iframe_url[:80]}...")
+            
             try:
-                resp2 = session.get(iframe_url, timeout=30, headers={**HEADERS, "Referer": url})
-                matches = re.findall(token_pattern, resp2.text)
+                resp_iframe = session.get(iframe_url, timeout=30, headers={**HEADERS, "Referer": url})
+                matches = re.findall(token_pattern, resp_iframe.text)
                 if matches:
-                    target_url = select_target_match(matches)
-                    if target_url:
-                        return target_url
-            except:
-                pass
-                
+                    full_token_url = matches[0]
+                    stream_base = full_token_url.split('?')[0]
+                    log(f"  ✓ Dinamik Sunucu Adresi: {stream_base}")
+                    return full_token_url
+            except Exception as e:
+                log(f"  Server 4 iframe isteğinde hata: {e}")
+        
+        # 2. Alternatif: İframe bulunamazsa ana sayfadaki token'lardan seç
+        matches = re.findall(token_pattern, html)
+        if len(matches) > TARGET_SERVER_INDEX:
+            full_token_url = matches[TARGET_SERVER_INDEX]
+            log(f"  ✓ Sayfa genelindeki token listesinden Server 4 seçildi.")
+            return full_token_url
+        elif matches:
+            full_token_url = matches[0]
+            log(f"  ⚠️ 4. sunucu bulunamadı, mevcut ilk sunucu seçiliyor.")
+            return full_token_url
+            
     except Exception as e:
         log(f"  Hata: {e}")
     
-    return None
-
-
-# ─────────────────────────────────────────────
-# HER ŞEYDEN ÖNCE EN GÜNCEL BASE URL'Yİ BULMA SÜRECİ
-# ─────────────────────────────────────────────
-def discover_live_base_url(channels):
-    log("Güncel API adresi (Base URL) tespit ediliyor...")
-    for ch in channels:
-        log(f"  Sunucu taraması için test edilen kanal: {ch['slug']}")
-        direct_url = find_direct_token_url(ch['slug'])
-        if direct_url:
-            log(f"  ✓ Sunucu adresi başarıyla güncellendi.")
-            return True
-        find_channel_id_from_page(ch['slug'])
-        
-    log("  ⚠️ Güncel sunucu adresi otomatik bulunamadı, varsayılan adres kullanılacak!")
-    return False
-
-
-# ─────────────────────────────────────────────
-# ANA STREAM BULMA FONKSİYONU
-# ─────────────────────────────────────────────
-def find_stream_url(channel_slug):
-    log(f"Kanal: {channel_slug}")
-    
-    if channel_slug in CHANNEL_IDS and CHANNEL_IDS[channel_slug]:
-        channel_id = CHANNEL_IDS[channel_slug]
-        log(f"  Bilinen ID: {channel_id}")
-        return generate_playlist_url(channel_id)
-    
-    log(f"  [1/3] Doğrudan token URL aranıyor (Server {TARGET_SERVER})...")
-    direct_url = find_direct_token_url(channel_slug)
-    if direct_url:
-        return direct_url
-    
-    log(f"  [2/3] Sayfadan ID çıkarılıyor...")
-    channel_id = find_channel_id_from_page(channel_slug)
-    if channel_id:
-        CHANNEL_IDS[channel_slug] = channel_id
-        return generate_playlist_url(channel_id)
-    
-    log(f"  [3/3] ID tahmin ediliyor...")
-    slug_guesses = {
-        "atv": ["1", "101", "201"],
-        "star-tv": ["2", "102", "202"],
-        "show-tv": ["3", "103", "203"],
-        "kanal-d": ["4", "104", "204"],
-        "fox-tv": ["5", "105", "205"],
-        "tv8": ["6", "106", "206"],
-        "trt-1": ["10", "110", "210"],
-    }
-    
-    for key, ids in slug_guesses.items():
-        if key in channel_slug:
-            for test_id in ids:
-                log(f"    ID {test_id} deneniyor...")
-                test_url = generate_playlist_url(test_id)
-                try:
-                    resp = requests.get(test_url, timeout=10, headers=HEADERS)
-                    if resp.status_code == 200 and len(resp.content) > 100:
-                        log(f"  ✓ Çalışan ID bulundu: {test_id}")
-                        CHANNEL_IDS[channel_slug] = test_id
-                        return test_url
-                except:
-                    pass
-    
-    log(f"  ✗ ID bulunamadı!")
     return None
 
 
@@ -286,7 +139,7 @@ def generate_m3u(results):
             lines.append(
                 f'#EXTINF:-1 tvg-id="{ch["slug"]}" '
                 f'tvg-name="{ch["name"]}" '
-                f'group-title="Bein-TV247",{ch["name"]}'
+                f'group-title="Bein-TV247-Server4",{ch["name"]}'
             )
             lines.append(ch['url'])
             lines.append('')
@@ -299,29 +152,21 @@ def generate_m3u(results):
     return content
 
 
-# ─────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────
 def main():
     log("=" * 50)
-    log(f"TV247 M3U Generator (Hedef Sunucu: Server {TARGET_SERVER})")
+    log("TV247 M3U Generator - Dinamik Server 4 Sürüm")
     log("=" * 50)
     
     channels = load_channels()
     log(f"\n{len(channels)} kanal işlenecek\n")
     
-    if channels:
-        discover_live_base_url(channels)
-        log(f"\n[!] Taramada Kullanılacak Aktif API Sunucusu: {STREAM_BASE_URL}\n")
-        log("=" * 50)
-        
     results = []
     
     for i, ch in enumerate(channels):
         log(f"\n[{i+1}/{len(channels)}] {ch['name']}")
         log("-" * 40)
         
-        stream_url = find_stream_url(ch['slug'])
+        stream_url = find_stream_data_for_channel(ch['slug'])
         
         results.append({
             'slug': ch['slug'],
