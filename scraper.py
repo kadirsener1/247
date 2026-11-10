@@ -11,21 +11,8 @@ from playwright.async_api import async_playwright
 
 # ─── KANAL LİSTESİ ────────────────────────────────────────────────────────────
 KANAL_SABLONLARI = [
-    {"name": "usabc", "path": "/watch/abc-usa/", "group": "US"},
+    {"name": "beinsport1tr", "path": "/watch/bein-sports-1-trkey/", "group": "TR"},
     {"name": "uscbs", "path": "/watch/cbs-usa/", "group": "US"},
-    {"name": "usnbc", "path": "/watch/nbc-usa/", "group": "US"},
-    {"name": "usfox", "path": "/watch/fox-usa/", "group": "US"},
-    {"name": "usespn", "path": "/watch/espn-usa/", "group": "US"},
-    {"name": "usespn2", "path": "/watch/espn-2/", "group": "US"},
-    {"name": "ususa", "path": "/watch/usa-network/", "group": "US"},
-    {"name": "usnflnetwork", "path": "/watch/nfl-network/", "group": "US"},
-    {"name": "usnbatv", "path": "/watch/nba-tv/", "group": "US"},
-    {"name": "ukskysportsmainevent", "path": "/watch/sky-sports-main-event/", "group": "UK"},
-    {"name": "ukskysportspremierleague", "path": "/watch/sky-sports-premier-league/", "group": "UK"},
-    {"name": "ukskysportsf1", "path": "/watch/sky-sports-f1/", "group": "UK"},
-    {"name": "uktntsports1", "path": "/watch/tnt-sports-1-uk/", "group": "UK"},
-    {"name": "uktntsports2", "path": "/watch/tnt-sports-2-uk/", "group": "UK"},
-    {"name": "trbeinsports1", "path": "/watch/bein-sports-1-turkey/", "group": "TR"},
 ]
 
 SEED_DOMAINS = [
