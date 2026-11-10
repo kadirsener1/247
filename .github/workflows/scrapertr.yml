@@ -1,9 +1,9 @@
 name: Update tv247 tr Playlist
 
 on:
-  # Her 1 saatte bir çalışsın
+  # Her 6 saatte bir çalışsın (cron formatı düzeltildi)
   schedule:
-      - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *'
 
   # Manuel tetikleme
   workflow_dispatch:
@@ -28,7 +28,6 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
 
-
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -40,7 +39,12 @@ jobs:
 
       - name: 📦 Install dependencies
         run: |
-          pip install requests
+          python -m pip install --upgrade pip
+          pip install requests playwright
+
+      - name: 🌐 Install Playwright browsers & dependencies
+        run: |
+          playwright install --with-deps chromium
 
       - name: 🔍 Run scraper
         run: python scrapertr.py
