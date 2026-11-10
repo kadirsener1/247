@@ -3,9 +3,8 @@ import os
 import sys
 import json
 import time
-import base64
 import requests
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, parse_qs, urlencode, urlunparse
 from datetime import datetime
 
 # ─────────────────────────────────────────────
@@ -15,8 +14,9 @@ BASE_URL = "https://tvnow247.top/watch/"
 OUTPUT_FILE = "tv247tr.m3u"
 CHANNELS_FILE = "channelstr.txt"
 
-# Kesin olarak Server 4 kaynağını almak için hedef sunucu indexi (0 tabanlı: 0=Server1, 3=Server4)
-TARGET_SERVER_INDEX = 3  # Server 4
+# Başlangıç Base URL (Sayfadan dinamik olarak güncellenecektir)
+STREAM_BASE_URL = "https://live.tvnow247.today/live/"
+TARGET_SRC_PARAM = "src=r4"  # Kesin olarak Server 4 kaynağını seçmek için
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
@@ -25,38 +25,55 @@ HEADERS = {
     "Referer": "https://tvnow247.top/",
 }
 
-CHANNEL_IDS = {
-    "bein-sports-1-turkey": "62",
-    "bein-sports-2-turkey": "63",
-    "bein-sports-3-turkey": "64",
-    "bein-sports-4-turkey": "67",
-    "bein-sports-5-turkey": "1010",
-}
-
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 
-def generate_playlist_url(stream_base_url, channel_id):
-    """Dinamik olarak bulunan stream base URL'sini token ile birleştirir"""
-    ts = int(time.time() * 1000)
-    token_data = {
-        "channelId": str(channel_id),
-        "ts": ts
-    }
-    token_json = json.dumps(token_data, separators=(',', ':'))
-    token_b64 = base64.b64encode(token_json.encode()).decode()
-    return f"{stream_base_url}?token={token_b64}"
+def update_stream_base_url(full_url):
+    """Bulunan .m3u8 linkinden base URL kısmını dinamik olarak günceller"""
+    global STREAM_BASE_URL
+    if full_url:
+        try:
+            # Örn: https://live.tvnow247.today/live/62/index.m3u8 -> https://live.tvnow247.today/live/
+            if '/live/' in full_url:
+                base = full_url.split('/live/')[0] + '/live/'
+                if base and base != STREAM_BASE_URL:
+                    STREAM_BASE_URL = base
+                    log(f"  [!!!] GÜNCEL BASE URL TESPİT EDİLDİ: {STREAM_BASE_URL}")
+        except Exception:
+            pass
+
+
+def force_server_4(link):
+    """Linkteki src parametresini kesin olarak r4 (Server 4) yapar"""
+    if not link:
+        return link
+    try:
+        parsed = urlparse(link)
+        qs = parse_qs(parsed.query, keep_blank_values=True)
+        qs['src'] = ['r4']  # Server 4 zorlaması
+        new_query = urlencode(qs, doseq=True)
+        parsed_list = list(parsed)
+        parsed_list[4] = new_query
+        return urlunparse(parsed_list)
+    except Exception:
+        # Eğer url parse edilemezse string değişimi dene
+        if 'src=' in link:
+            link = re.sub(r'src=[^&]+', 'src=r4', link)
+        else:
+            sep = '&' if '?' in link else '?'
+            link += f"{sep}src=r4"
+        return link
 
 
 # ─────────────────────────────────────────────
-# DOĞRUDAN TOKEN VE DİNAMİK BASE URL BUL (SERVER 4)
+# KANAL VE STREAM VERİSİNİ BULMA (BASE URL + SERVER 4)
 # ─────────────────────────────────────────────
 def find_stream_data_for_channel(channel_slug):
     """
-    Sayfadaki iframeleri tarayarak Server 4'e ait tam token URL'sini 
-    ve oradaki güncel sunucu (stream base url) adresini dinamik olarak çeker.
+    Sayfayı ve iframe'leri tarar, bulunan .m3u8 linklerinden base URL'yi günceller 
+    ve bağlantıyı Server 4 (src=r4) olacak şekilde uyarlar.
     """
     url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
@@ -66,40 +83,46 @@ def find_stream_data_for_channel(channel_slug):
         resp = session.get(url, timeout=30)
         html = resp.text
         
-        token_pattern = r'(https?://[^\s"\'<>]+/api/proxy/playlist\?token=[A-Za-z0-9+/=_-]+)'
+        m3u8_pattern = r'(https?://[^\s"\'<>]+?\.m3u8[^\s"\'<>]*?)'
         iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
         
-        # 1. Sayfadaki tüm iframeleri bul
-        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
-        log(f"  Sayfada toplam {len(iframes)} adet iframe bulundu.")
+        all_m3u8_links = []
         
-        # Hedef Server 4 (Index 3)
-        if len(iframes) > TARGET_SERVER_INDEX:
-            target_iframe_src = iframes[TARGET_SERVER_INDEX]
-            iframe_url = urljoin(url, target_iframe_src)
-            log(f"  ✓ Hedef Server 4 iframe adresi yakalandı: {iframe_url[:80]}...")
-            
+        # 1. Ana sayfadaki .m3u8 linklerini bul
+        page_matches = re.findall(m3u8_pattern, html)
+        for m in page_matches:
+            if m not in all_m3u8_links:
+                all_m3u8_links.append(m)
+
+        # 2. İframeleri tara
+        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
+        for iframe_src in iframes:
+            iframe_url = urljoin(url, iframe_src)
             try:
                 resp_iframe = session.get(iframe_url, timeout=30, headers={**HEADERS, "Referer": url})
-                matches = re.findall(token_pattern, resp_iframe.text)
-                if matches:
-                    full_token_url = matches[0]
-                    stream_base = full_token_url.split('?')[0]
-                    log(f"  ✓ Dinamik Sunucu Adresi: {stream_base}")
-                    return full_token_url
-            except Exception as e:
-                log(f"  Server 4 iframe isteğinde hata: {e}")
+                iframe_matches = re.findall(m3u8_pattern, resp_iframe.text)
+                for m in iframe_matches:
+                    if m not in all_m3u8_links:
+                        all_m3u8_links.append(m)
+            except Exception:
+                pass
+
+        log(f"  Toplam {len(all_m3u8_links)} adet .m3u8 yayın linki bulundu.")
         
-        # 2. Alternatif: İframe bulunamazsa ana sayfadaki token'lardan seç
-        matches = re.findall(token_pattern, html)
-        if len(matches) > TARGET_SERVER_INDEX:
-            full_token_url = matches[TARGET_SERVER_INDEX]
-            log(f"  ✓ Sayfa genelindeki token listesinden Server 4 seçildi.")
-            return full_token_url
-        elif matches:
-            full_token_url = matches[0]
-            log(f"  ⚠️ 4. sunucu bulunamadı, mevcut ilk sunucu seçiliyor.")
-            return full_token_url
+        # Öncelik: Zaten src=r4 içeren varsa doğrudan al
+        for link in all_m3u8_links:
+            if TARGET_SRC_PARAM in link:
+                update_stream_base_url(link)
+                log(f"  ✓ Doğrudan Server 4 yayın linki yakalandı!")
+                return link
+
+        # Yoksa herhangi bir .m3u8 linkini alıp base URL'yi güncelleyelim ve src=r4 zorlayalım
+        if all_m3u8_links:
+            selected_link = all_m3u8_links[0]
+            update_stream_base_url(selected_link)
+            forced_link = force_server_4(selected_link)
+            log(f"  ✓ Base URL güncellendi ve Server 4 (src=r4) zorlandı.")
+            return forced_link
             
     except Exception as e:
         log(f"  Hata: {e}")
@@ -154,7 +177,7 @@ def generate_m3u(results):
 
 def main():
     log("=" * 50)
-    log("TV247 M3U Generator - Dinamik Server 4 Sürüm")
+    log("TV247 M3U Generator - Base URL Destekli Server 4 Sürüm")
     log("=" * 50)
     
     channels = load_channels()
