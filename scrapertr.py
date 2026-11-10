@@ -11,12 +11,9 @@ from datetime import datetime
 # YAPILANDIRMA
 # ─────────────────────────────────────────────
 BASE_URL = "https://tvnow247.top/watch/"
+EMBED_SERVER4_BASE = "https://tvnow247.top/embed-r4/"
 OUTPUT_FILE = "tv247tr.m3u"
 CHANNELS_FILE = "channelstr.txt"
-
-# Başlangıç Base URL (Sayfadan dinamik olarak güncellenecektir)
-STREAM_BASE_URL = "https://live.tvnow247.today/live/"
-TARGET_SRC_PARAM = "src=r4"  # Kesin olarak Server 4 kaynağını seçmek için
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
@@ -25,114 +22,88 @@ HEADERS = {
     "Referer": "https://tvnow247.top/",
 }
 
+CHANNEL_IDS = {
+    "bein-sports-1-turkey": "62",
+    "bein-sports-2-turkey": "63",
+    "bein-sports-3-turkey": "64",
+    "bein-sports-4-turkey": "67",
+    "bein-sports-5-turkey": "1010",
+}
+
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 
-def update_stream_base_url(full_url):
-    """Bulunan .m3u8 linkinden base URL kısmını dinamik olarak günceller"""
-    global STREAM_BASE_URL
-    if full_url:
-        try:
-            # Örn: https://live.tvnow247.today/live/62/index.m3u8 -> https://live.tvnow247.today/live/
-            if '/live/' in full_url:
-                base = full_url.split('/live/')[0] + '/live/'
-                if base and base != STREAM_BASE_URL:
-                    STREAM_BASE_URL = base
-                    log(f"  [!!!] GÜNCEL BASE URL TESPİT EDİLDİ: {STREAM_BASE_URL}")
-        except Exception:
-            pass
+def extract_m3u8_from_html(html):
+    """HTML veya JavaScript metni içerisinden .m3u8 linklerini yakalar"""
+    m3u8_pattern = r'(https?://[^\s"\'<>]+?\.m3u8[^\s"\'<>]*?)'
+    return re.findall(m3u8_pattern, html)
 
 
-def force_server_4(link):
-    """Linkteki src parametresini kesin olarak r4 (Server 4) yapar"""
-    if not link:
-        return link
-    try:
-        parsed = urlparse(link)
-        qs = parse_qs(parsed.query, keep_blank_values=True)
-        qs['src'] = ['r4']  # Server 4 zorlaması
-        new_query = urlencode(qs, doseq=True)
-        parsed_list = list(parsed)
-        parsed_list[4] = new_query
-        return urlunparse(parsed_list)
-    except Exception:
-        # Eğer url parse edilemezse string değişimi dene
-        if 'src=' in link:
-            link = re.sub(r'src=[^&]+', 'src=r4', link)
-        else:
-            sep = '&' if '?' in link else '?'
-            link += f"{sep}src=r4"
-        return link
-
-
-# ─────────────────────────────────────────────
-# KANAL VE STREAM VERİSİNİ BULMA (BASE URL + SERVER 4)
-# ─────────────────────────────────────────────
 def find_stream_data_for_channel(channel_slug):
     """
-    Sayfayı ve iframe'leri tarar, bulunan .m3u8 linklerinden base URL'yi günceller 
-    ve bağlantıyı Server 4 (src=r4) olacak şekilde uyarlar.
+    Doğrudan Server 4 embed adresine (/embed-r4/{slug}) giderek 
+    Server 4 yayın kaynağını çeker.
     """
-    url = f"{BASE_URL}{channel_slug}/"
     session = requests.Session()
     session.headers.update(HEADERS)
     
+    # 1. Aşama: Doğrudan Server 4 Embed Sayfasını tara
+    embed_r4_url = f"{EMBED_SERVER4_BASE}{channel_slug}"
+    log(f"  Server 4 embed adresi taranıyor: {embed_r4_url}")
+    
     try:
-        resp = session.get(url, timeout=30)
-        html = resp.text
+        resp_r4 = session.get(embed_r4_url, timeout=20, headers={**HEADERS, "Referer": f"{BASE_URL}{channel_slug}/"})
+        html_r4 = resp_r4.text
         
-        m3u8_pattern = r'(https?://[^\s"\'<>]+?\.m3u8[^\s"\'<>]*?)'
+        # Embed sayfasında doğrudan .m3u8 ara
+        links = extract_m3u8_from_html(html_r4)
+        if links:
+            log(f"  ✓ Server 4 embed sayfasından doğrudan .m3u8 bulundu!")
+            return links[0]
+            
+        # Embed sayfasında alt iframe var mı kontrol et
         iframe_pattern = r'<iframe[^>]+src=["\']([^"\']+)["\']'
-        
-        all_m3u8_links = []
-        
-        # 1. Ana sayfadaki .m3u8 linklerini bul
-        page_matches = re.findall(m3u8_pattern, html)
-        for m in page_matches:
-            if m not in all_m3u8_links:
-                all_m3u8_links.append(m)
-
-        # 2. İframeleri tara
-        iframes = re.findall(iframe_pattern, html, re.IGNORECASE)
+        iframes = re.findall(iframe_pattern, html_r4, re.IGNORECASE)
         for iframe_src in iframes:
-            iframe_url = urljoin(url, iframe_src)
+            iframe_url = urljoin(embed_r4_url, iframe_src)
             try:
-                resp_iframe = session.get(iframe_url, timeout=30, headers={**HEADERS, "Referer": url})
-                iframe_matches = re.findall(m3u8_pattern, resp_iframe.text)
-                for m in iframe_matches:
-                    if m not in all_m3u8_links:
-                        all_m3u8_links.append(m)
+                resp_inner = session.get(iframe_url, timeout=20, headers={**HEADERS, "Referer": embed_r4_url})
+                inner_links = extract_m3u8_from_html(resp_inner.text)
+                if inner_links:
+                    log(f"  ✓ Server 4 alt iframe'inden .m3u8 bulundu!")
+                    return inner_links[0]
             except Exception:
                 pass
-
-        log(f"  Toplam {len(all_m3u8_links)} adet .m3u8 yayın linki bulundu.")
-        
-        # Öncelik: Zaten src=r4 içeren varsa doğrudan al
-        for link in all_m3u8_links:
-            if TARGET_SRC_PARAM in link:
-                update_stream_base_url(link)
-                log(f"  ✓ Doğrudan Server 4 yayın linki yakalandı!")
-                return link
-
-        # Yoksa herhangi bir .m3u8 linkini alıp base URL'yi güncelleyelim ve src=r4 zorlayalım
-        if all_m3u8_links:
-            selected_link = all_m3u8_links[0]
-            update_stream_base_url(selected_link)
-            forced_link = force_server_4(selected_link)
-            log(f"  ✓ Base URL güncellendi ve Server 4 (src=r4) zorlandı.")
-            return forced_link
-            
+                
     except Exception as e:
-        log(f"  Hata: {e}")
-    
+        log(f"  Server 4 embed tarama hatası: {e}")
+
+    # 2. Aşama: Ana sayfayı tara (Eğer embed-r4 açılmazsa)
+    watch_url = f"{BASE_URL}{channel_slug}/"
+    try:
+        resp_watch = session.get(watch_url, timeout=20)
+        html_watch = resp_watch.text
+        links = extract_m3u8_from_html(html_watch)
+        for link in links:
+            if "src=r4" in link:
+                log(f"  ✓ Ana sayfadan Server 4 (src=r4) linki bulundu!")
+                return link
+    except Exception:
+        pass
+
+    # 3. Aşama: Fallback ID Bağlantısı
+    log(f"  ⚠️ Canlı link ayıklanamadı, ID üzerinden Server 4 linki üretiliyor...")
+    channel_id = CHANNEL_IDS.get(channel_slug)
+    if channel_id:
+        fallback_url = f"https://live.tvnow247.today/live/{channel_id}/index.m3u8?src=r4"
+        log(f"  ✓ ID tabanlı Server 4 URL: {channel_id}")
+        return fallback_url
+
     return None
 
 
-# ─────────────────────────────────────────────
-# KANAL LİSTESİ
-# ─────────────────────────────────────────────
 def load_channels():
     channels = []
     if os.path.exists(CHANNELS_FILE):
@@ -177,7 +148,7 @@ def generate_m3u(results):
 
 def main():
     log("=" * 50)
-    log("TV247 M3U Generator - Base URL Destekli Server 4 Sürüm")
+    log("TV247 M3U Generator - Embed-R4 Özel Sürüm")
     log("=" * 50)
     
     channels = load_channels()
