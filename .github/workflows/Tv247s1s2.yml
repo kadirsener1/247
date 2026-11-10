@@ -14,7 +14,7 @@ on:
       - main
     paths:
       - 'scraper.py'
-      - 'channels.txt'
+      - 'channels1.txt'
 
 concurrency:
   group: update-m3u
